@@ -1,0 +1,75 @@
+.card {
+    background-color: var(--mendelu-pef-color-dark);
+    display: flex;
+    flex-direction: row;
+    border-radius: 25px;
+    padding: 3rem;
+    gap: 2rem;
+    width: 75%;
+    min-width: min(75%, 1100px);
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2rem;
+}
+
+.bid-info {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.tag-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.image-container {
+    display: flex;
+    flex: 2;
+    border-radius: 25px;
+    overflow: hidden;
+    max-width: 60%;
+}
+
+.image-container img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 900px) {
+    .card {
+        flex-direction: column;
+        min-height: auto;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .card .tag {
+        font-size: 1rem;
+    }
+
+    .image-container {
+        max-width: 100%;
+        height: 300px;
+        order: -1;
+    }
+
+    .info-container {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        border-radius: 15px;
+    }
+}

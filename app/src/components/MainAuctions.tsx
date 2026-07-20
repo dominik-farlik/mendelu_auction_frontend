@@ -1,9 +1,8 @@
 import { useState, useRef } from "react"
 import "./MainAuctions.css"
 import coverImage from "../assets/mikina_cover.jpg"
-import BidButton from "./BidButton.tsx";
-import Tag from "./Tag.tsx";
 import Pagination from "./Pagination.tsx";
+import BigPreview from "./BigPreview.tsx";
 
 const AUCTIONS = [
     {title: "Hlavní popis zobrazované nabídky 1", description: "Description", category: "category", startPrice: 100, bid_count: 21, highest_bid: 2300, organization: "organization", duration: 3, coverImage: "coverImage.png", otherImages: ["otherImage1.png", "otherImage2.png"]},
@@ -51,28 +50,12 @@ export default function MainAuctions() {
                 onScroll={handleScroll}
             >
                 { AUCTIONS.map((auction, index) => (
-                    <div key={index} className="card">
-                        <div className="info-container">
-                            <div>
-                                <Tag text={`Končí za ${auction.duration} d `} />
-                            </div>
-                            <span className="large-text">{auction.title}</span>
-                            <div className="bid-info">
-                                <div className="tag-container">
-                                    <Tag text="Příhozů" />
-                                    <span className="medium-text">{auction.bid_count}</span>
-                                </div>
-                                <div className="tag-container">
-                                    <Tag text="Nejvyšší příhoz" />
-                                    <span className="medium-text">{auction.highest_bid.toLocaleString('cs-CZ')} Kč</span>
-                                </div>
-                            </div>
-                            <BidButton />
-                        </div>
-                        <div className="image-container">
-                            <img src={coverImage} alt="Cover" />
-                        </div>
-                    </div>
+                    <BigPreview
+                        key={index}
+                        auction={auction}
+                        index={index}
+                        coverImage={coverImage}
+                    />
                 ))}
             </div>
             <Pagination

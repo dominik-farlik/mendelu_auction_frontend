@@ -23,6 +23,10 @@ body {
   font-size: clamp(2rem, 2vw, 4.5rem);
 }
 
+.bold-text{
+  font-weight: 700;
+}
+
 .hero {
   display: flex;
   flex-direction: column;

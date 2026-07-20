@@ -1,5 +1,6 @@
 import MainAuctions from "./MainAuctions.tsx";
 import Navbar from "./Navbar.tsx";
+import ActiveAuctions from "./ActiveAuctions.tsx";
 
 export default function HomePage() {
     return (
@@ -8,7 +9,7 @@ export default function HomePage() {
                 <Navbar />
                 <MainAuctions />
             </div>
-
+            <ActiveAuctions />
         </>
     )
 }

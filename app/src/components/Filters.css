@@ -1,0 +1,11 @@
+.filter-container {
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid var(--mendelu-pef-color);
+    border-radius: 25px;
+    padding: 2rem;
+    gap: 2rem;
+}

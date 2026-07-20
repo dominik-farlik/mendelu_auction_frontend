@@ -1,0 +1,19 @@
+.auction-container {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    border: 1px solid var(--mendelu-pef-color);
+    border-radius: 25px;
+}
+
+.auction-row {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
+}

@@ -105,36 +105,3 @@
         border-radius: 15px;
     }
 }
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    padding: 1rem 2rem 2rem;
-}
-
-.pagination .dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-
-    /* Reset výchozích prohlížečových stylů pro tlačítka */
-    appearance: none;
-    outline: none;
-}
-
-.pagination .dot.active {
-    background-color: white;
-    transform: scale(1.1);
-}
-
-/* Hover efekt pro lepší UX na počítači */
-.pagination .dot:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-}

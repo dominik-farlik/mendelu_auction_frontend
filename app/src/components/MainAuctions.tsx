@@ -3,6 +3,7 @@ import "./MainAuctions.css"
 import coverImage from "../assets/mikina_cover.jpg"
 import BidButton from "./BidButton.tsx";
 import Tag from "./Tag.tsx";
+import Pagination from "./Pagination.tsx";
 
 const AUCTIONS = [
     {title: "Hlavní popis zobrazované nabídky 1", description: "Description", category: "category", startPrice: 100, bid_count: 21, highest_bid: 2300, organization: "organization", duration: 3, coverImage: "coverImage.png", otherImages: ["otherImage1.png", "otherImage2.png"]},
@@ -12,7 +13,7 @@ const AUCTIONS = [
 
 export default function MainAuctions() {
     const [activeIndex, setActiveIndex] = useState(0);
-    const scrollContainerRef = useRef(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     // Funkce pro plynulé přesunutí na vybranou kartu po kliknutí na kolečko
     const scrollToCard = (index: number) => {
@@ -74,16 +75,11 @@ export default function MainAuctions() {
                     </div>
                 ))}
             </div>
-            <div className="pagination">
-                {AUCTIONS.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`dot ${index === activeIndex ? "active" : ""}`}
-                        onClick={() => scrollToCard(index)}
-                        aria-label={`Přejít na nabídku ${index + 1}`}
-                    />
-                ))}
-            </div>
+            <Pagination
+                totalItems={AUCTIONS.length}
+                activeIndex={activeIndex}
+                onDotClick={scrollToCard}
+            />
         </div>
     )
 }

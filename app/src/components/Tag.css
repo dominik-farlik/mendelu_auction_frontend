@@ -1,0 +1,14 @@
+.tag {
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.tag-blue {
+    color: var(--mendelu-pef-color-light);
+}
+
+.tag-outline {
+    border: 2px solid var(--mendelu-pef-color-light);
+}

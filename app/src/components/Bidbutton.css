@@ -1,0 +1,21 @@
+.btn-bid {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    color: var(--mendelu-pef-color-dark);
+    border: none;
+    padding: 0.25rem 1rem 0.25rem 0.25rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+.bid-icon {
+    color: white;
+    background-color: var(--mendelu-pef-color-dark);
+    border-radius: 50%;
+    padding: 7px 11px;
+}

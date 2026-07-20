@@ -1,0 +1,140 @@
+.main-auctions {
+    background-color: var(--mendelu-pef-color);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.main-auctions-container {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 2rem;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.main-auctions-container::-webkit-scrollbar {
+    display: none;
+}
+
+.card {
+    background-color: var(--mendelu-pef-color-dark);
+    display: flex;
+    flex-direction: row;
+    border-radius: 25px;
+    padding: 3rem;
+    gap: 2rem;
+    width: 80%;
+    min-width: min(80%, 1100px);
+    min-height: 600px;
+
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2rem;
+}
+
+.bid-info {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.tag-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.image-container {
+    display: flex;
+    flex: 2;
+    border-radius: 25px;
+    overflow: hidden;
+    max-width: 60%;
+}
+
+.image-container img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 2rem 2rem;
+}
+
+
+@media (max-width: 900px) {
+    .card {
+        flex-direction: column;
+        min-height: auto;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .image-container {
+        max-width: 100%;
+        height: 300px;
+        order: -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-auctions-container {
+        padding: 1rem; /* Na malých mobilech menší odsazení po stranách */
+        gap: 1rem;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 2rem 2rem;
+}
+
+.pagination .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    /* Reset výchozích prohlížečových stylů pro tlačítka */
+    appearance: none;
+    outline: none;
+}
+
+.pagination .dot.active {
+    background-color: white;
+    transform: scale(1.1);
+}
+
+/* Hover efekt pro lepší UX na počítači */
+.pagination .dot:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}

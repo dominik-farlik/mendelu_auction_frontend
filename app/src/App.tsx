@@ -1,9 +1,9 @@
-import Navbar from './components/Navbar.tsx'
+import HomePage from "./components/HomePage.tsx";
 
 function App() {
   return (
     <>
-      <Navbar />
+      <HomePage />
     </>
   )
 }

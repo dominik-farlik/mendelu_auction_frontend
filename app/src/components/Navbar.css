@@ -1,0 +1,70 @@
+.navbar {
+    background-color: var(--mendelu-pef-color);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 450;
+    display: flex;
+    height: var(--navbar-height);
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    position: relative;
+    max-width: 100%;
+}
+
+.nav-logo {
+    max-height: 130%;
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}
+
+/* --- Hamburger tlačítko --- */
+.mobile-toggle {
+    display: none; /* Na desktopu skryté */
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* =========================================
+   MOBILNÍ VERZE (pod 768px šířky)
+   ========================================= */
+@media (max-width: 768px) {
+    .mobile-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--mendelu-pef-color);
+        padding: 1.5rem 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+}

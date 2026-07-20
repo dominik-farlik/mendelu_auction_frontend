@@ -1,6 +1,10 @@
 :root {
   --mendelu-pef-color: #02449b;
+  --mendelu-pef-color-dark: #003270;
+  --mendelu-pef-color-light: #5fd0f3;
   --btn-color: #007bff;
+
+  --navbar-height: 70px;
 }
 
 body {
@@ -8,94 +12,19 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.navbar {
-  background-color: var(--mendelu-pef-color);
-  color: white;
+
+.large-text{
+  font-size: clamp(2rem, 6vw, 5.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.medium-text{
+  font-size: clamp(2rem, 2vw, 4.5rem);
+}
+
+.hero {
   display: flex;
-  min-height: 70px; /* Změněno z height na min-height kvůli mobilům */
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  position: relative; /* Důležité pro absolutní pozicování mobilního menu */
-}
-
-.nav-logo {
-  max-height: 70px;
-  width: auto;
-}
-
-/* --- Odkazy a akce (Desktop výchozí stav) --- */
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.nav-links a {
-  color: white;
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.nav-links a:hover {
-  opacity: 0.8;
-}
-
-/* --- Tlačítko "Vytvořit aukci" --- */
-.btn-create {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--btn-color);
-  color: white;
-  border: none;
-  padding: 0.25rem 1rem 0.25rem 0.25rem;
-  border-radius: 2rem;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.btn-create img {
-  height: 24px;
-  width: auto;
-  background-color: var(--mendelu-pef-color);
-  border-radius: 30px;
-  padding: 5px;
-}
-
-/* --- Hamburger tlačítko --- */
-.mobile-toggle {
-  display: none; /* Na desktopu skryté */
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-/* =========================================
-   MOBILNÍ VERZE (pod 768px šířky)
-   ========================================= */
-@media (max-width: 768px) {
-  .mobile-toggle {
-    display: block;
-  }
-
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: var(--mendelu-pef-color);
-    padding: 1.5rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-
-  .nav-links.active {
-    display: flex;
-  }
+  flex-direction: column;
+  height: 100dvh;
 }

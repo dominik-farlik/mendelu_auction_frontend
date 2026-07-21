@@ -3,19 +3,21 @@
     display: flex;
     flex-direction: row;
     border-radius: 25px;
-    padding: 3rem;
-    gap: 2rem;
-    width: 75%;
-    min-width: min(75%, 1100px);
+    padding: 2.5rem;
+    gap: 1.5rem;
+    width: 85%;
+    min-width: min(85%, 1100px);
     flex: 0 0 auto;
     scroll-snap-align: center;
+    text-overflow: ellipsis;
 }
 
 .info-container {
     display: flex;
     flex-direction: column;
     flex: 1;
-    gap: 2rem;
+    gap: 1rem;
+    justify-content: space-between;
 }
 
 .bid-info {
@@ -51,10 +53,6 @@
         min-height: auto;
         padding: 1.5rem;
         gap: 1.5rem;
-    }
-
-    .card .tag {
-        font-size: 1rem;
     }
 
     .image-container {

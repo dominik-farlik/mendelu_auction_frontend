@@ -34,7 +34,6 @@ export default function MainAuctions() {
         const scrollPosition = scrollContainerRef.current.scrollLeft;
         const containerWidth = scrollContainerRef.current.clientWidth;
 
-        // Výpočet indexu na základě toho, jak daleko je kontejner odscrolovaný
         const newIndex = Math.round(scrollPosition / containerWidth);
 
         if (newIndex !== activeIndex) {

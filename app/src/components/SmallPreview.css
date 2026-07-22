@@ -1,16 +1,15 @@
 .small-preview {
     background-color: white;
-    border: 1px solid var(--mendelu-pef-color-dark);
     display: flex;
     flex-direction: column;
     border-radius: 25px;
     height: 400px;
+    overflow: hidden;
 }
 
 .small-image-container {
     display: flex;
     flex: 2;
-    border-radius: 25px;
     overflow: hidden;
     max-height: 60%;
 }
@@ -26,4 +25,10 @@
     flex-direction: column;
     padding: 1rem;
     gap: 1rem;
+}
+
+.tag-absolute {
+    display: flex;
+    position: absolute;
+    align-content: center;
 }

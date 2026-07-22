@@ -12,3 +12,8 @@
 .tag-outline {
     border: 2px solid var(--mendelu-pef-color-light);
 }
+
+.tag-fill {
+    color: white;
+    background-color: var(--mendelu-pef-color-dark);
+}

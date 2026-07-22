@@ -7,6 +7,12 @@
     overflow: hidden;
 }
 
+.active-auctions-title {
+    color: var(--mendelu-pef-color);
+    font-size: 4rem;
+    font-weight: 700;
+}
+
 .col-container {
     display: flex;
     gap: 2rem;

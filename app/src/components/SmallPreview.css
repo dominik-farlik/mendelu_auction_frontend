@@ -5,6 +5,7 @@
     border-radius: 25px;
     height: 400px;
     overflow: hidden;
+    max-width: 25%;
 }
 
 .small-image-container {

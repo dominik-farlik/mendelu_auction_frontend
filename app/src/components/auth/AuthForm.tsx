@@ -12,13 +12,14 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
     const [isLogin, setIsLogin] = useState<boolean>(defaultIsLogin);
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
         setSuccessMessage(null);
@@ -100,14 +101,23 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
                         </div>
                         <div className="auth-field-group">
                             <label className="auth-label">Heslo</label>
-                            <input
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="auth-input"
-                                placeholder="••••••••"
-                            />
+                            <div className="password-input-container">
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="auth-input"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="password-toggle-button"
+                                >
+                                    {showPassword ? '🙈' : '👁️'}
+                                </button>
+                            </div>
                         </div>
                     </div>
 

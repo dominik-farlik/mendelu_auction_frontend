@@ -123,3 +123,18 @@
     color: var(--mendelu-pef-color-light);
     text-decoration: underline;
 }
+
+.password-input-container {
+    display: flex;
+
+}
+
+.password-toggle-button {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: var(--mendelu-pef-color);
+    cursor: pointer;
+    padding: 0;
+    margin-left: -2.5rem;
+}

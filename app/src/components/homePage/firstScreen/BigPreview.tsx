@@ -1,5 +1,5 @@
-import Tag from "./Tag.tsx";
-import BidButton from "./BidButton.tsx";
+import Tag from "../../Tag.tsx";
+import BidButton from "../../BidButton.tsx";
 import "./BigPreview.css";
 
 interface Auction {

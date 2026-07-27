@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import "./MainAuctions.css"
-import coverImage from "../assets/mikina_cover.jpg"
-import Pagination from "./Pagination.tsx";
+import coverImage from "../../../assets/mikina_cover.jpg"
+import Pagination from "../../Pagination.tsx";
 import BigPreview from "./BigPreview.tsx";
 
 const AUCTIONS = [

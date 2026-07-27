@@ -1,6 +1,6 @@
-import preview from "../assets/keramicky_hrnek-scaled.jpg"
+import preview from "../../../assets/keramicky_hrnek-scaled.jpg"
 import './SmallPreview.css';
-import Tag from "./Tag.tsx";
+import Tag from "../../Tag.tsx";
 
 export default function SmallPreview() {
     return (

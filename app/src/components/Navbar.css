@@ -33,6 +33,20 @@
     opacity: 0.8;
 }
 
+.nav-user-icon {
+    color: #8e8e8e;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    padding: 11px;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.nav-user-icon:hover {
+    opacity: 0.8;
+}
+
 /* --- Hamburger tlačítko --- */
 .mobile-toggle {
     display: none; /* Na desktopu skryté */

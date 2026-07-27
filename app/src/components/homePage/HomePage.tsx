@@ -1,6 +1,6 @@
-import MainAuctions from "./MainAuctions.tsx";
-import Navbar from "./Navbar.tsx";
-import ActiveAuctions from "./ActiveAuctions.tsx";
+import MainAuctions from "./firstScreen/MainAuctions.tsx";
+import Navbar from "../Navbar.tsx";
+import ActiveAuctions from "./activeAuctions/ActiveAuctions.tsx";
 
 export default function HomePage() {
     return (

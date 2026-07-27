@@ -1,4 +1,4 @@
-import mendelu_icon from '../assets/Mendelu_symbol_white.png';
+import mendelu_icon from '../../assets/Mendelu_symbol_white.png';
 import './CreateButton.css';
 
 export default function CreateButton() {

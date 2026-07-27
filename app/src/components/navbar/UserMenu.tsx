@@ -1,0 +1,96 @@
+import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../../api/axios.ts';
+import './UserMenu.css';
+
+type UserMenuProps = {
+    username: string | null;
+    onLogout?: () => void;
+};
+
+export default function UserMenu({ username, onLogout }: UserMenuProps) {
+    const [isOpen, setIsOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await api.post('/auth/logout');
+            if (onLogout) {
+                onLogout();
+            }
+        } catch (error) {
+            console.error('Chyba při odhlašování:', error);
+        }
+    };
+
+    return (
+        <div className="user-menu-container" ref={menuRef}>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="nav-user-icon-link"
+                aria-expanded={isOpen}
+                aria-label="Uživatelský účet"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="nav-user-icon"
+                >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+
+            {/* Rozbalovací menu */}
+            {isOpen && (
+                <div className="user-dropdown-menu">
+                    <div className="user-dropdown-header">
+                        <strong>{username || 'Uživatel'}</strong>
+                    </div>
+                    <div className="user-dropdown-links">
+                        <Link to="/profile" onClick={() => setIsOpen(false)}>
+                            Můj účet
+                        </Link>
+                        <Link to="/prihozeno-a-sledovano" onClick={() => setIsOpen(false)}>
+                            Přihozeno a sledováno
+                        </Link>
+                        <Link to="/zalozene-aukce" onClick={() => setIsOpen(false)}>
+                            Založené aukce
+                        </Link>
+                        <Link to="/vyhry" onClick={() => setIsOpen(false)}>
+                            Moje výhry
+                        </Link>
+                    </div>
+                    <div className="user-dropdown-footer">
+                        <button
+                            onClick={() => {
+                                setIsOpen(false);
+                                handleLogout();
+                            }}
+                            className="logout-button"
+                        >
+                            Odhlásit se
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}

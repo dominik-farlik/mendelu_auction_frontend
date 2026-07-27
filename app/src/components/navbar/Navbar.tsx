@@ -24,7 +24,9 @@ export default function Navbar() {
 
     return (
         <nav className="navbar">
-            <img src={mendelu_logo} className="nav-logo" alt="MENDELU logo" />
+            <Link to="/">
+                <img src={mendelu_logo} className="nav-logo" alt="MENDELU logo" />
+            </Link>
 
             <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
                 {isOpen ? '✕' : '☰'}

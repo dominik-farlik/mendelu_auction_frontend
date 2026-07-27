@@ -1,0 +1,80 @@
+.user-page {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    gap: 30px;
+    font-family: inherit;
+}
+
+/* Levá navigační část */
+.user-page-menu {
+    display: flex;
+    gap: 8px;
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.user-page-menu button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #4a5568;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease-in-out;
+}
+
+.user-page-menu button:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+    border-color: #cbd5e0;
+}
+
+/* Styl pro aktivní záložku */
+.user-page-menu button.active {
+    background-color: #ebf8ff;
+    color: #3182ce;
+    border-color: #bee3f8;
+    font-weight: 600;
+}
+
+/* Pravá obsahová část */
+.user-page-content {
+    flex-grow: 1;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    min-height: 400px;
+}
+
+/* Responzivita pro menší obrazovky */
+@media (max-width: 768px) {
+    .user-page {
+        flex-direction: column;
+        margin: 20px auto;
+        gap: 20px;
+    }
+
+    .user-page-menu {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+
+    .user-page-menu button {
+        white-space: nowrap;
+        text-align: center;
+        justify-content: center;
+    }
+}

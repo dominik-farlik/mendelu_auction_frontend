@@ -10,7 +10,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
     const [isLogin, setIsLogin] = useState<boolean>(defaultIsLogin);
-    const [username, setUsername] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
 
             if (isLogin) {
                 const formData = new URLSearchParams();
-                formData.append('username', username);
+                formData.append('username', email);
                 formData.append('password', password);
 
                 response = await api.post(endpoint, formData, {
@@ -42,7 +42,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
                 });
             } else {
                 response = await api.post(endpoint, {
-                    username,
+                    email,
                     password,
                 });
             }
@@ -91,10 +91,10 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
                         <div className="auth-field-group">
                             <label className="auth-label">Uživatelské jméno</label>
                             <input
-                                type="text"
+                                type="email"
                                 required
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="auth-input"
                                 placeholder=""
                             />

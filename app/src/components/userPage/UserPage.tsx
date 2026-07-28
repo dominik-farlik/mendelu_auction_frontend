@@ -4,6 +4,7 @@ import GroupInfo from "./GroupInfo.tsx";
 import UserAuctions from "./UserAuctions.tsx";
 import BidFollowAuctions from "./BidFollowAuctions.tsx";
 import Navbar from "../navbar/Navbar.tsx";
+import MenuButton from "./MenuButton.tsx";
 import './UserPage.css';
 
 export default function UserPage() {
@@ -20,30 +21,30 @@ export default function UserPage() {
             <Navbar />
             <div className="user-page">
                 <div className="user-page-menu">
-                    <button
-                        className={currentWindow === "osobni-udaje" ? "active" : ""}
-                        onClick={() => handleTabChange("osobni-udaje")}
-                    >
-                        UserInfo
-                    </button>
-                    <button
-                        className={currentWindow === "skupiny" ? "active" : ""}
-                        onClick={() => handleTabChange("skupiny")}
-                    >
-                        GroupInfo
-                    </button>
-                    <button
-                        className={currentWindow === "moje-aukce" ? "active" : ""}
-                        onClick={() => handleTabChange("moje-aukce")}
-                    >
-                        UserAuctions
-                    </button>
-                    <button
-                        className={currentWindow === "moje-prihozy" ? "active" : ""}
-                        onClick={() => handleTabChange("moje-prihozy")}
-                    >
-                        BidFollowAuctions
-                    </button>
+                    <MenuButton
+                        title="Osobní údaje"
+                        windowName="osobni-udaje"
+                        active={currentWindow === "osobni-udaje"}
+                        handleTabChange={handleTabChange}
+                    />
+                    <MenuButton
+                        title="Skupiny"
+                        windowName="skupiny"
+                        active={currentWindow === "skupiny"}
+                        handleTabChange={handleTabChange}
+                    />
+                    <MenuButton
+                        title="Moje aukce"
+                        windowName="moje-aukce"
+                        active={currentWindow === "moje-aukce"}
+                        handleTabChange={handleTabChange}
+                    />
+                    <MenuButton
+                        title="Přihazuji a sleduji"
+                        windowName="moje-prihozy"
+                        active={currentWindow === "moje-prihozy"}
+                        handleTabChange={handleTabChange}
+                    />
                 </div>
                 <div className="user-page-content">
                     {currentWindow === "osobni-udaje" && <UserInfo />}

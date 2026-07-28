@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import api from '../../api/axios.ts';
 import './AuthForm.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Navbar from "../navbar/Navbar.tsx";
 
 interface AuthFormProps {
     defaultIsLogin?: boolean;
 }
 
 export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
     const [isLogin, setIsLogin] = useState<boolean>(defaultIsLogin);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(() => {
+        return searchParams.get('expired') === 'true'
+            ? 'Vaše přihlášení vypršelo. Prosím, přihlaste se znovu.'
+            : null;
+    });    const [loading, setLoading] = useState<boolean>(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,7 +38,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
 
             if (isLogin) {
                 const formData = new URLSearchParams();
-                formData.append('username', email);
+                formData.append('username', email); // OAuth2 vzor vyžaduje klíč 'username', ale posíláme email
                 formData.append('password', password);
 
                 response = await api.post(endpoint, formData, {
@@ -75,73 +81,76 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
-                <div>
-                    <h2 className="auth-title">
-                        {isLogin ? 'Přihlaste se do svého účtu' : 'Vytvořte si nový účet'}
-                    </h2>
-                </div>
+        <div className="auth-page">
+            <Navbar />
+            <div className="auth-container">
+                <div className="auth-card">
+                    <div>
+                        <h2 className="auth-title">
+                            {isLogin ? 'Přihlaste se do svého účtu' : 'Vytvořte si nový účet'}
+                        </h2>
+                    </div>
 
-                {error && <div className="auth-alert-error">{error}</div>}
-                {successMessage && <div className="auth-alert-success">{successMessage}</div>}
+                    {error && <div className="auth-alert-error">{error}</div>}
+                    {successMessage && <div className="auth-alert-success">{successMessage}</div>}
 
-                <form className="auth-form" onSubmit={handleSubmit}>
-                    <div className="auth-fields">
-                        <div className="auth-field-group">
-                            <label className="auth-label">Uživatelské jméno</label>
-                            <input
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="auth-input"
-                                placeholder=""
-                            />
-                        </div>
-                        <div className="auth-field-group">
-                            <label className="auth-label">Heslo</label>
-                            <div className="password-input-container">
+                    <form className="auth-form" onSubmit={handleSubmit}>
+                        <div className="auth-fields">
+                            <div className="auth-field-group">
+                                <label className="auth-label">E-mailová adresa</label>
                                 <input
-                                    type={showPassword ? 'text' : 'password'}
+                                    type="email"
                                     required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="auth-input"
-                                    placeholder="••••••••"
+                                    placeholder="vas@email.cz"
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="password-toggle-button"
-                                >
-                                    {showPassword ? '🙈' : '👁️'}
-                                </button>
+                            </div>
+                            <div className="auth-field-group">
+                                <label className="auth-label">Heslo</label>
+                                <div className="password-input-container">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="auth-input"
+                                        placeholder="••••••••"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="password-toggle-button"
+                                    >
+                                        {showPassword ? '🙈' : '👁️'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <button type="submit" disabled={loading} className="auth-button">
-                            {loading ? 'Zpracovávám...' : (isLogin ? 'Přihlásit se' : 'Zaregistrovat se')}
+                        <div>
+                            <button type="submit" disabled={loading} className="auth-button">
+                                {loading ? 'Zpracovávám...' : (isLogin ? 'Přihlásit se' : 'Zaregistrovat se')}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="auth-switch-container">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsLogin(!isLogin);
+                                setError(null);
+                                setSuccessMessage(null);
+                            }}
+                            className="auth-switch-button"
+                        >
+                            {isLogin
+                                ? 'Nemáte ještě účet? Zaregistrujte se'
+                                : 'Již máte účet? Přihlaste se'}
                         </button>
                     </div>
-                </form>
-
-                <div className="auth-switch-container">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setIsLogin(!isLogin);
-                            setError(null);
-                            setSuccessMessage(null);
-                        }}
-                        className="auth-switch-button"
-                    >
-                        {isLogin
-                            ? 'Nemáte ještě účet? Zaregistrujte se'
-                            : 'Již máte účet? Přihlaste se'}
-                    </button>
                 </div>
             </div>
         </div>

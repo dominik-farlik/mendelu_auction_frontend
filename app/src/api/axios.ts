@@ -9,13 +9,14 @@ const api = axios.create({
     },
 });
 
-// Volitelný interceptor: Globální odchytávání chyb (např. vypršená session / 401)
 api.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
         if (error.response && error.response.status === 401) {
-            // Zde můžete uživatele např. přesměrovat na přihlášení
-            console.warn('Neautorizovaný přístup, relace možná vypršela.');
+            const isLoginRoute = window.location.pathname.includes('/login');
+            if (!isLoginRoute) {
+                window.location.href = '/login?expired=true';
+            }
         }
         return Promise.reject(error);
     }

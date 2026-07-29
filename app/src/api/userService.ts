@@ -1,7 +1,8 @@
 import api from './axios';
+import type {Role} from "../types/role.ts";
 
 export interface RoleResponse {
-    name: string;
+    name: Role;
 }
 
 export interface UserResponse {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AxiosError } from 'axios';
 import api from '../../api/axios.ts';
 import './AuthForm.css';
@@ -21,7 +21,8 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
         return searchParams.get('expired') === 'true'
             ? 'Vaše přihlášení vypršelo. Prosím, přihlaste se znovu.'
             : null;
-    });    const [loading, setLoading] = useState<boolean>(false);
+    });
+    const [loading, setLoading] = useState<boolean>(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
 
@@ -38,7 +39,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
 
             if (isLogin) {
                 const formData = new URLSearchParams();
-                formData.append('username', email); // OAuth2 vzor vyžaduje klíč 'username', ale posíláme email
+                formData.append('username', email);
                 formData.append('password', password);
 
                 response = await api.post(endpoint, formData, {
@@ -81,7 +82,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
     };
 
     return (
-        <div className="auth-page">
+        <div className="hero">
             <Navbar />
             <div className="auth-container">
                 <div className="auth-card">
@@ -91,8 +92,8 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
                         </h2>
                     </div>
 
-                    {error && <div className="auth-alert-error">{error}</div>}
-                    {successMessage && <div className="auth-alert-success">{successMessage}</div>}
+                    {error && <div className="alert-error">{error}</div>}
+                    {successMessage && <div className="alert-success">{successMessage}</div>}
 
                     <form className="auth-form" onSubmit={handleSubmit}>
                         <div className="auth-fields">

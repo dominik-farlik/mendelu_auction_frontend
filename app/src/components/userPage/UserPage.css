@@ -8,7 +8,6 @@
     font-family: inherit;
 }
 
-/* Levá navigační část */
 .user-page-menu {
     display: flex;
     gap: 8px;
@@ -36,7 +35,6 @@
     border-color: #cbd5e0;
 }
 
-/* Styl pro aktivní záložku */
 .user-page-menu button.active {
     background-color: #ebf8ff;
     color: #3182ce;
@@ -44,7 +42,6 @@
     font-weight: 600;
 }
 
-/* Pravá obsahová část */
 .user-page-content {
     flex-grow: 1;
     background-color: #ffffff;
@@ -52,10 +49,42 @@
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    min-height: 400px;
 }
 
-/* Responzivita pro menší obrazovky */
+.user-page-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    min-width: 40%;
+}
+
+.user-page-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 40%;
+}
+
+.list-item {
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-page-title {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--mendelu-pef-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
 @media (max-width: 768px) {
     .user-page {
         flex-direction: column;

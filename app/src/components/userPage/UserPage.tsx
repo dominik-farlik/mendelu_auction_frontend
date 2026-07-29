@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
-import UserInfo from "./UserInfo.tsx";
-import GroupInfo from "./GroupInfo.tsx";
+import UserInfo from "./users/UserInfo.tsx";
+import GroupInfo from "./groups/GroupInfo.tsx";
 import UserAuctions from "./UserAuctions.tsx";
 import BidFollowAuctions from "./BidFollowAuctions.tsx";
 import Navbar from "../navbar/Navbar.tsx";
 import MenuButton from "./MenuButton.tsx";
 import './UserPage.css';
+import CreateGroup from "./groups/CreateGroup.tsx";
 
 export default function UserPage() {
     const { activeWindow } = useParams<{ activeWindow: string }>();
@@ -30,7 +31,7 @@ export default function UserPage() {
                     <MenuButton
                         title="Skupiny"
                         windowName="skupiny"
-                        active={currentWindow === "skupiny"}
+                        active={currentWindow === "skupiny" || currentWindow === "vytvorit-skupinu"}
                         handleTabChange={handleTabChange}
                     />
                     <MenuButton
@@ -49,6 +50,7 @@ export default function UserPage() {
                 <div className="user-page-content">
                     {currentWindow === "osobni-udaje" && <UserInfo />}
                     {currentWindow === "skupiny" && <GroupInfo />}
+                    {currentWindow === "vytvorit-skupinu" && <CreateGroup />}
                     {currentWindow === "moje-aukce" && <UserAuctions />}
                     {currentWindow === "moje-prihozy" && <BidFollowAuctions />}
                 </div>

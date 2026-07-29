@@ -7,14 +7,14 @@ import UserInput from "./UserInput.tsx";
 import { userService, type UserUpdate } from "../../../api/userService.ts";
 
 export default function UserInfo() {
-    const [user, setUser] = useState<UserUpdate & { username: string }>({
+    const [user, setUser] = useState<UserUpdate>({
         email: "",
         username: "",
         first_name: "",
         last_name: "",
     });
 
-    const [initialUser, setInitialUser] = useState<UserUpdate & { username: string }>({
+    const [initialUser, setInitialUser] = useState<UserUpdate>({
         email: "",
         username: "",
         first_name: "",
@@ -140,7 +140,7 @@ export default function UserInfo() {
                         label="Uživatelské jméno"
                         type="text"
                         name="username"
-                        value={user.username}
+                        value={user.username || undefined}
                         handleChange={handleChange}
                     />
                     <UserInput

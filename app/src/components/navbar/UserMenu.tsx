@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import api from '../../api/axios.ts';
 import './UserMenu.css';
 
@@ -11,6 +11,8 @@ type UserMenuProps = {
 export default function UserMenu({ username, onLogout }: UserMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -30,6 +32,8 @@ export default function UserMenu({ username, onLogout }: UserMenuProps) {
             }
         } catch (error) {
             console.error('Chyba při odhlašování:', error);
+        } finally {
+            navigate("/")
         }
     };
 

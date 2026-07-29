@@ -13,8 +13,13 @@ api.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
         if (error.response && error.response.status === 401) {
-            const isLoginRoute = window.location.pathname.includes('/login');
-            if (!isLoginRoute) {
+            const currentPath = window.location.pathname;
+            const isIgnoredRoute =
+                currentPath.includes('/login') ||
+                currentPath === '/' ||
+                error.config?.url?.includes('/auth/logout');
+
+            if (!isIgnoredRoute) {
                 window.location.href = '/login?expired=true';
             }
         }

@@ -13,12 +13,12 @@ export interface GroupResponse {
     created_at: string;
 }
 
-export const userService = {
+export const groupService = {
     /**
      * Vrátí skupiny aktuálně přihlášeného uživatele
      */
-    async getCurrentUserGroups(): Promise<GroupResponse> {
-        const response = await api.get<GroupResponse>("/groups/my");
+    async getCurrentUserGroups(): Promise<Array<GroupResponse>> {
+        const response = await api.get<Array<GroupResponse>>("/groups/my");
         return response.data;
     },
 

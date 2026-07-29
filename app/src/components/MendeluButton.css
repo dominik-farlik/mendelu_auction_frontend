@@ -10,6 +10,11 @@
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
+    transition: background-color 0.5s;
+}
+
+.btn-create:hover {
+    background-color: var(--btn-color-hover);
 }
 
 .btn-create.large {

@@ -33,16 +33,16 @@ export default function Navbar() {
             </button>
 
             <div className={`nav-links ${isOpen ? 'active' : ''}`}>
-                <a href="#jak-to-funguje">Jak to funguje</a>
+                <a href="#jak-to-funguje" className="nav-link">Jak to funguje</a>
 
                 {isLoggedIn === true ? (
                     <UserMenu username={username} onLogout={() => setIsLoggedIn(false)} />
                 ) : isLoggedIn === false ? (
                     <>
-                        <Link to="/login">
+                        <Link to="/login" className="nav-link">
                             <span>Přihlásit se</span>
                         </Link>
-                        <Link to="/register">
+                        <Link to="/register" className="nav-link">
                             <span>Registrace</span>
                         </Link>
                     </>

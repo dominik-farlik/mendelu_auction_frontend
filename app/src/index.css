@@ -3,6 +3,7 @@
   --mendelu-pef-color-dark: #003270;
   --mendelu-pef-color-light: #5fd0f3;
   --btn-color: #007bff;
+  --btn-color-hover: #003270;
 
   --navbar-height: 70px;
 }
@@ -47,4 +48,12 @@ body {
   border-radius: 0.375rem;
   font-size: 0.875rem;
   color: #15803d;
+}
+
+.alert-info {
+  padding: 1rem;
+  background-color: #caecff;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--mendelu-pef-color);
 }

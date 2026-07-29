@@ -104,10 +104,6 @@ export default function UserInfo() {
         }
     };
 
-    if (loading) {
-        return <div>Načítání...</div>;
-    }
-
     return (
         <>
             <span className="user-page-title">Upravit profil</span>
@@ -132,6 +128,7 @@ export default function UserInfo() {
                     </div>
                 )}
 
+                {loading && <div className="alert-info">Načítání...</div>}
                 {error && <div className="alert-error">{error}</div>}
                 {successMessage && <div className="alert-success">{successMessage}</div>}
 

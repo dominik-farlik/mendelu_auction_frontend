@@ -23,13 +23,13 @@
     align-items: center;
 }
 
-.nav-links a {
+.nav-link {
     color: white;
     text-decoration: none;
     transition: opacity 0.2s;
 }
 
-.nav-links a:hover {
+.nav-link:hover {
     opacity: 0.8;
 }
 

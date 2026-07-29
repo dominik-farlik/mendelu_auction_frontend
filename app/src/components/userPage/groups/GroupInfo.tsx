@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import CreateButton from "../../CreateButton.tsx";
 import GroupList from "./GroupList.tsx";
 import {userService} from "../../../api/userService.ts";
@@ -23,21 +23,19 @@ export default function GroupInfo() {
             });
     }, []);
 
-    if (loading) {
-        return <div>Načítání skupin...</div>;
-    }
+    const handleSetError = useCallback((err: string | null) => {
+        setError(err);
+    }, []);
 
-    if (error) {
-        return <div style={{ color: "red" }}>{error}</div>;
-    }
-
-    const isManager = userRole === Role.Manager;
+    const handleSetLoading = useCallback((load: boolean) => {
+        setLoading(load);
+    }, []);
 
     return (
         <>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span className="user-page-title">Moje skupiny</span>
-                {isManager && (
+                {userRole === Role.Manager && (
                     <div style={ { display: "flex", justifyContent: "end" }}>
                         <CreateButton
                             title="Vytvořit skupinu"
@@ -48,9 +46,15 @@ export default function GroupInfo() {
                 )}
             </div>
             <div className="user-page-content-container">
-                <div className="user-page-items">
-                    <GroupList setError={setError} setLoading={setLoading}/>
-                </div>
+                {loading ? (
+                    <div className="alert-info">Načítání skupin...</div>
+                ) : error ? (
+                    <div className="alert-error">{error}</div>
+                ) : (
+                    <div className="user-page-items">
+                        <GroupList setError={handleSetError} setLoading={handleSetLoading} />
+                    </div>
+                )}
             </div>
         </>
     );

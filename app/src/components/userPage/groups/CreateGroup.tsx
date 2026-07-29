@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import UserInput from "../users/UserInput.tsx";
-import { userService, type GroupCreate } from "../../../api/groupService.ts";
+import {type GroupCreate, groupService} from "../../../api/groupService.ts";
 import SubmitButton from "../../SubmitButton.tsx";
 
 export default function CreateGroup() {
@@ -30,7 +30,7 @@ export default function CreateGroup() {
         setCreating(true);
 
         try {
-            await userService.createGroup({
+            await groupService.createGroup({
                 name: group.name,
                 organization: group.organization || null,
             });

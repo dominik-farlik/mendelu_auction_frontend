@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { type GroupResponse, groupService } from "../../../api/groupService.ts";
-import {formatDate} from "../../../helperFunctions/formatDate.ts";
+import { formatDate } from "../../../helperFunctions/formatDate.ts";
 
 type GroupListProps = {
     setError: (error: string | null) => void;
@@ -31,23 +31,34 @@ export default function GroupList({ setError, setLoading }: GroupListProps) {
                 <div className="alert-info">Zatím nejste členem žádné skupiny.</div>
             ) : (
                 <>
-                    <div className="bold-text" style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div className="item-col-fr">Název</div>
-                        <div className="item-col-fr">Organizace</div>
-                        <div className="item-col-fr">Datum vytvoření</div>
-                        <div className="item-col-fr">Manažer</div>
-                    </div>
                     <div className="list-container">
+                        <div className="list-header bold-text desktop-header">
+                            <div className="item-col-fr">Název</div>
+                            <div className="item-col-fr">Organizace</div>
+                            <div className="item-col-fr">Datum vytvoření</div>
+                            <div className="item-col-fr">Správce</div>
+                        </div>
+
                         {groups.map((group) => (
-                            <Link to={`/skupiny/${group.id}`} key={group.id} style={{ textDecoration: "none", color: "inherit" }}>
-                            <div className="list-item">
-                                <div className="item-col">{group.name}</div>
-                                {group.organization ?
-                                    (<div className="item-col">{group.organization}</div>) :
-                                    (<div className="item-col gray-italic-text">nezadáno</div>)}
-                                <div className="item-col">{formatDate(group.created_at)}</div>
-                                <div className="item-col">{`${group.manager.first_name} ${group.manager.last_name}`}</div>
-                            </div>
+                            <Link to={`/skupina/${group.id}`} key={group.id} style={{ textDecoration: "none", color: "inherit" }}>
+                                <div className="list-item">
+                                    <div className="item-col" data-label="Název:">
+                                        <strong>{group.name}</strong>
+                                    </div>
+                                    <div className="item-col" data-label="Organizace:">
+                                        {group.organization ? (
+                                            <span>{group.organization}</span>
+                                        ) : (
+                                            <span className="gray-italic-text">nezadáno</span>
+                                        )}
+                                    </div>
+                                    <div className="item-col" data-label="Datum vytvoření:">
+                                        {formatDate(group.created_at)}
+                                    </div>
+                                    <div className="item-col" data-label="Správce:">
+                                        {`${group.manager.first_name} ${group.manager.last_name}`}
+                                    </div>
+                                </div>
                             </Link>
                         ))}
                     </div>

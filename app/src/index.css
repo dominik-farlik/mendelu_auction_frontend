@@ -4,6 +4,7 @@
   --mendelu-pef-color-light: #5fd0f3;
   --btn-color: #007bff;
   --btn-color-hover: #003270;
+  --background-color: #f4f4f4;
 
   --navbar-height: 70px;
 }
@@ -31,6 +32,11 @@ body {
 .gray-italic-text{
   color: #9f9f9f;
   font-style: italic;
+}
+
+.page {
+  background-color: var(--background-color);
+  min-height: 100dvh;
 }
 
 .hero {

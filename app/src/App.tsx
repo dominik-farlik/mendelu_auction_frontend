@@ -4,6 +4,7 @@ import AuthForm from "./components/auth/AuthForm.tsx";
 import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
 import CreateAuction from "./components/createAuctionPage/CreateAuction.tsx";
 import UserPage from "./components/userPage/UserPage.tsx";
+import GroupPage from "./components/groupPage/GroupPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -25,12 +26,20 @@ const router = createBrowserRouter([
         element: <CreateAuction />
     },
     {
+        path: "/vytvorit-aukci/:groupId",
+        element: <CreateAuction />
+    },
+    {
         path: "/profil",
         element: <Navigate to="/profile/osobni-udaje" replace />
     },
     {
         path: "/profil/:activeWindow",
         element: <UserPage />
+    },
+    {
+        path: "/skupina/:groupId",
+        element: <GroupPage />
     }
 ]);
 

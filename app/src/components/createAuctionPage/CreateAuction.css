@@ -115,3 +115,9 @@
     cursor: not-allowed;
     opacity: 0.7;
 }
+
+@media (max-width: 768px) {
+    .auction-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}

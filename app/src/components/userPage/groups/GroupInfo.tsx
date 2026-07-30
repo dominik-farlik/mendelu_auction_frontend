@@ -33,8 +33,8 @@ export default function GroupInfo() {
 
     return (
         <>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span className="user-page-title">Moje skupiny</span>
+            <div className="user-page-title-container">
+                <div className="user-page-title">Moje skupiny</div>
                 {userRole === Role.Manager && (
                     <div style={ { display: "flex", justifyContent: "end" }}>
                         <CreateButton

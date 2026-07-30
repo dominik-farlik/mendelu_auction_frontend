@@ -18,7 +18,7 @@ export default function UserPage() {
     };
 
     return (
-        <>
+        <div className="page">
             <Navbar />
             <div className="user-page">
                 <div className="user-page-menu">
@@ -55,6 +55,6 @@ export default function UserPage() {
                     {currentWindow === "moje-prihozy" && <BidFollowAuctions />}
                 </div>
             </div>
-        </>
+        </div>
     );
 }

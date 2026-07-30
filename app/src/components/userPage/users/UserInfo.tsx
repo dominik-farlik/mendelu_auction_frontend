@@ -46,8 +46,7 @@ export default function UserInfo() {
                 setUser(formData);
                 setInitialUser(formData);
             })
-            .catch((err) => {
-                console.error("Chyba při načítání uživatele:", err);
+            .catch(() => {
                 setError("Nepodařilo se načíst uživatelská data.");
             })
             .finally(() => {

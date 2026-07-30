@@ -1,3 +1,5 @@
+import React from "react";
+
 type UserInputProps = {
     label: string,
     type: string,

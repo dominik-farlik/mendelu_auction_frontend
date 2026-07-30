@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CreateAuction.css';
 import Navbar from "../navbar/Navbar.tsx";
+import { useParams } from "react-router-dom";
+import { type GroupResponse, groupService } from "../../api/groupService.ts";
+import type { AxiosError } from "axios";
 
 export default function CreateAuction() {
+    const { groupId } = useParams<{ groupId: string }>();
+    const [groups, setGroups] = useState<Array<GroupResponse>>([]);
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -13,22 +19,49 @@ export default function CreateAuction() {
         starts_at: '',
         ends_at: '',
         cover_image: '',
-        owner_id: ''
+        owner_id: '',
+        group: '',
     });
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+    useEffect(() => {
+        const id = Number(groupId);
+
+        // Načtení detailu skupiny a uživatelských skupin paralelně
+        Promise.all([
+            groupService.getGroupDetail(id),
+            groupService.getCurrentUserGroups()
+        ])
+            .then(([groupData, userGroups]) => {
+                setGroups(userGroups);
+                setFormData(prev => ({
+                    ...prev,
+                    group: groupData.name
+                }));
+            })
+            .catch(() => {
+                setError("Nepodařilo se načíst data pro aukci.");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [groupId]);
+
+    // Ošetření pro inputy, selecty i textarea současně
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = e.target;
+        const checked = (e.target as HTMLInputElement).checked;
+
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
@@ -44,21 +77,19 @@ export default function CreateAuction() {
         };
 
         try {
-            const response = await fetch('/api/products', {
+            await fetch('/api/products', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
             });
-
-            if (!response.ok) {
-                throw new Error('Při vytváření aukce došlo k chybě.');
-            }
-
             setSuccess(true);
         } catch (err) {
-            setError(err.message);
+            const error = err as AxiosError<{ detail?: string }>;
+            const errorMsg = error.response?.data?.detail || "Při vytváření aukce došlo k chybě.";
+            const strError = typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
+            setError(strError);
         } finally {
             setLoading(false);
         }
@@ -74,7 +105,22 @@ export default function CreateAuction() {
                 {success && <div className="auction-alert-success">Aukce byla úspěšně vytvořena!</div>}
 
                 <form onSubmit={handleSubmit} className="auction-form">
-                    {/* Název */}
+                    <div className="auction-field">
+                        <label className="auction-label">Skupina</label>
+                        <select
+                            name="group"
+                            required
+                            value={formData.group}
+                            onChange={handleChange}
+                            className="auction-input"
+                        >
+                            <option value="" disabled>Vyberte skupinu</option>
+                            {groups.map(group => (
+                                <option key={group.id} value={group.name}>{group.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="auction-field">
                         <label className="auction-label">Název produktu</label>
                         <input
@@ -88,19 +134,17 @@ export default function CreateAuction() {
                         />
                     </div>
 
-                    {/* Popis */}
                     <div className="auction-field">
                         <label className="auction-label">Popis</label>
                         <textarea
                             name="description"
-                            rows="3"
+                            rows={3}
                             value={formData.description}
                             onChange={handleChange}
                             className="auction-textarea"
                         />
                     </div>
 
-                    {/* Typ prodeje (SaleType) */}
                     <div className="auction-field">
                         <label className="auction-label">Typ prodeje</label>
                         <select
@@ -115,7 +159,6 @@ export default function CreateAuction() {
                         </select>
                     </div>
 
-                    {/* Ceny */}
                     <div className="auction-grid-2">
                         <div className="auction-field">
                             <label className="auction-label">Počáteční cena</label>
@@ -142,7 +185,6 @@ export default function CreateAuction() {
                         </div>
                     </div>
 
-                    {/* Termíny */}
                     <div className="auction-grid-2">
                         <div className="auction-field">
                             <label className="auction-label">Začátek aukce</label>
@@ -166,7 +208,6 @@ export default function CreateAuction() {
                         </div>
                     </div>
 
-                    {/* Obalový obrázek */}
                     <div className="auction-field">
                         <label className="auction-label">Obrázek (URL / Cesta)</label>
                         <input
@@ -179,7 +220,6 @@ export default function CreateAuction() {
                         />
                     </div>
 
-                    {/* ID Vlastníka */}
                     <div className="auction-field">
                         <label className="auction-label">ID Vlastníka (owner_id)</label>
                         <input
@@ -192,7 +232,6 @@ export default function CreateAuction() {
                         />
                     </div>
 
-                    {/* Big Preview */}
                     <div className="auction-checkbox-wrapper">
                         <input
                             type="checkbox"
@@ -207,7 +246,6 @@ export default function CreateAuction() {
                         </label>
                     </div>
 
-                    {/* Tlačítko odeslat */}
                     <button
                         type="submit"
                         disabled={loading}

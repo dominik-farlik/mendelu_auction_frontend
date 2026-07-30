@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { AxiosError } from 'axios';
-import api from '../../api/axios.ts';
 import './AuthForm.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from "../navbar/Navbar.tsx";
+import { type UserCreate, userService } from "../../api/userService.ts";
 
 interface AuthFormProps {
     defaultIsLogin?: boolean;
@@ -14,8 +14,12 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
     const [searchParams] = useSearchParams();
 
     const [isLogin, setIsLogin] = useState<boolean>(defaultIsLogin);
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const [user, setUser] = useState<UserCreate>({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+    });
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(() => {
         return searchParams.get('expired') === 'true'
@@ -25,57 +29,57 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setUser((prev) => ({ ...prev, [name]: value }));
+        setError(null);
+        setSuccessMessage(null);
+    };
 
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
         setSuccessMessage(null);
+
+        if (!user.email || !user.password) {
+            setError("Vyplňte prosím e-mail a heslo.");
+            return;
+        }
+
+        if (!isLogin && (!user.first_name || !user.last_name)) {
+            setError("Pro registraci vyplňte prosím jméno a příjmení.");
+            return;
+        }
+
         setLoading(true);
 
-        const endpoint = isLogin ? '/auth/login' : '/auth/register';
-
         try {
-            let response;
-
             if (isLogin) {
-                const formData = new URLSearchParams();
-                formData.append('username', email);
-                formData.append('password', password);
-
-                response = await api.post(endpoint, formData, {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                await userService.login({
+                    username: user.email,
+                    password: user.password,
                 });
+                navigate('/');
             } else {
-                response = await api.post(endpoint, {
-                    email,
-                    password,
-                });
-            }
+                const payload: UserCreate = {
+                    email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    username: user.username || null,
+                    password: user.password,
+                };
 
-            setSuccessMessage(
-                isLogin
-                    ? 'Přihlášení proběhlo úspěšně!'
-                    : 'Registrace proběhla úspěšně! Nyní se můžete přihlásit.'
-            );
+                await userService.createUser(payload);
 
-            if (isLogin) {
-                console.log('Přihlášení OK:', response.data);
-                setTimeout(() => {
-                    navigate('/');
-                }, 1000);
-            } else {
+                setSuccessMessage("Účet byl úspěšně vytvořen. Nyní se můžete přihlásit.");
                 setIsLogin(true);
+                setUser((prev) => ({ ...prev, password: "" }));
             }
         } catch (err) {
-            const axiosError = err as AxiosError<{ detail?: string }>;
-
-            const errorMessage =
-                axiosError.response?.data?.detail ||
-                'Něco se pokazilo. Zkuste to prosím znovu.';
-
-            setError(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
+            const error = err as AxiosError<{ detail?: string }>;
+            const errorMsg = error.response?.data?.detail || (isLogin ? "Chyba při přihlašování." : "Chyba při registraci.");
+            const strError = typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
+            setError(strError);
         } finally {
             setLoading(false);
         }
@@ -97,25 +101,53 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
 
                     <form className="auth-form" onSubmit={handleSubmit}>
                         <div className="auth-fields">
+                            {!isLogin &&
+                                <>
+                                    <div className="auth-field-group">
+                                        <label className="auth-label">Jméno*</label>
+                                        <input
+                                            type="text"
+                                            name="first_name"
+                                            required={!isLogin}
+                                            value={user.first_name}
+                                            onChange={handleChange}
+                                            className="auth-input"
+                                        />
+                                    </div>
+                                    <div className="auth-field-group">
+                                        <label className="auth-label">Příjmení*</label>
+                                        <input
+                                            type="text"
+                                            name="last_name"
+                                            required={!isLogin}
+                                            value={user.last_name}
+                                            onChange={handleChange}
+                                            className="auth-input"
+                                        />
+                                    </div>
+                                </>
+                            }
                             <div className="auth-field-group">
-                                <label className="auth-label">E-mailová adresa</label>
+                                <label className="auth-label">E-mailová adresa*</label>
                                 <input
                                     type="email"
+                                    name="email"
                                     required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={user.email}
+                                    onChange={handleChange}
                                     className="auth-input"
                                     placeholder="vas@email.cz"
                                 />
                             </div>
                             <div className="auth-field-group">
-                                <label className="auth-label">Heslo</label>
+                                <label className="auth-label">Heslo*</label>
                                 <div className="password-input-container">
                                     <input
                                         type={showPassword ? 'text' : 'password'}
+                                        name="password"
                                         required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
+                                        value={user.password}
+                                        onChange={handleChange}
                                         className="auth-input"
                                         placeholder="••••••••"
                                     />

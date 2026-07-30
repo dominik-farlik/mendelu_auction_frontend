@@ -2,7 +2,7 @@ import React from 'react';
 
 interface Identifiable {
     id: number;
-    [key: string]: unknown;
+    [key: string]: any;
 }
 
 type ListProps<T extends Identifiable> = {

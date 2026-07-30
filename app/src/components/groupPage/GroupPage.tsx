@@ -16,9 +16,8 @@ export default function GroupPage() {
             .then((data) => {
                 setGroup(data);
             })
-            .catch((err) => {
-                console.error("Chyba při načítání skupin:", err);
-                setError("Nepodařilo se načíst vaše skupiny.");
+            .catch(() => {
+                setError("Nepodařilo se načíst skupinu.");
             })
             .finally(() => {
                 setLoading(false);

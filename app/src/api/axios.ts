@@ -16,6 +16,7 @@ api.interceptors.response.use(
             const currentPath = window.location.pathname;
             const isIgnoredRoute =
                 currentPath.includes('/login') ||
+                currentPath.includes('/register') ||
                 currentPath === '/' ||
                 error.config?.url?.includes('/auth/logout');
 

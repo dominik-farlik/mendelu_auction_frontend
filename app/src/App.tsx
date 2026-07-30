@@ -2,7 +2,7 @@ import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import HomePage from "./components/homePage/HomePage.tsx";
 import AuthForm from "./components/auth/AuthForm.tsx";
 import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
-import CreateAuction from "./components/createAuction/CreateAuction.tsx";
+import CreateAuction from "./components/createAuctionPage/CreateAuction.tsx";
 import UserPage from "./components/userPage/UserPage.tsx";
 
 const router = createBrowserRouter([

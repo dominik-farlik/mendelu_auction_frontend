@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {Link} from "react-router-dom";
 import { type GroupResponse, groupService } from "../../../api/groupService.ts";
+import {formatDate} from "../../../helperFunctions/formatDate.ts";
 
 type GroupListProps = {
     setError: (error: string | null) => void;
@@ -9,8 +10,6 @@ type GroupListProps = {
 
 export default function GroupList({ setError, setLoading }: GroupListProps) {
     const [groups, setGroups] = useState<Array<GroupResponse>>([]);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         groupService.getCurrentUserGroups()
@@ -29,21 +28,30 @@ export default function GroupList({ setError, setLoading }: GroupListProps) {
     return (
         <>
             {groups.length === 0 ? (
-                <p style={{ marginTop: "20px", color: "#6c757d" }}>Zatím nejste členem žádné skupiny.</p>
+                <div className="alert-info">Zatím nejste členem žádné skupiny.</div>
             ) : (
-                <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
-                    {groups.map((group) => (
-                        <li key={group.id} className="list-item">
-                            <span>{group.name}</span>
-                            <button
-                                onClick={() => navigate(`/skupiny/${group.id}`)}
-                                style={{ padding: "5px 10px", background: "#6c757d", color: "white", border: "none", borderRadius: "3px", cursor: "pointer" }}
-                            >
-                                Detail
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                <>
+                    <div className="bold-text" style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div className="item-col-fr">Název</div>
+                        <div className="item-col-fr">Organizace</div>
+                        <div className="item-col-fr">Datum vytvoření</div>
+                        <div className="item-col-fr">Manažer</div>
+                    </div>
+                    <div className="list-container">
+                        {groups.map((group) => (
+                            <Link to={`/skupiny/${group.id}`} key={group.id} style={{ textDecoration: "none", color: "inherit" }}>
+                            <div className="list-item">
+                                <div className="item-col">{group.name}</div>
+                                {group.organization ?
+                                    (<div className="item-col">{group.organization}</div>) :
+                                    (<div className="item-col gray-italic-text">nezadáno</div>)}
+                                <div className="item-col">{formatDate(group.created_at)}</div>
+                                <div className="item-col">{`${group.manager.first_name} ${group.manager.last_name}`}</div>
+                            </div>
+                            </Link>
+                        ))}
+                    </div>
+                </>
             )}
         </>
     );

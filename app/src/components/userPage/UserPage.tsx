@@ -29,13 +29,13 @@ export default function UserPage() {
                         handleTabChange={handleTabChange}
                     />
                     <MenuButton
-                        title="Skupiny"
+                        title="Moje skupiny"
                         windowName="skupiny"
                         active={currentWindow === "skupiny" || currentWindow === "vytvorit-skupinu"}
                         handleTabChange={handleTabChange}
                     />
                     <MenuButton
-                        title="Moje aukce"
+                        title="Vytvořené aukce"
                         windowName="moje-aukce"
                         active={currentWindow === "moje-aukce"}
                         handleTabChange={handleTabChange}

@@ -21,6 +21,12 @@ export interface UserUpdate {
     username?: string | null;
 }
 
+export interface ManagerResponse {
+    id: number;
+    first_name: string;
+    last_name: string;
+}
+
 export const userService = {
     /**
      * Vrátí profil aktuálně přihlášeného uživatele (GET /users/me)

@@ -137,7 +137,7 @@ export default function UserInfo() {
                         label="Uživatelské jméno"
                         type="text"
                         name="username"
-                        value={user.username || undefined}
+                        value={user.username || ""}
                         handleChange={handleChange}
                     />
                     <UserInput

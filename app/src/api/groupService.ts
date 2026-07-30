@@ -1,4 +1,5 @@
 import api from './axios';
+import type {ManagerResponse} from "./userService.ts";
 
 export interface GroupCreate {
     name: string;
@@ -9,7 +10,7 @@ export interface GroupResponse {
     id: number;
     name: string;
     organization?: string | null;
-    manager_id: number;
+    manager: ManagerResponse;
     created_at: string;
 }
 

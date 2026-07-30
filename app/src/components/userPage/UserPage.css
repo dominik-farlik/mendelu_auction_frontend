@@ -66,14 +66,41 @@
     min-width: 40%;
 }
 
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .list-item {
-    padding: 12px;
+    padding: 12px 0;
     border: 1px solid #dee2e6;
-    margin-bottom: 8px;
     border-radius: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.list-item:hover {
+    background-color: #ebf6ff;
+}
+
+.item-col {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.item-col-fr {
+    flex: 1;
+    display: flex;
+    justify-content: center;
 }
 
 .user-page-title {

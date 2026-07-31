@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import api from '../../api/axios.ts';
 import './UserMenu.css';
+import {Role} from "../../types/role.ts";
+import {fetchUserRole} from "../../utils/role.ts";
 
 type UserMenuProps = {
     username: string | null;
@@ -11,10 +13,13 @@ type UserMenuProps = {
 export default function UserMenu({ username, onLogout }: UserMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const [userRole, setUserRole] = useState<Role>(Role.Viewer);
 
     const navigate = useNavigate();
 
     useEffect(() => {
+        fetchUserRole().then((role) => setUserRole(role));
+
         function handleClickOutside(event: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -75,15 +80,14 @@ export default function UserMenu({ username, onLogout }: UserMenuProps) {
                         <Link to="/profil/moje-prihozy" onClick={() => setIsOpen(false)}>
                             Přihozeno a sledováno
                         </Link>
-                        <Link to="/profil/moje-aukce" onClick={() => setIsOpen(false)}>
-                            Založené aukce
-                        </Link>
                         <Link to="/profil/UserAuctions" onClick={() => setIsOpen(false)}>
                             Moje výhry
                         </Link>
-                        <Link to="/profil/skupiny" onClick={() => setIsOpen(false)}>
-                            Skupiny
-                        </Link>
+                        {(userRole === Role.Editor || userRole === Role.Manager) &&
+                            <Link to="/profil/skupiny" onClick={() => setIsOpen(false)}>
+                                Skupiny
+                            </Link>
+                        }
                     </div>
                     <div className="user-dropdown-footer">
                         <button

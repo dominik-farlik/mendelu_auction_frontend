@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { type GroupResponse, groupService } from "../../../api/groupService.ts";
-import { formatDate } from "../../../helperFunctions/formatDate.ts";
+import { formatDate } from "../../../utils/formatDate.ts";
 
 type GroupListProps = {
     setError: (error: string | null) => void;

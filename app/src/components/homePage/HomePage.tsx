@@ -4,12 +4,12 @@ import ActiveAuctions from "./activeAuctions/ActiveAuctions.tsx";
 
 export default function HomePage() {
     return (
-        <>
+        <div className="page">
             <div className="hero">
                 <Navbar />
                 <MainAuctions />
             </div>
             <ActiveAuctions />
-        </>
+        </div>
     )
 }

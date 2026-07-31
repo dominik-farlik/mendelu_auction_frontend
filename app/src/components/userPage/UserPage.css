@@ -1,11 +1,10 @@
 .user-page {
     display: flex;
     flex-direction: column;
-    max-width: 75vw;
-    margin: 40px auto;
-    padding: 0 20px;
+    padding: 25px 15vw;
     gap: 30px;
     font-family: inherit;
+    max-width: 100%;
 }
 
 .user-page-menu {
@@ -134,9 +133,9 @@
 
     .user-page {
         flex-direction: column;
-        margin: 10px auto;
         gap: 20px;
         max-width: 100%;
+        padding: 25px 10px;
     }
 
     .user-page-menu {

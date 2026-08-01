@@ -1,5 +1,5 @@
 import { userService } from "../api/userService.ts";
-import { Role } from "../types/role.ts";
+import { Role } from "../types/user.ts";
 
 export async function fetchUserRole(): Promise<Role> {
     try {

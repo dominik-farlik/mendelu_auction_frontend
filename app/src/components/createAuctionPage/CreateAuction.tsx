@@ -3,7 +3,9 @@ import './CreateAuction.css';
 import Navbar from "../navbar/Navbar.tsx";
 import { useParams } from "react-router-dom";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
+import { productService } from "../../api/productService.ts";
+import {SaleType} from "../../types/product.ts";
 
 export default function CreateAuction() {
     const { groupId } = useParams<{ groupId: string }>();
@@ -12,16 +14,17 @@ export default function CreateAuction() {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        sale_type: 'auction',
+        sale_type: SaleType.Auction,
         big_preview: false,
         starting_price: '',
         buy_now_price: '',
         starts_at: '',
         ends_at: '',
-        cover_image: '',
-        owner_id: '',
-        group: '',
+        group_id: groupId ? Number(groupId) : '',
     });
+
+    const [coverImage, setCoverImage] = useState<File | null>(null);
+    const [additionalImages, setAdditionalImages] = useState<FileList | null>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -30,27 +33,21 @@ export default function CreateAuction() {
     useEffect(() => {
         const id = Number(groupId);
 
-        // Načtení detailu skupiny a uživatelských skupin paralelně
-        Promise.all([
-            groupService.getGroupDetail(id),
-            groupService.getCurrentUserGroups()
-        ])
-            .then(([groupData, userGroups]) => {
+        groupService.getCurrentUserGroups()
+            .then((userGroups) => {
                 setGroups(userGroups);
-                setFormData(prev => ({
-                    ...prev,
-                    group: groupData.name
-                }));
+                if (id) {
+                    setFormData(prev => ({ ...prev, group_id: id }));
+                }
             })
             .catch(() => {
-                setError("Nepodařilo se načíst data pro aukci.");
+                setError("Nepodařilo se načíst uživatelské skupiny.");
             })
             .finally(() => {
                 setLoading(false);
             });
     }, [groupId]);
 
-    // Ošetření pro inputy, selecty i textarea současně
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
@@ -61,29 +58,43 @@ export default function CreateAuction() {
         }));
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setCoverImage(e.target.files[0]);
+        }
+    };
+
+    const handleMultipleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setAdditionalImages(e.target.files);
+        }
+    };
+
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
         setSuccess(false);
 
-        const payload = {
-            ...formData,
+        const productPayload = {
+            title: formData.title,
+            description: formData.description || null,
+            sale_type: formData.sale_type,
+            big_preview: formData.big_preview,
             starting_price: parseFloat(formData.starting_price),
             buy_now_price: formData.buy_now_price ? parseFloat(formData.buy_now_price) : null,
-            owner_id: parseInt(formData.owner_id, 10),
             starts_at: formData.starts_at ? new Date(formData.starts_at).toISOString() : null,
             ends_at: formData.ends_at ? new Date(formData.ends_at).toISOString() : null,
+            group_id: Number(formData.group_id),
         };
 
         try {
-            await fetch('/api/products', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+            await productService.createAuction(
+                productPayload,
+                coverImage,
+                additionalImages
+            );
+
             setSuccess(true);
         } catch (err) {
             const error = err as AxiosError<{ detail?: string }>;
@@ -108,15 +119,15 @@ export default function CreateAuction() {
                     <div className="auction-field">
                         <label className="auction-label">Skupina</label>
                         <select
-                            name="group"
+                            name="group_id"
                             required
-                            value={formData.group}
+                            value={formData.group_id}
                             onChange={handleChange}
                             className="auction-input"
                         >
                             <option value="" disabled>Vyberte skupinu</option>
                             {groups.map(group => (
-                                <option key={group.id} value={group.name}>{group.name}</option>
+                                <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
                         </select>
                     </div>
@@ -153,9 +164,9 @@ export default function CreateAuction() {
                             onChange={handleChange}
                             className="auction-select"
                         >
-                            <option value="auction">Aukce</option>
-                            <option value="buy_now">Kup teď</option>
-                            <option value="both">Obojí</option>
+                            <option value={SaleType.Auction}>Aukce</option>
+                            <option value={SaleType.BuyNow}>Kup teď</option>
+                            <option value={SaleType.Both}>Obojí</option>
                         </select>
                     </div>
 
@@ -209,25 +220,22 @@ export default function CreateAuction() {
                     </div>
 
                     <div className="auction-field">
-                        <label className="auction-label">Obrázek (URL / Cesta)</label>
+                        <label className="auction-label">Hlavní obrázek (Cover Image)</label>
                         <input
-                            type="text"
-                            name="cover_image"
-                            maxLength={255}
-                            value={formData.cover_image}
-                            onChange={handleChange}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
                             className="auction-input"
                         />
                     </div>
 
                     <div className="auction-field">
-                        <label className="auction-label">ID Vlastníka (owner_id)</label>
+                        <label className="auction-label">Další obrázky (Galerie)</label>
                         <input
-                            type="number"
-                            name="owner_id"
-                            required
-                            value={formData.owner_id}
-                            onChange={handleChange}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleMultipleFilesChange}
                             className="auction-input"
                         />
                     </div>

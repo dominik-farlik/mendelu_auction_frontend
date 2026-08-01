@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import CreateButton from "../../CreateButton.tsx";
 import GroupList from "./GroupList.tsx";
 import {userService} from "../../../api/userService.ts";
-import {Role} from "../../../types/role.ts";
+import {Role} from "../../../types/user.ts";
 
 export default function GroupInfo() {
     const [userRole, setUserRole] = useState<Role | null>(null);

@@ -1,5 +1,5 @@
 import api from './axios';
-import type {Role} from "../types/role.ts";
+import type {Role} from "../types/user.ts";
 
 export interface RoleResponse {
     name: Role;
@@ -56,7 +56,7 @@ export const userService = {
         return response.data;
     },
 
-    async login(credentials: UserLogin): Promise<any> {
+    async login(credentials: UserLogin): Promise<{message: string}> {
         const formData = new URLSearchParams();
         formData.append('username', credentials.username);
         formData.append('password', credentials.password);

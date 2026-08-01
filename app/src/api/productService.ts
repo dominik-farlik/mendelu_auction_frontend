@@ -1,35 +1,68 @@
 import api from './axios';
+import type { SaleType, Status } from "../types/product.ts";
 
-// Typy prodeje podle vašeho Enum modelu
-export type SaleType = 'auction' | 'buy_now' | 'both';
-
-// Rozhraní pro produkt
-export interface Product {
-    id: number;
-    title: string;
-    description?: string | null;
-    starting_price?: number | null;
-    buy_now_price?: number | null;
-    cover_image?: string | null;
-    sale_type: SaleType;
-    starts_at: string;
-    ends_at: string;
-    owner_id: number;
+export interface ProductImageResponse {
+    filename: string;
 }
 
-// Data potřebná pro vytvoření nového produktu (bez ID, které generuje DB)
-export type ProductCreateInput = Omit<Product, 'id' | 'owner_id'>;
+export interface ProductResponse {
+    id: number;
+    title: string;
+    description?: string;
+    starting_price: number;
+    buy_now_price?: number;
+    cover_image?: string;
+    sale_type: SaleType;
+    big_preview: boolean;
+    starts_at: string;
+    ends_at: string;
+    created_by_id: number;
+    group_id: number;
+    created_at: string;
+    status: Status;
+    images: Array<ProductImageResponse>;
+}
+
+export interface ProductCreate {
+    title: string;
+    description?: string | null;
+    starting_price: number;
+    buy_now_price?: number | null;
+    sale_type: SaleType;
+    big_preview: boolean;
+    starts_at?: string | null;
+    ends_at?: string | null;
+    group_id: number;
+}
 
 export const productService = {
-    // GET: Získání seznamu produktů
-    async getProducts(): Promise<Product[]> {
-        const response = await api.get<Product[]>('/products/');
-        return response.data;
-    },
+    /**
+     * Vytvoří novou nabídku (aukci / kup teď)
+     */
+    async createAuction(
+        productData: ProductCreate,
+        coverImage: File | null,
+        additionalImages: FileList | null
+    ): Promise<ProductResponse> {
+        const data = new FormData();
+        data.append('product_data', JSON.stringify(productData));
 
-    // POST: Vytvoření nového produktu
-    async createProduct(productData: ProductCreateInput): Promise<Product> {
-        const response = await api.post<Product>('/products/', productData);
+        if (coverImage) {
+            data.append('cover_image', coverImage);
+        }
+
+        if (additionalImages) {
+            for (let i = 0; i < additionalImages.length; i++) {
+                data.append('additional_images', additionalImages[i]);
+            }
+        }
+
+        const response = await api.post<ProductResponse>('/products/', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
         return response.data;
     }
 };

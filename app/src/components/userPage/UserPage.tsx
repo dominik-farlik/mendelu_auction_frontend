@@ -8,7 +8,7 @@ import MenuButton from "./MenuButton.tsx";
 import './UserPage.css';
 import CreateGroup from "./groups/CreateGroup.tsx";
 import {useEffect, useState} from "react";
-import {Role} from "../../types/role.ts";
+import {Role} from "../../types/user.ts";
 import {fetchUserRole} from "../../utils/role.ts";
 
 export default function UserPage() {

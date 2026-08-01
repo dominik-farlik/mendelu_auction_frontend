@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import api from '../../api/axios.ts';
 import './UserMenu.css';
-import {Role} from "../../types/role.ts";
+import {Role} from "../../types/user.ts";
 import {fetchUserRole} from "../../utils/role.ts";
 
 type UserMenuProps = {

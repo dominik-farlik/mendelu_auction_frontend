@@ -72,5 +72,20 @@ export const productService = {
     async getActiveAuctions(): Promise<Array<ProductResponse>> {
         const response = await api.post<Array<ProductResponse>>('/products/');
         return response.data;
+    },
+
+    /**
+     * Získá seznam všech produktů pro danou skupinu.
+     * @param groupId ID skupiny
+     * @returns Pole produktů
+     */
+    async getGroupProducts(groupId: number): Promise<ProductResponse[]> {
+        try {
+            const response = await api.get<ProductResponse[]>(`/products/group/${groupId}/`);
+            return response.data;
+        } catch (error) {
+            console.error(`Chyba při načítání produktů pro skupinu ${groupId}:`, error);
+            throw error;
+        }
     }
 };

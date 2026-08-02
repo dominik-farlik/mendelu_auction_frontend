@@ -1,7 +1,8 @@
 import Navbar from "../../navbar/Navbar.tsx";
-import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
-import {type GroupResponse, groupService} from "../../../api/groupService.ts";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { type GroupResponse, groupService } from "../../../api/groupService.ts";
+import {type ProductResponse, productService} from "../../../api/productService.ts";
 import LinkButton from "../../LinkButton.tsx";
 import List from "../../List.tsx";
 import UserPageMenu from "../UserPageMenu.tsx";
@@ -11,23 +12,28 @@ import ActionButton from "../../ActionButton.tsx";
 export default function GroupDetail() {
     const { groupId } = useParams<{ groupId: string }>();
     const [group, setGroup] = useState<GroupResponse>();
+    const [products, setProducts] = useState<ProductResponse[]>([]); // Nový stav pro produkty
     const [showAddMember, setShowAddMember] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        groupService.getGroupDetail(Number(groupId))
-            .then((data) => {
-                setGroup(data);
+        Promise.all([
+            groupService.getGroupDetail(Number(groupId)),
+            productService.getGroupProducts(Number(groupId))
+        ])
+            .then(([groupData, productsData]) => {
+                setGroup(groupData);
+                setProducts(productsData);
             })
             .catch(() => {
-                setError("Nepodařilo se načíst skupinu.");
+                setError("Nepodařilo se načíst data skupiny.");
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, [groupId])
+    }, [groupId]);
 
     return (
         <div className="page">
@@ -43,7 +49,7 @@ export default function GroupDetail() {
                     <div className="user-page-content">
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div className="user-page-title">{group.name}</div>
-                            <div style={ { display: "flex", justifyContent: "end", gap: "10px" }}>
+                            <div style={{ display: "flex", justifyContent: "end", gap: "10px" }}>
                                 <LinkButton
                                     title="Vytvořit aukci"
                                     link={`/vytvorit-aukci/${groupId}`}
@@ -68,16 +74,29 @@ export default function GroupDetail() {
 
                         <div className="user-page-content-container">
                             {loading ? (
-                                <div className="alert-info">Načítání skupin...</div>
+                                <div className="alert-info">Načítání skupiny...</div>
                             ) : (
                                 <div className="user-page-items">
                                     <span>Organizace: {group.organization}</span>
                                     <span>Manažer: {group.manager.first_name} {group.manager.last_name}</span>
+
                                     <span>Členové:</span>
                                     <List items={group.members}
                                           renderItem={(member) => (
                                               <>
                                                   <div className="item-col">{member.first_name} {member.last_name}</div>
+                                              </>
+                                          )}
+                                    />
+
+                                    {/* Nový výpis produktů pod sebou */}
+                                    <span style={{ marginTop: "20px", display: "block" }}>Produkty:</span>
+                                    <List items={products}
+                                          renderItem={(product) => (
+                                              <>
+                                                  <div className="item-col"><strong>{product.title}</strong></div>
+                                                  <div className="item-col">Vyvolávací cena: {product.starting_price} Kč</div>
+                                                  <div className="item-col">Stav: {product.status}</div>
                                               </>
                                           )}
                                     />

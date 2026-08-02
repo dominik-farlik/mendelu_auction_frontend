@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useBlocker } from "react-router-dom";
 import type { AxiosError } from "axios";
-import "./UserInfo.css";
+import "./UserDetail.css";
 import SubmitButton from "../../SubmitButton.tsx";
-import UserInput from "./UserInput.tsx";
+import FormInput from "../../FormInput.tsx";
 import { userService, type UserUpdate } from "../../../api/userService.ts";
 
-export default function UserInfo() {
+export default function UserDetail() {
     const [user, setUser] = useState<UserUpdate>({
         email: "",
         username: "",
@@ -132,14 +132,14 @@ export default function UserInfo() {
                 {successMessage && <div className="alert-success">{successMessage}</div>}
 
                 <form onSubmit={handleSubmit} className="user-page-items">
-                    <UserInput
+                    <FormInput
                         label="Uživatelské jméno"
                         type="text"
                         name="username"
                         value={user.username || ""}
                         handleChange={handleChange}
                     />
-                    <UserInput
+                    <FormInput
                         label="E-mail*"
                         type="email"
                         name="email"
@@ -147,7 +147,7 @@ export default function UserInfo() {
                         handleChange={handleChange}
                         required={true}
                     />
-                    <UserInput
+                    <FormInput
                         label="Jméno*"
                         type="text"
                         name="first_name"
@@ -155,7 +155,7 @@ export default function UserInfo() {
                         handleChange={handleChange}
                         required={true}
                     />
-                    <UserInput
+                    <FormInput
                         label="Příjmení*"
                         type="text"
                         name="last_name"

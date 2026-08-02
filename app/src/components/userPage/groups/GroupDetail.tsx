@@ -1,11 +1,12 @@
-import Navbar from "../navbar/Navbar.tsx";
+import Navbar from "../../navbar/Navbar.tsx";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {type GroupResponse, groupService} from "../../api/groupService.ts";
-import CreateButton from "../CreateButton.tsx";
-import List from "../List.tsx";
+import {type GroupResponse, groupService} from "../../../api/groupService.ts";
+import CreateButton from "../../CreateButton.tsx";
+import List from "../../List.tsx";
+import UserPageMenu from "../UserPageMenu.tsx";
 
-export default function GroupPage() {
+export default function GroupDetail() {
     const { groupId } = useParams<{ groupId: string }>();
     const [group, setGroup] = useState<GroupResponse>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -29,6 +30,8 @@ export default function GroupPage() {
             <Navbar />
 
             <div className="user-page">
+                <UserPageMenu currentWindow={"skupiny"} />
+
                 {error && <div className="alert-error">{error}</div>}
                 {loading && <div className="alert-info">Načítání informací o skupině</div>}
 
@@ -36,10 +39,15 @@ export default function GroupPage() {
                     <div className="user-page-content">
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <span className="user-page-title">{group.name}</span>
-                            <div style={ { display: "flex", justifyContent: "end" }}>
+                            <div style={ { display: "flex", justifyContent: "end", gap: "10px" }}>
                                 <CreateButton
                                     title="Vytvořit aukci"
                                     link={`/vytvorit-aukci/${groupId}`}
+                                    size="medium"
+                                />
+                                <CreateButton
+                                    title="Přidat člena"
+                                    link={`/pridat-clena/${groupId}`}
                                     size="medium"
                                 />
                             </div>

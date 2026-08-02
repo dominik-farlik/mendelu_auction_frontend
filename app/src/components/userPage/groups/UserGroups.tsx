@@ -4,7 +4,7 @@ import GroupList from "./GroupList.tsx";
 import {userService} from "../../../api/userService.ts";
 import {Role} from "../../../types/user.ts";
 
-export default function GroupInfo() {
+export default function UserGroups() {
     const [userRole, setUserRole] = useState<Role | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);

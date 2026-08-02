@@ -9,7 +9,7 @@ type UserInputProps = {
     required?: boolean,
 }
 
-export default function UserInput({ label, type, value, name, handleChange, required = false }: UserInputProps) {
+export default function FormInput({ label, type, value, name, handleChange, required = false }: UserInputProps) {
     return (
         <div className="form-group">
             <label>{label}</label>

@@ -4,7 +4,7 @@ import AuthForm from "./components/auth/AuthForm.tsx";
 import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
 import CreateAuction from "./components/createAuctionPage/CreateAuction.tsx";
 import UserPage from "./components/userPage/UserPage.tsx";
-import GroupPage from "./components/groupPage/GroupPage.tsx";
+import GroupDetail from "./components/userPage/groups/GroupDetail.tsx";
 
 const router = createBrowserRouter([
     {
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/skupina/:groupId",
-        element: <GroupPage />
+        element: <GroupDetail />
     }
 ]);
 

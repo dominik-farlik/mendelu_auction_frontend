@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import UserInput from "../users/UserInput.tsx";
+import FormInput from "../../FormInput.tsx";
 import {type GroupCreate, groupService} from "../../../api/groupService.ts";
 import SubmitButton from "../../SubmitButton.tsx";
 
@@ -55,7 +55,7 @@ export default function CreateGroup() {
 
                 <div className="user-page-title">Vytvořit novou skupinu</div>
                 <form onSubmit={handleSubmit} className="user-page-items">
-                    <UserInput
+                    <FormInput
                         label="Název skupiny*"
                         type="text"
                         name="name"
@@ -63,7 +63,7 @@ export default function CreateGroup() {
                         handleChange={handleChange}
                         required={true}
                     />
-                    <UserInput
+                    <FormInput
                         label="Organizace"
                         type="text"
                         name="organization"

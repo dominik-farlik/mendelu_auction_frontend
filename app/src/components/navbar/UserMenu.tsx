@@ -75,19 +75,19 @@ export default function UserMenu({ username, onLogout }: UserMenuProps) {
                     </div>
                     <div className="user-dropdown-links">
                         <Link to="/profil/osobni-udaje" onClick={() => setIsOpen(false)}>
-                            Můj účet
-                        </Link>
-                        <Link to="/profil/moje-prihozy" onClick={() => setIsOpen(false)}>
-                            Přihozeno a sledováno
-                        </Link>
-                        <Link to="/profil/UserAuctions" onClick={() => setIsOpen(false)}>
-                            Moje výhry
+                            Účet
                         </Link>
                         {(userRole === Role.Editor || userRole === Role.Manager) &&
                             <Link to="/profil/skupiny" onClick={() => setIsOpen(false)}>
                                 Skupiny
                             </Link>
                         }
+                        <Link to="/profil/moje-prihozy" onClick={() => setIsOpen(false)}>
+                            Přihozeno a sledováno
+                        </Link>
+                        <Link to="/profil/moje-prihozy" onClick={() => setIsOpen(false)}>
+                            Výhry
+                        </Link>
                     </div>
                     <div className="user-dropdown-footer">
                         <button

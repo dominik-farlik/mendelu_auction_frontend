@@ -37,7 +37,7 @@ export interface ProductCreate {
 
 export const productService = {
     /**
-     * Vytvoří novou nabídku (aukci / kup teď)
+     * Vytvoří novou nabídku
      */
     async createAuction(
         productData: ProductCreate,
@@ -63,6 +63,14 @@ export const productService = {
             },
         });
 
+        return response.data;
+    },
+
+    /**
+     * Vrátí všechny aktivní nabídky
+     */
+    async getActiveAuctions(): Promise<Array<ProductResponse>> {
+        const response = await api.post<Array<ProductResponse>>('/products/');
         return response.data;
     }
 };

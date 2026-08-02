@@ -33,6 +33,14 @@ export const groupService = {
     },
 
     /**
+     * Přidá člena do skupiny
+     */
+    async addGroupMember(groupId: number, memberData: { email: string }): Promise<{message: string}> {
+        const response = await api.post<{message: string}>(`/groups/${groupId}/members`, memberData);
+        return response.data;
+    },
+
+    /**
      * Vrátí detail a členy skupiny podle ID
      */
     async getGroupDetail(groupId: number): Promise<GroupResponse> {

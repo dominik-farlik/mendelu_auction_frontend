@@ -2,13 +2,13 @@ import mendelu_icon from '../assets/Mendelu_symbol_white.png';
 import './MendeluButton.css';
 import {Link} from "react-router-dom";
 
-type CreateButtonProps = {
+type LinkButtonProps = {
     title: string;
     link: string;
     size: string;
 }
 
-export default function CreateButton({ title, link, size }: CreateButtonProps) {
+export default function LinkButton({ title, link, size }: LinkButtonProps) {
     return(
         <Link to={link}>
         <div className={`btn-create${size ? ` ${size}` : ""}`}>

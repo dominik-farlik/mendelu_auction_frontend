@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import CreateButton from "../../CreateButton.tsx";
+import LinkButton from "../../LinkButton.tsx";
 import GroupList from "./GroupList.tsx";
 import {userService} from "../../../api/userService.ts";
 import {Role} from "../../../types/user.ts";
@@ -37,7 +37,7 @@ export default function UserGroups() {
                 <div className="user-page-title">Moje skupiny</div>
                 {userRole === Role.Manager && (
                     <div style={ { display: "flex", justifyContent: "end" }}>
-                        <CreateButton
+                        <LinkButton
                             title="Vytvořit skupinu"
                             link="/profil/vytvorit-skupinu"
                             size="medium"

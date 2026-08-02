@@ -105,7 +105,7 @@ export default function UserDetail() {
 
     return (
         <>
-            <span className="user-page-title">Upravit profil</span>
+            <div className="user-page-title">Upravit profil</div>
             <div className="user-page-content-container">
                 {blocker.state === "blocked" && (
                     <div>

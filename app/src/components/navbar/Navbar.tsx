@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import mendelu_logo from '../../assets/Mendelova_univerzita_logo_white.png';
 import './Navbar.css';
-import CreateButton from "../CreateButton.tsx";
+import LinkButton from "../LinkButton.tsx";
 import {Link, useLocation} from "react-router-dom";
 import api from '../../api/axios.ts';
 import UserMenu from "./UserMenu.tsx";
@@ -54,7 +54,7 @@ export default function Navbar() {
                             </>
                         )}
 
-                        <CreateButton title="Vytvořit aukci" link="/vytvorit-aukci" size="large"/>
+                        <LinkButton title="Vytvořit aukci" link="/vytvorit-aukci" size="large"/>
                     </div>
                 </>
             )}

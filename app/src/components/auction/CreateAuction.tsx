@@ -17,6 +17,7 @@ export default function CreateAuction() {
         sale_type: SaleType.Auction,
         big_preview: false,
         starting_price: '',
+        min_bid: '',
         buy_now_price: '',
         starts_at: '',
         ends_at: '',
@@ -83,6 +84,7 @@ export default function CreateAuction() {
             sale_type: formData.sale_type,
             big_preview: formData.big_preview,
             starting_price: parseFloat(formData.starting_price),
+            min_bid: formData.min_bid ? parseFloat(formData.buy_now_price) : null,
             buy_now_price: formData.buy_now_price ? parseFloat(formData.buy_now_price) : null,
             starts_at: formData.starts_at ? new Date(formData.starts_at).toISOString() : null,
             ends_at: formData.ends_at ? new Date(formData.ends_at).toISOString() : null,
@@ -172,12 +174,12 @@ export default function CreateAuction() {
                         </select>
                     </div>
 
-                    <div className="auction-grid-2">
+                    <div className="auction-grid-3">
                         <div className="auction-field">
                             <label className="auction-label">Počáteční cena</label>
                             <input
                                 type="number"
-                                step="0.01"
+                                step="10"
                                 name="starting_price"
                                 required
                                 value={formData.starting_price}
@@ -186,10 +188,22 @@ export default function CreateAuction() {
                             />
                         </div>
                         <div className="auction-field">
+                            <label className="auction-label">Minimální příhoz</label>
+                            <input
+                                type="number"
+                                step="1"
+                                name="min_bid"
+                                required
+                                value={formData.min_bid}
+                                onChange={handleChange}
+                                className="auction-input"
+                            />
+                        </div>
+                        <div className="auction-field">
                             <label className="auction-label">Cena Kup teď (nepovinné)</label>
                             <input
                                 type="number"
-                                step="0.01"
+                                step="100"
                                 name="buy_now_price"
                                 value={formData.buy_now_price}
                                 onChange={handleChange}

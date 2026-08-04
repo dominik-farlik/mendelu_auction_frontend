@@ -42,7 +42,7 @@ export default function AuctionDetail() {
                     <div className="auction-detail-info-container">
                         <span className="auction-detail-title">{product.title}</span>
                         <span className="">Výtěžek aukce obdrží: {product.group.organization}</span>
-                        <BidWindow />
+                        <BidWindow product={product}/>
                     </div>
                     <div className="auction-detail-image-container">
                         <img src={`${import.meta.env.VITE_IMAGES_URL}/${product.cover_image}`} alt="Hlavní obrázek nabídky"/>
@@ -54,8 +54,14 @@ export default function AuctionDetail() {
                     </div>
                 </div>
             </div>
-            <div>Popis</div>
-            <div>Historie příhozů</div>
+            <div>
+                <div className="description-container">
+                    <div>Popis</div>
+                </div>
+                <div>
+                    <div>Historie příhozů</div>
+                </div>
+            </div>
         </div>
     )
 }

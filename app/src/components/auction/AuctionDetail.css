@@ -9,6 +9,7 @@
     width: 100%;
     margin: 40px auto; /* Vycentrování na střed stránky */
     padding: 0 20px;
+    box-sizing: border-box;
 }
 
 /* Levý sloupec: Informace o produktu a okno pro příhozy */
@@ -16,7 +17,7 @@
     flex: 1; /* Zabere poměrnou část prostoru */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     max-width: 550px;
 }
 
@@ -91,8 +92,11 @@
 
     .auction-detail-info-container,
     .auction-detail-image-container {
-        max-width: 100%;
-        width: 100%;
+
+    }
+
+    .auction-detail-image-container {
+        order: -1;
     }
 
     .large-text {

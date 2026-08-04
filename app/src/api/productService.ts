@@ -11,6 +11,7 @@ export interface ProductResponse {
     description?: string;
     starting_price: number;
     buy_now_price?: number;
+    min_bid?: number;
     cover_image?: string;
     sale_type: SaleType;
     big_preview: boolean;
@@ -28,6 +29,7 @@ export interface ProductCreate {
     description?: string | null;
     starting_price: number;
     buy_now_price?: number | null;
+    min_bid?: number | null;
     sale_type: SaleType;
     big_preview: boolean;
     starts_at?: string | null;

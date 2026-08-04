@@ -75,6 +75,12 @@
     gap: 1rem;
 }
 
+.auction-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
 .auction-checkbox-wrapper {
     display: flex;
     align-items: center;
@@ -117,7 +123,8 @@
 }
 
 @media (max-width: 768px) {
-    .auction-grid-2 {
+    .auction-grid-2,
+    .auction-grid-3 {
         grid-template-columns: 1fr;
     }
 }

@@ -1,0 +1,61 @@
+import Navbar from "../navbar/Navbar.tsx";
+import {useEffect, useState} from "react";
+import {type ProductResponse, productService} from "../../api/productService.ts";
+import {useParams} from "react-router-dom";
+import "./AuctionDetail.css";
+import BidWindow from "./BidWindow.tsx";
+import {SaleType, Status} from "../../types/product.ts";
+
+export default function AuctionDetail() {
+    const { productId } = useParams<{ productId: string }>();
+    const [product, setProduct] = useState<ProductResponse>({
+        big_preview: false,
+        buy_now_price: 0,
+        cover_image: "",
+        created_at: "",
+        created_by_id: 0,
+        ends_at: "",
+        id: 0,
+        images: [],
+        sale_type: SaleType.Auction,
+        starting_price: 0,
+        starts_at: "",
+        status: Status.Pending,
+        title: "",
+        description: "",
+        group: {
+            name: "",
+            organization: "",
+        }
+    })
+
+    useEffect(() => {
+        productService.getProductDetail(Number(productId))
+            .then((product) => setProduct(product))
+    }, [productId])
+
+    return (
+        <div className="page">
+            <div className="hero" style={{ backgroundColor: "var(--mendelu-pef-color-dark)", color: "white" }}>
+                <Navbar />
+                <div className="auction-detail-container">
+                    <div className="auction-detail-info-container">
+                        <span className="auction-detail-title">{product.title}</span>
+                        <span className="">Výtěžek aukce obdrží: {product.group.organization}</span>
+                        <BidWindow />
+                    </div>
+                    <div className="auction-detail-image-container">
+                        <img src={`${import.meta.env.VITE_IMAGES_URL}/${product.cover_image}`} alt="Hlavní obrázek nabídky"/>
+                        <div className="auction-detail-galery">
+                            {product.images.map((image, index) => (
+                                <img key={index} src={`${import.meta.env.VITE_IMAGES_URL}/${image.filename}`}  alt="Malý náhled produktu"/>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>Popis</div>
+            <div>Historie příhozů</div>
+        </div>
+    )
+}

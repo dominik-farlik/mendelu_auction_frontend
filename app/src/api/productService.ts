@@ -17,7 +17,7 @@ export interface ProductResponse {
     starts_at: string;
     ends_at: string;
     created_by_id: number;
-    group_id: number;
+    group: {name: string, organization: string};
     created_at: string;
     status: Status;
     images: Array<ProductImageResponse>;
@@ -75,7 +75,7 @@ export const productService = {
     },
 
     /**
-     * Získá seznam všech produktů pro danou skupinu.
+     * Vrátí seznam všech produktů pro danou skupinu.
      * @param groupId ID skupiny
      * @returns Pole produktů
      */
@@ -85,6 +85,21 @@ export const productService = {
             return response.data;
         } catch (error) {
             console.error(`Chyba při načítání produktů pro skupinu ${groupId}:`, error);
+            throw error;
+        }
+    },
+
+    /**
+     * Vrátí detail produktu podle ID.
+     * @param productId ID skupiny
+     * @returns Pole produktů
+     */
+    async getProductDetail(productId: number): Promise<ProductResponse> {
+        try {
+            const response = await api.get<ProductResponse>(`/products/${productId}/`);
+            return response.data;
+        } catch (error) {
+            console.error(`Chyba při načítání produktu ${productId}:`, error);
             throw error;
         }
     }

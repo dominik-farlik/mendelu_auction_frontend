@@ -1,0 +1,101 @@
+/* Základní obal pro detail aukce - omezí maximální šířku a vycentruje obsah */
+.auction-detail-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 60px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 40px auto; /* Vycentrování na střed stránky */
+    padding: 0 20px;
+}
+
+/* Levý sloupec: Informace o produktu a okno pro příhozy */
+.auction-detail-info-container {
+    flex: 1; /* Zabere poměrnou část prostoru */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 550px;
+}
+
+.auction-detail-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Stylizace pro organizaci (druhý span v kontejneru) */
+.auction-detail-info-container span:nth-of-type(2) {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+/* Pravý sloupec: Hlavní obrázek a galerie */
+.auction-detail-image-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Hlavní obrázek */
+.auction-detail-image-container > img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    background-color: var( --mendelu-pef-color-dark);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px 8px rgba(0, 0, 0, 0.15); /* Lehký stín pro hloubku */
+}
+
+/* Spodní galerie náhledů */
+.auction-detail-galery {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    width: 100%;
+    flex-wrap: wrap; /* Pokud bude obrázků hodně, zalamují se na další řádek */
+}
+
+.auction-detail-galery img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    background-color: var( --mendelu-pef-color-dark);
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.auction-detail-galery img:hover {
+    border-color: rgba(255, 255, 255, 0.5); /* Decentní efekt při najetí myší */
+}
+
+/*
+ * Responzivita pro menší obrazovky (tablety a mobily)
+ * Změní rozložení ze dvou sloupců pod sebe
+ */
+@media (max-width: 960px) {
+    .auction-detail-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .auction-detail-info-container,
+    .auction-detail-image-container {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .large-text {
+        font-size: 2.5rem;
+    }
+}

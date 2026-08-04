@@ -6,6 +6,7 @@ import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import { type AxiosError } from "axios";
 import { productService } from "../../api/productService.ts";
 import {SaleType} from "../../types/product.ts";
+import SubmitButton from "../SubmitButton.tsx";
 
 export default function CreateAuction() {
     const { groupId } = useParams<{ groupId: string }>();
@@ -253,14 +254,14 @@ export default function CreateAuction() {
                             Zobrazit jako velký náhled (big preview)
                         </label>
                     </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="auction-submit-btn"
-                    >
-                        {loading ? 'Ukládá se...' : 'Vytvořit aukci'}
-                    </button>
+                    <div style={{ display: 'flex', justifyContent: 'end' }}>
+                        <SubmitButton
+                            title={loading ? 'Ukládá se...' : 'Vytvořit aukci'}
+                            size="large"
+                            disabled={loading}
+                            cursor={loading ? 'not-allowed' : 'pointer'}
+                        />
+                    </div>
                 </form>
             </div>
         </>

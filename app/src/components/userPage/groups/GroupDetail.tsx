@@ -1,5 +1,5 @@
 import Navbar from "../../navbar/Navbar.tsx";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { type GroupResponse, groupService } from "../../../api/groupService.ts";
 import {type ProductResponse, productService} from "../../../api/productService.ts";
@@ -12,7 +12,7 @@ import ActionButton from "../../ActionButton.tsx";
 export default function GroupDetail() {
     const { groupId } = useParams<{ groupId: string }>();
     const [group, setGroup] = useState<GroupResponse>();
-    const [products, setProducts] = useState<ProductResponse[]>([]); // Nový stav pro produkty
+    const [products, setProducts] = useState<ProductResponse[]>([]);
     const [showAddMember, setShowAddMember] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -89,17 +89,23 @@ export default function GroupDetail() {
                                           )}
                                     />
 
-                                    {/* Nový výpis produktů pod sebou */}
-                                    <span style={{ marginTop: "20px", display: "block" }}>Produkty:</span>
-                                    <List items={products}
-                                          renderItem={(product) => (
-                                              <>
-                                                  <div className="item-col"><strong>{product.title}</strong></div>
-                                                  <div className="item-col">Vyvolávací cena: {product.starting_price} Kč</div>
-                                                  <div className="item-col">Stav: {product.status}</div>
-                                              </>
-                                          )}
-                                    />
+                                    <span style={{ marginTop: "20px", display: "block" }}>Vytvořené nabídky:</span>
+
+                                    {products.length === 0 && <div className="alert-info">Zatím nebyla ve skupině přidána žádná nabídka.</div> }
+
+                                    {products.map(product => (
+                                        <Link
+                                            to={`/aukce/detail/${product.id}`}
+                                            key={product.id}
+                                            style={{textDecoration: "none", color: "inherit",}}
+                                        >
+                                            <div className="list-item">
+                                                <div className="item-col"><strong>{product.title}</strong></div>
+                                                <div className="item-col">Vyvolávací cena: {product.starting_price} Kč</div>
+                                                <div className="item-col">Stav: {product.status}</div>
+                                            </div>
+                                        </Link>
+                                    ))}
                                 </div>
                             )}
                         </div>

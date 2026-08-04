@@ -1,0 +1,177 @@
+/* HLAVNÍ KARTA */
+.bid-window-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    color: #1a1a24;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    max-width: 500px;
+    width: 100%;
+    /* Jemný stín, aby karta "vystoupila" z tmavého pozadí */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* HORNÍ NAVIGACE A SLEDOVÁNÍ */
+.bid-window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.bid-tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tab-btn.active {
+    color: #1a1a24;
+    border-bottom: 2px solid #1a1a24;
+}
+
+.tab-btn.inactive {
+    color: #9e9ea7;
+}
+
+.follow-btn {
+    background-color: #212130;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.follow-btn:hover {
+    background-color: #323246;
+}
+
+/* BOX S CENOU A ODPOČTEM */
+.bid-price-box {
+    background-color: #f7f7f9;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.bid-price-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.price-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #555562;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.timer-badge {
+    background-color: #ff1f5a;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.price-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1a1a24;
+}
+
+/* SPODNÍ SEKCE PRO PŘÍHOZ */
+.action-tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.action-tab-btn {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+}
+
+.action-tab-btn.active {
+    color: #1a1a24;
+}
+
+.action-tab-btn.inactive {
+    color: #9e9ea7;
+}
+
+.bid-input-group {
+    display: flex;
+    height: 54px;
+}
+
+.bid-input-group input {
+    flex: 1;
+    border: 1px solid #e0e0e5;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    padding: 0 20px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: right; /* Zarovnání textu doprava dle obrázku */
+    outline: none;
+    color: #1a1a24;
+}
+
+.bid-input-group input:focus {
+    border-color: #1a1a24;
+}
+
+.submit-bid-btn {
+    background-color: #4ade80; /* Zelená barva tlačítka */
+    color: #064e3b;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 0 32px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.submit-bid-btn:hover {
+    background-color: #3cd070;
+}

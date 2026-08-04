@@ -2,9 +2,10 @@ import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import HomePage from "./components/homePage/HomePage.tsx";
 import AuthForm from "./components/auth/AuthForm.tsx";
 import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
-import CreateAuction from "./components/createAuctionPage/CreateAuction.tsx";
+import CreateAuction from "./components/auction/CreateAuction.tsx";
 import UserPage from "./components/userPage/UserPage.tsx";
 import GroupDetail from "./components/userPage/groups/GroupDetail.tsx";
+import AuctionDetail from "./components/auction/AuctionDetail.tsx";
 
 const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
     {
         path: "/skupina/:groupId",
         element: <GroupDetail />
+    },
+    {
+        path: "/aukce/detail/:productId",
+        element: <AuctionDetail />
     }
 ]);
 

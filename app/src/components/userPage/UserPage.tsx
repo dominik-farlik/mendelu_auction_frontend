@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import UserDetail from "./users/UserDetail.tsx";
 import UserGroups from "./groups/UserGroups.tsx";
-import BidFollowAuctions from "./BidFollowAuctions.tsx";
+import BidFollowAuctions from "./bidOrFollow/BidFollowAuctions.tsx";
 import Navbar from "../navbar/Navbar.tsx";
 import './UserPage.css';
 import CreateGroup from "./groups/CreateGroup.tsx";

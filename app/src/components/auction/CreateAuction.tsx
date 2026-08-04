@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './CreateAuction.css';
 import Navbar from "../navbar/Navbar.tsx";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import { type AxiosError } from "axios";
 import { productService } from "../../api/productService.ts";
@@ -11,7 +11,6 @@ import SubmitButton from "../SubmitButton.tsx";
 export default function CreateAuction() {
     const { groupId } = useParams<{ groupId: string }>();
     const [groups, setGroups] = useState<Array<GroupResponse>>([]);
-
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -23,13 +22,14 @@ export default function CreateAuction() {
         ends_at: '',
         group_id: groupId ? Number(groupId) : '',
     });
-
     const [coverImage, setCoverImage] = useState<File | null>(null);
     const [additionalImages, setAdditionalImages] = useState<FileList | null>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const id = Number(groupId);
@@ -104,6 +104,7 @@ export default function CreateAuction() {
             setError(strError);
         } finally {
             setLoading(false);
+            navigate(`/skupina/${groupId}`);
         }
     };
 

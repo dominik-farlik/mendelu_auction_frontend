@@ -91,7 +91,7 @@ export default function GroupDetail() {
 
                                     <span style={{ marginTop: "20px", display: "block" }}>Vytvořené nabídky:</span>
 
-                                    {products.length === 0 && <div className="alert-info">Zatím nebyla ve skupině přidána žádná nabídka.</div> }
+                                    {products.length === 0 && <div className="alert-info">Ve vaší skupině nebyla přidána žádná nabídka.</div> }
 
                                     {products.map(product => (
                                         <Link

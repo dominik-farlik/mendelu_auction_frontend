@@ -1,5 +1,6 @@
 import api from './axios';
 import type { SaleType, Status } from "../types/product.ts";
+import type {UserResponse} from "./userService.ts";
 
 export interface ProductImageResponse {
     filename: string;
@@ -35,6 +36,11 @@ export interface ProductCreate {
     starts_at?: string | null;
     ends_at?: string | null;
     group_id: number;
+}
+
+export interface ProductBids {
+    bidder: UserResponse;
+    amount: number;
 }
 
 export const productService = {
@@ -102,6 +108,20 @@ export const productService = {
             return response.data;
         } catch (error) {
             console.error(`Chyba při načítání produktu ${productId}:`, error);
+            throw error;
+        }
+    },
+
+    /**
+     * @param productId ID skupiny
+     * @returns Pole příhozů produktu
+     */
+    async getProductBids(productId: number): Promise<ProductBids[]> {
+        try {
+            const response = await api.get<ProductBids[]>(`/products/${productId}/bids`);
+            return response.data;
+        } catch (error) {
+            console.error(`Chyba při načítání příhozů produktu ${productId}:`, error);
             throw error;
         }
     }

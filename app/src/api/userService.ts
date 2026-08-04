@@ -1,5 +1,6 @@
 import api from './axios';
 import type {Role} from "../types/user.ts";
+import type {ProductResponse} from "./productService.ts";
 
 export interface RoleResponse {
     name: Role;
@@ -68,4 +69,9 @@ export const userService = {
         });
         return response.data;
     },
+
+    async bid(productId: number, amount: number): Promise<{product: ProductResponse, amount: number}> {
+        const response = await api.post<{product: ProductResponse, amount: number}>(`users/bid/${productId}`, {"amount": amount});
+        return response.data;
+    }
 };

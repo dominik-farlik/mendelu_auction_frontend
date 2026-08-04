@@ -1,13 +1,32 @@
 import './BidWindow.css';
-import { useEffect, useState } from "react";
-import type { ProductResponse } from "../../api/productService.ts";
-import {Status} from "../../types/product.ts";
+import {useEffect, useState} from "react";
+import {type ProductBids, type ProductResponse, productService} from "../../api/productService.ts";
+import { Status } from "../../types/product.ts";
+import {userService} from "../../api/userService.ts";
 
-// Předpoklad existence těchto enumů podle tvého kódu
-// import { SaleType, Status } from "../../api/productService.ts";
-
-export default function BidWindow({ product }: {product: ProductResponse}) {
+export default function BidWindow({ product, bidsData }: { product: ProductResponse, bidsData: ProductBids[] }) {
     const [timeRemaining, setTimeRemaining] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const currentPrice = bidsData && bidsData.length > 0
+        ? Math.max(...bidsData.map(b => b.amount))
+        : product.starting_price;
+
+    const minNextBid = currentPrice + (product.min_bid || 0);
+
+    const [bidAmount, setBidAmount] = useState<number | "">(minNextBid);
+
+    useEffect(() => {
+        setBidAmount((prevBid) => {
+            // Only overwrite the input if it's empty, or if the user's
+            // current typed amount is no longer a valid (winning) bid.
+            if (prevBid === "" || prevBid < minNextBid) {
+                return minNextBid;
+            }
+            return prevBid;
+        });
+    }, [minNextBid]); // Depend on the calculated value, not just bidsData
 
     // Výpočet zbývajícího času do konce aukce
     useEffect(() => {
@@ -35,20 +54,40 @@ export default function BidWindow({ product }: {product: ProductResponse}) {
         };
 
         calculateTimeLeft();
-        const interval = setInterval(calculateTimeLeft, 60000); // Aktualizace každou minutu
+        const interval = setInterval(calculateTimeLeft, 60000);
 
         return () => clearInterval(interval);
     }, [product.ends_at]);
 
-    // Formátování ceny pro hezčí zobrazení (např. 1 000 Kč)
-    const formattedStartingPrice = product.starting_price?.toLocaleString('cs-CZ');
+    // Odeslání příhozu
+    const handleBidSubmit = async () => {
+        if (!bidAmount || bidAmount <= currentPrice) {
+            setError(`Příhoz musí být vyšší než ${minNextBid} Kč`);
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await userService.bid(product.id, Number(bidAmount));
+            await productService.getProductBids(product.id);
+            setBidAmount(""); // Vyčištění inputu
+            // Zde by ideálně mohla být i notifikace o úspěchu (např. toast)
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Došlo k chybě při příhozu.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const formattedCurrentPrice = currentPrice?.toLocaleString('cs-CZ');
 
     return (
         <div className="bid-window-card">
             {/* HORNÍ NAVIGACE A SLEDOVÁNÍ */}
             <div className="bid-window-header">
                 <div className="bid-tabs">
-                    {/* Tlačítka lze později přepínat na základě product.sale_type */}
                     <button className="tab-btn active">Aukce</button>
                     {product.buy_now_price && product.buy_now_price > 0 && (
                         <button className="tab-btn inactive">
@@ -60,11 +99,11 @@ export default function BidWindow({ product }: {product: ProductResponse}) {
                         </button>
                     )}
                 </div>
+                {/* Zde chybí endpoint pro sledování */}
                 <button className="follow-btn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M20 6 9 17l-5-5"/>
                     </svg>
-                    {/* Zde přijde logika, zda uživatel předmět sleduje */}
                     Sledovat aukci
                 </button>
             </div>
@@ -72,8 +111,9 @@ export default function BidWindow({ product }: {product: ProductResponse}) {
             {/* BOX S CENOU A ODPOČTEM */}
             <div className="bid-price-box">
                 <div className="bid-price-header">
-                    {/* Zde se později hodí rozlišovat STARTING PRICE vs CURRENT BID */}
-                    <span className="price-label">STARTOVACÍ CENA</span>
+                    <span className="price-label">
+                        {bidsData?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
+                    </span>
                     <div className="timer-badge">
                         {timeRemaining ? `Auction ${timeRemaining}` : "Loading..."}
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -83,7 +123,10 @@ export default function BidWindow({ product }: {product: ProductResponse}) {
                         </svg>
                     </div>
                 </div>
-                <h2 className="price-value">{formattedStartingPrice} Kč</h2>
+                <h2 className="price-value">{formattedCurrentPrice} Kč</h2>
+                <div className="bids-count">
+                    {bidsData?.length || 0} příhozů
+                </div>
             </div>
 
             {/* SPODNÍ SEKCE PRO PŘÍHOZ */}
@@ -101,25 +144,36 @@ export default function BidWindow({ product }: {product: ProductResponse}) {
                     </button>
                 </div>
 
+                {error && <div className="error-message" style={{color: 'red', fontSize: '14px', marginBottom: '10px'}}>{error}</div>}
+
                 <div className="bid-input-group">
-                    {/* Typ změněn na number pro bezpečnější input, hodnota napojena na starting_price jako placeholder */}
                     <input
                         type="number"
-                        defaultValue={product.starting_price}
-                        min={product.starting_price}
+                        value={bidAmount}
+                        onChange={(e) => setBidAmount(e.target.value === "" ? "" : Number(e.target.value))}
+                        min={minNextBid}
+                        placeholder={`Minimálně ${minNextBid} Kč`}
                     />
-                    <button className="submit-bid-btn" disabled={product.status !== Status.Pending}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8"></path>
-                            <path d="m16 16 6-6"></path>
-                            <path d="m8 8 6-6"></path>
-                            <path d="m9 7 8 8"></path>
-                            <path d="m21 11-8-8"></path>
-                        </svg>
-                        Přihodit
+                    <button
+                        className="submit-bid-btn"
+                        disabled={product.status !== Status.Pending || isLoading}
+                        onClick={handleBidSubmit}
+                    >
+                        {isLoading ? "Odesílám..." : (
+                            <>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8"></path>
+                                    <path d="m16 16 6-6"></path>
+                                    <path d="m8 8 6-6"></path>
+                                    <path d="m9 7 8 8"></path>
+                                    <path d="m21 11-8-8"></path>
+                                </svg>
+                                Přihodit
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
         </div>
-    )
+    );
 }

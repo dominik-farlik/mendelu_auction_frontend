@@ -1,10 +1,10 @@
-import {useEffect, useState} from "react";
-import "./TimerBadge.css";
-import {parseTimeDistance} from "../utils/formatDate.ts";
+import { useEffect, useState } from "react";
+import { parseTimeDistance } from "../utils/formatDate.ts";
 
 export default function TimerBadge({ endTime }: { endTime: string }) {
     const [timeRemaining, setTimeRemaining] = useState<string>("");
-    const [backgroundColor, setBackgroundColor] = useState<string>("");
+    // Místo konkrétní barvy ukládáme rovnou Tailwind třídu
+    const [colorClass, setColorClass] = useState<string>("bg-slate-900");
 
     useEffect(() => {
         const calculateTimeLeft = () => {
@@ -16,6 +16,7 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
 
             if (distance < 0) {
                 setTimeRemaining("Aukce skončila");
+                setColorClass("bg-gray-500"); // Pro skončenou aukci se hodí neutrální šedá
                 return;
             }
 
@@ -23,16 +24,16 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
 
             if (days > 1) {
                 setTimeRemaining(`Aukce končí za ${days} d`);
-                setBackgroundColor("black");
+                setColorClass("bg-slate-900");
             } else if (days > 0) {
                 setTimeRemaining(`Aukce končí za ${days} d ${hours} h`);
-                setBackgroundColor("black");
+                setColorClass("bg-slate-900");
             } else if (hours > 0) {
                 setTimeRemaining(`Aukce končí za ${hours} h ${minutes} m`);
-                setBackgroundColor("red");
+                setColorClass("bg-red-500");
             } else {
                 setTimeRemaining(`Aukce končí za ${minutes} m`);
-                setBackgroundColor("red");
+                setColorClass("bg-red-500 animate-pulse"); // U posledních minut můžeme přidat pulzování
             }
         };
 
@@ -43,8 +44,8 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
     }, [endTime]);
 
     return (
-        <div className="timer-badge" style={{ backgroundColor: backgroundColor }}>
-            {timeRemaining ? timeRemaining : "Loading..."}
+        <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-white tracking-wide shadow-sm transition-colors duration-300 ${colorClass}`}>
+            {timeRemaining ? timeRemaining : "Načítání..."}
         </div>
-    )
+    );
 }

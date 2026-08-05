@@ -16,18 +16,6 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  padding: 0;
-  color: var(--mendelu-pef-color-dark);
-  font-weight: 700;
-}
-
-h3 {
-  font-size: 1.5rem;
-  letter-spacing: -1px;
-}
-
 .large-text{
   font-size: clamp(2rem, 5vw, 5.2rem);
   font-weight: 800;

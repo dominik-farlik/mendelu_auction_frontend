@@ -13,7 +13,7 @@ export interface ProductResponse {
     starting_price: number;
     buy_now_price?: number;
     min_bid?: number;
-    cover_image?: string;
+    cover_image: string;
     sale_type: SaleType;
     big_preview: boolean;
     starts_at: string;

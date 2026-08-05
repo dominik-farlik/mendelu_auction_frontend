@@ -4,6 +4,7 @@ import {parseTimeDistance} from "../utils/formatDate.ts";
 
 export default function TimerBadge({ endTime }: { endTime: string }) {
     const [timeRemaining, setTimeRemaining] = useState<string>("");
+    const [backgroundColor, setBackgroundColor] = useState<string>("");
 
     useEffect(() => {
         const calculateTimeLeft = () => {
@@ -22,12 +23,16 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
 
             if (days > 1) {
                 setTimeRemaining(`Aukce končí za ${days} d`);
+                setBackgroundColor("black");
             } else if (days > 0) {
                 setTimeRemaining(`Aukce končí za ${days} d ${hours} h`);
+                setBackgroundColor("black");
             } else if (hours > 0) {
                 setTimeRemaining(`Aukce končí za ${hours} h ${minutes} m`);
+                setBackgroundColor("red");
             } else {
-                setTimeRemaining(`Aukce končí za ${hours} h ${minutes} m`);
+                setTimeRemaining(`Aukce končí za ${minutes} m`);
+                setBackgroundColor("red");
             }
         };
 
@@ -38,7 +43,7 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
     }, [endTime]);
 
     return (
-        <div className="timer-badge">
+        <div className="timer-badge" style={{ backgroundColor: backgroundColor }}>
             {timeRemaining ? timeRemaining : "Loading..."}
         </div>
     )

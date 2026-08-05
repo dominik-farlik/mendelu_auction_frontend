@@ -1,9 +1,10 @@
 import './BidWindow.css';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {type ProductBids, type ProductResponse} from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
 import {userService} from "../../api/userService.ts";
 import TimerBadge from "../TimerBadge.tsx";
+import type {AxiosError} from "axios";
 
 export default function BidWindow({ product, bidsData }: { product: ProductResponse, bidsData: ProductBids[] }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -16,15 +17,16 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
     const minNextBid = currentPrice + (product.min_bid || 0);
 
     const [bidAmount, setBidAmount] = useState<number | "">(minNextBid);
+    const [prevMinNextBid, setPrevMinNextBid] = useState<number>(minNextBid);
 
-    useEffect(() => {
-        setBidAmount((prevBid) => {
-            if (prevBid === "" || prevBid < minNextBid) {
-                return minNextBid;
-            }
-            return prevBid;
-        });
-    }, [minNextBid]);
+
+    if (minNextBid !== prevMinNextBid) {
+        setPrevMinNextBid(minNextBid);
+
+        if (bidAmount === "" || bidAmount < minNextBid) {
+            setBidAmount(minNextBid);
+        }
+    }
 
     const handleBidSubmit = async () => {
         if (!bidAmount || bidAmount < minNextBid) {
@@ -38,11 +40,10 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
         try {
             await userService.bid(product.id, Number(bidAmount));
 
-            setBidAmount("");
-
             // TIP: Zde přidejte toast notifikaci o úspěchu
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Došlo k chybě při příhozu.");
+        } catch (err) {
+            const error = err as AxiosError<{ detail?: string }>;
+            setError(error.response?.data?.detail || "Došlo k chybě při příhozu.");
         } finally {
             setIsLoading(false);
         }

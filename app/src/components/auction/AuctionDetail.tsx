@@ -30,17 +30,52 @@ export default function AuctionDetail() {
         }
     })
     const [bidsData, setBidsData] = useState<ProductBids[]>([]);
-    useEffect(() => {
-        productService.getProductDetail(Number(productId))
-            .then((product) => setProduct(product))
-    }, [productId])
 
     useEffect(() => {
-        productService.getProductBids(product.id)
-            .then((bids) => {
-                setBidsData(bids)
-            })
-    }, [product]);
+        productService.getProductDetail(Number(productId))
+            .then((data) => setProduct(data));
+
+        productService.getProductBids(Number(productId))
+            .then((bids) => setBidsData(bids));
+    }, [productId]);
+
+    useEffect(() => {
+        if (!productId) return;
+
+        const wsUrl = `${import.meta.env.VITE_WS_URL}/auctions/${productId}`;
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+            console.log("Připojeno k live aukci:", productId);
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'NEW_BID') {
+                const newBid: ProductBids = data.payload;
+
+                setBidsData((prevBids) => {
+                    const updatedBids = [newBid, ...prevBids];
+                    return updatedBids.sort((a, b) => b.amount - a.amount);
+                });
+            }
+
+            // Můžete přidat i event na změnu stavu aukce (např. "AUCTION_ENDED")
+            //if (data.type === 'AUCTION_ENDED') {
+            //    setProduct(prev => prev ? { ...prev, status: Status.Ended } : null);
+            //}
+        };
+
+        ws.onclose = () => {
+            console.log("Odpojeno od live aukce");
+        };
+
+        // Cleanup funkce při odchodu ze stránky
+        return () => {
+            ws.close();
+        };
+    }, [productId]);
 
     const calculateTimeLeft = (bid_time: string) => {
         if (!product.ends_at) return;

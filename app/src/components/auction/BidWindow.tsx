@@ -1,6 +1,6 @@
 import './BidWindow.css';
 import {useEffect, useState} from "react";
-import {type ProductBids, type ProductResponse, productService} from "../../api/productService.ts";
+import {type ProductBids, type ProductResponse} from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
 import {userService} from "../../api/userService.ts";
 
@@ -56,10 +56,9 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
         return () => clearInterval(interval);
     }, [product.ends_at]);
 
-    // Odeslání příhozu
     const handleBidSubmit = async () => {
-        if (!bidAmount || bidAmount <= minNextBid) {
-            setError(`Příhoz musí být vyšší než ${minNextBid} Kč`);
+        if (!bidAmount || bidAmount < minNextBid) {
+            setError(`Příhoz musí být alespoň ${minNextBid} Kč`);
             return;
         }
 
@@ -68,9 +67,10 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
 
         try {
             await userService.bid(product.id, Number(bidAmount));
-            await productService.getProductBids(product.id);
-            setBidAmount(""); // Vyčištění inputu
-            // Zde by ideálně mohla být i notifikace o úspěchu (např. toast)
+
+            setBidAmount("");
+
+            // TIP: Zde přidejte toast notifikaci o úspěchu
         } catch (err: any) {
             setError(err.response?.data?.message || "Došlo k chybě při příhozu.");
         } finally {

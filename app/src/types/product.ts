@@ -11,6 +11,7 @@ export const Status = {
     Pending: "pending",
     Approved: "approved",
     Canceled: "cancelled",
+    Ended: "ended",
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];

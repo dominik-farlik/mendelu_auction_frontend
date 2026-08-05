@@ -19,16 +19,13 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
 
     useEffect(() => {
         setBidAmount((prevBid) => {
-            // Only overwrite the input if it's empty, or if the user's
-            // current typed amount is no longer a valid (winning) bid.
             if (prevBid === "" || prevBid < minNextBid) {
                 return minNextBid;
             }
             return prevBid;
         });
-    }, [minNextBid]); // Depend on the calculated value, not just bidsData
+    }, [minNextBid]);
 
-    // Výpočet zbývajícího času do konce aukce
     useEffect(() => {
         const calculateTimeLeft = () => {
             if (!product.ends_at) return;
@@ -61,7 +58,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
 
     // Odeslání příhozu
     const handleBidSubmit = async () => {
-        if (!bidAmount || bidAmount <= currentPrice) {
+        if (!bidAmount || bidAmount <= minNextBid) {
             setError(`Příhoz musí být vyšší než ${minNextBid} Kč`);
             return;
         }
@@ -152,7 +149,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                         value={bidAmount}
                         onChange={(e) => setBidAmount(e.target.value === "" ? "" : Number(e.target.value))}
                         min={minNextBid}
-                        placeholder={`Minimálně ${minNextBid} Kč`}
+                        placeholder={`Minimálně ${minNextBid}`}
                     />
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                         <span style={{ position: "absolute", fontSize: "1.4rem", marginRight: "10px", marginBottom: "1px", pointerEvents: "none" }}>Kč</span>

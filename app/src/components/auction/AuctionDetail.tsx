@@ -5,6 +5,7 @@ import {useParams} from "react-router-dom";
 import "./AuctionDetail.css";
 import BidWindow from "./BidWindow.tsx";
 import {SaleType, Status} from "../../types/product.ts";
+import {formatDate} from "../../utils/formatDate.ts";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
@@ -41,6 +42,34 @@ export default function AuctionDetail() {
             })
     }, [product]);
 
+    const calculateTimeLeft = (bid_time: string) => {
+        if (!product.ends_at) return;
+
+        const bidTime = new Date(bid_time).getTime();
+        const now = new Date().getTime();
+        const distance = now - bidTime;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        if (days > 1) {
+            return `před ${days} dny`
+        } else if (days > 0) {
+            return `před ${days} dnem`
+        } else if (hours > 1) {
+            return `před ${hours} hodinami`
+        } else if (hours > 0) {
+            return `před ${hours} hodinou`
+        } else if (minutes > 1) {
+            return `před ${minutes} minutami`
+        } else if (minutes > 0) {
+            return `před ${minutes} minutou`
+        } else {
+            return "před několika sekundami"
+        }
+    };
+
     return (
         <div className="page">
             <div className="hero" style={{ backgroundColor: "var(--mendelu-pef-color-dark)", color: "white" }}>
@@ -63,14 +92,25 @@ export default function AuctionDetail() {
             </div>
             <div className="auction-detail-container">
                 <div className="description-container">
-                    <div>Popis</div>
+                    <div className="user-page-title">POPIS AUKCE</div>
+                    <div>Autor aukce: {product.group.name}</div>
+                    <div>Založeno: {formatDate(product.starts_at)}</div>
                     <div>{product.description}</div>
                 </div>
-                <div>
-                    <div>Historie příhozů ({bidsData?.length || 0})</div>
-                    <div>
+                <div className="bids-history-container">
+                    <div style={{ display: "flex", alignItems: "flex-end" }}>
+                        <div className="user-page-title">HISTORIE PŘÍHOZŮ</div>
+                        <div>({bidsData?.length || 0})</div>
+                    </div>
+                    <div className="bids-history-container">
                         {bidsData.map((bid, index) => (
-                            <div key={index}>{bid.bidder.first_name} {bid.bidder.last_name}, {bid.bid_time} {bid.amount} Kč</div>
+                            <div key={index} className="bids-history-row">
+                                <div style={{ display: "flex" }}>
+                                    <div>{bid.bidder.first_name}</div>
+                                    <div className="gray-italic-text">, {calculateTimeLeft(bid.bid_time)}</div>
+                                </div>
+                                <div className="bold-text">{bid.amount} Kč</div>
+                            </div>
                         ))}
                     </div>
                 </div>

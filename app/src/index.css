@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --mendelu-pef-color: #02449b;
   --mendelu-pef-color-dark: #003270;

@@ -19,7 +19,6 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
     const [bidAmount, setBidAmount] = useState<number | "">(minNextBid);
     const [prevMinNextBid, setPrevMinNextBid] = useState<number>(minNextBid);
 
-
     if (minNextBid !== prevMinNextBid) {
         setPrevMinNextBid(minNextBid);
 
@@ -30,24 +29,23 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
 
     const handleBidSubmit = async () => {
         if (!bidAmount || bidAmount < minNextBid) {
-            const errorMsg = `Příhoz musí být alespoň ${minNextBid} Kč`;
-            toast.error(errorMsg);
+            toast.error(`Příhoz musí být alespoň ${minNextBid} Kč`);
             return;
         }
 
         setIsLoading(true);
 
-        try {
-            await userService.bid(product.id, Number(bidAmount));
-            toast.success("Příhoz byl úspěšně zaznamenán!");
+        const bidPromise = userService.bid(product.id, Number(bidAmount))
+            .finally(() => setIsLoading(false));
 
-        } catch (err) {
-            const error = err as AxiosError<{ detail?: string }>;
-            const errorMsg = error.response?.data?.detail || "Došlo k chybě při příhozu.";
-            toast.error(errorMsg);
-        } finally {
-            setIsLoading(false);
-        }
+        await toast.promise(bidPromise, {
+            loading: "Zpracování příhozu...",
+            success: "Příhoz byl úspěšně zaznamenán!",
+            error: (err) => {
+                const axiosError = err as AxiosError<{ detail?: string }>;
+                return axiosError.response?.data?.detail || "Došlo k chybě při příhozu.";
+            }
+        });
     };
 
     const formattedCurrentPrice = currentPrice?.toLocaleString('cs-CZ');

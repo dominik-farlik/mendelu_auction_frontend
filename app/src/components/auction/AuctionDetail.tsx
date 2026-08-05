@@ -61,7 +61,7 @@ export default function AuctionDetail() {
                 });
             }
 
-            // Můžete přidat i event na změnu stavu aukce (např. "AUCTION_ENDED")
+            // TODO: přidat i event na změnu stavu aukce (např. "AUCTION_ENDED")
             //if (data.type === 'AUCTION_ENDED') {
             //    setProduct(prev => prev ? { ...prev, status: Status.Ended } : null);
             //}
@@ -71,7 +71,6 @@ export default function AuctionDetail() {
             console.log("Odpojeno od live aukce");
         };
 
-        // Cleanup funkce při odchodu ze stránky
         return () => {
             ws.close();
         };
@@ -127,14 +126,14 @@ export default function AuctionDetail() {
             </div>
             <div className="auction-detail-container">
                 <div className="description-container">
-                    <div className="user-page-title">POPIS AUKCE</div>
+                    <h3>POPIS AUKCE</h3>
                     <div>Autor aukce: {product.group.name}</div>
                     <div>Založeno: {formatDate(product.starts_at)}</div>
-                    <div>{product.description}</div>
+                    <div className="auction-description">{product.description}</div>
                 </div>
                 <div className="bids-history-container">
                     <div style={{ display: "flex", alignItems: "flex-end" }}>
-                        <div className="user-page-title">HISTORIE PŘÍHOZŮ</div>
+                        <h3>HISTORIE PŘÍHOZŮ</h3>
                         <div>({bidsData?.length || 0})</div>
                     </div>
                     <div className="bids-history-container">

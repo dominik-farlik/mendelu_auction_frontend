@@ -80,10 +80,16 @@
     width: 100%;
 }
 
+.auction-description {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #333;
+}
+
 .bids-history-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 8px;
     max-width: 486px;
     width: 100%;
 }
@@ -95,6 +101,7 @@
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid #e2e8f0;
+    font-size: 1.1rem;
 }
 
 @media (max-width: 960px) {

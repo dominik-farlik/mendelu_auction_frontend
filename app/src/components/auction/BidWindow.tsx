@@ -3,9 +3,9 @@ import {useEffect, useState} from "react";
 import {type ProductBids, type ProductResponse} from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
 import {userService} from "../../api/userService.ts";
+import TimerBadge from "../TimerBadge.tsx";
 
 export default function BidWindow({ product, bidsData }: { product: ProductResponse, bidsData: ProductBids[] }) {
-    const [timeRemaining, setTimeRemaining] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,36 +25,6 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
             return prevBid;
         });
     }, [minNextBid]);
-
-    useEffect(() => {
-        const calculateTimeLeft = () => {
-            if (!product.ends_at) return;
-
-            const endDate = new Date(product.ends_at).getTime();
-            const now = new Date().getTime();
-            const distance = endDate - now;
-
-            if (distance < 0) {
-                setTimeRemaining("Auction ended");
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-            if (days > 0) {
-                setTimeRemaining(`ends in ${days} d ${hours} h`);
-            } else {
-                setTimeRemaining(`ends in ${hours} h ${minutes} m`);
-            }
-        };
-
-        calculateTimeLeft();
-        const interval = setInterval(calculateTimeLeft, 60000);
-
-        return () => clearInterval(interval);
-    }, [product.ends_at]);
 
     const handleBidSubmit = async () => {
         if (!bidAmount || bidAmount < minNextBid) {
@@ -111,14 +81,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                     <span className="price-label">
                         {bidsData?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
                     </span>
-                    <div className="timer-badge">
-                        {timeRemaining ? `Auction ${timeRemaining}` : "Loading..."}
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                    </div>
+                    <TimerBadge endTime={product.ends_at}/>
                 </div>
                 <h2 className="price-value">{formattedCurrentPrice} Kč</h2>
                 <div className="bids-count">

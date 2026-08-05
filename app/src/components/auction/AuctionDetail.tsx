@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom";
 import "./AuctionDetail.css";
 import BidWindow from "./BidWindow.tsx";
 import {SaleType, Status} from "../../types/product.ts";
-import {formatDate} from "../../utils/formatDate.ts";
+import {formatDate, parseTimeDistance} from "../../utils/formatDate.ts";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
@@ -83,9 +83,7 @@ export default function AuctionDetail() {
         const now = new Date().getTime();
         const distance = now - bidTime;
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const { days, hours, minutes } = parseTimeDistance(distance);
 
         if (days > 1) {
             return `před ${days} dny`

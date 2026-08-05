@@ -23,3 +23,11 @@ export function formatDateAndTime(isoString: string) {
         minute: '2-digit',
     }).format(date);
 }
+
+export function parseTimeDistance(distance: number) {
+    return {
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+    }
+}

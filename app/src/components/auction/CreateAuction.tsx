@@ -6,7 +6,7 @@ import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import { type AxiosError } from "axios";
 import { productService } from "../../api/productService.ts";
 import {SaleType} from "../../types/product.ts";
-import SubmitButton from "../SubmitButton.tsx";
+import SubmitButton from "../buttons/SubmitButton.tsx";
 
 export default function CreateAuction() {
     const { groupId } = useParams<{ groupId: string }>();

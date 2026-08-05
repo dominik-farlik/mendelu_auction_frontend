@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import LinkButton from "../../LinkButton.tsx";
+import LinkButton from "../../buttons/LinkButton.tsx";
 import GroupList from "./GroupList.tsx";
 import {userService} from "../../../api/userService.ts";
 import {Role} from "../../../types/user.ts";

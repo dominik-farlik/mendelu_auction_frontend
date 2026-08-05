@@ -1,5 +1,5 @@
 import FormInput from "../../FormInput.tsx";
-import SubmitButton from "../../SubmitButton.tsx";
+import SubmitButton from "../../buttons/SubmitButton.tsx";
 import React from "react";
 import type {AxiosError} from "axios";
 import {groupService} from "../../../api/groupService.ts";

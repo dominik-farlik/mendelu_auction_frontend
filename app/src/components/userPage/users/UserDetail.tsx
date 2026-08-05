@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useBlocker } from "react-router-dom";
 import type { AxiosError } from "axios";
 import "./UserDetail.css";
-import SubmitButton from "../../SubmitButton.tsx";
+import SubmitButton from "../../buttons/SubmitButton.tsx";
 import FormInput from "../../FormInput.tsx";
 import { userService, type UserUpdate } from "../../../api/userService.ts";
 

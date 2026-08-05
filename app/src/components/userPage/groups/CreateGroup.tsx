@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../FormInput.tsx";
 import {type GroupCreate, groupService} from "../../../api/groupService.ts";
-import SubmitButton from "../../SubmitButton.tsx";
+import SubmitButton from "../../buttons/SubmitButton.tsx";
 
 export default function CreateGroup() {
     const [group, setGroup] = useState<GroupCreate>({

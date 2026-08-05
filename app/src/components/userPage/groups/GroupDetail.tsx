@@ -3,11 +3,11 @@ import {Link, useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { type GroupResponse, groupService } from "../../../api/groupService.ts";
 import {type ProductResponse, productService} from "../../../api/productService.ts";
-import LinkButton from "../../LinkButton.tsx";
+import LinkButton from "../../buttons/LinkButton.tsx";
 import List from "../../List.tsx";
 import UserPageMenu from "../UserPageMenu.tsx";
 import AddMember from "./AddMember.tsx";
-import ActionButton from "../../ActionButton.tsx";
+import ActionButton from "../../buttons/ActionButton.tsx";
 
 export default function GroupDetail() {
     const { groupId } = useParams<{ groupId: string }>();

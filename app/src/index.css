@@ -6,7 +6,6 @@
   --mendelu-pef-color-light: #5fd0f3;
   --btn-color: #007bff;
   --btn-color-hover: #003270;
-  --background-color: #f4f4f4;
 
   --navbar-height: 70px;
 }
@@ -36,7 +35,6 @@ body {
 }
 
 .page {
-  background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   min-height: 100dvh;

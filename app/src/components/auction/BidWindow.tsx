@@ -1,14 +1,14 @@
 import './BidWindow.css';
-import {useState} from "react";
-import {type ProductBids, type ProductResponse} from "../../api/productService.ts";
+import { useState } from "react";
+import { type ProductBids, type ProductResponse } from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
-import {userService} from "../../api/userService.ts";
+import { userService } from "../../api/userService.ts";
 import TimerBadge from "../TimerBadge.tsx";
-import type {AxiosError} from "axios";
+import type { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 export default function BidWindow({ product, bidsData }: { product: ProductResponse, bidsData: ProductBids[] }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
 
     const currentPrice = bidsData && bidsData.length > 0
         ? Math.max(...bidsData.map(b => b.amount))
@@ -30,20 +30,21 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
 
     const handleBidSubmit = async () => {
         if (!bidAmount || bidAmount < minNextBid) {
-            setError(`Příhoz musí být alespoň ${minNextBid} Kč`);
+            const errorMsg = `Příhoz musí být alespoň ${minNextBid} Kč`;
+            toast.error(errorMsg);
             return;
         }
 
         setIsLoading(true);
-        setError(null);
 
         try {
             await userService.bid(product.id, Number(bidAmount));
+            toast.success("Příhoz byl úspěšně zaznamenán!");
 
-            // TIP: Zde přidejte toast notifikaci o úspěchu
         } catch (err) {
             const error = err as AxiosError<{ detail?: string }>;
-            setError(error.response?.data?.detail || "Došlo k chybě při příhozu.");
+            const errorMsg = error.response?.data?.detail || "Došlo k chybě při příhozu.";
+            toast.error(errorMsg);
         } finally {
             setIsLoading(false);
         }
@@ -104,8 +105,6 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                         Přihodit teď
                     </button>
                 </div>
-
-                {error && <div className="error-message" style={{color: 'red', fontSize: '14px', marginBottom: '10px'}}>{error}</div>}
 
                 <div className="bid-input-group">
                     <input

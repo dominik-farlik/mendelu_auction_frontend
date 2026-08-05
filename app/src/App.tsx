@@ -6,6 +6,7 @@ import CreateAuction from "./components/auction/CreateAuction.tsx";
 import UserPage from "./components/userPage/UserPage.tsx";
 import GroupDetail from "./components/userPage/groups/GroupDetail.tsx";
 import AuctionDetail from "./components/auction/AuctionDetail.tsx";
+import {Toaster} from "react-hot-toast";
 
 const router = createBrowserRouter([
     {
@@ -49,7 +50,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <>
+            <RouterProvider router={router}/>
+            <Toaster position="top-right"/>
+        </>
+    )
 }
 
 export default App;

@@ -41,6 +41,7 @@ export interface ProductCreate {
 export interface ProductBids {
     bidder: UserResponse;
     amount: number;
+    bid_time: string;
 }
 
 export const productService = {

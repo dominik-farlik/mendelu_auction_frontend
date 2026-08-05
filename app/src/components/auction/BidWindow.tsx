@@ -125,7 +125,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                 </div>
                 <h2 className="price-value">{formattedCurrentPrice} Kč</h2>
                 <div className="bids-count">
-                    {bidsData?.length || 0} příhozů
+
                 </div>
             </div>
 
@@ -154,6 +154,10 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                         min={minNextBid}
                         placeholder={`Minimálně ${minNextBid} Kč`}
                     />
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                        <span style={{ position: "absolute", fontSize: "1.4rem", marginRight: "10px", marginBottom: "1px", pointerEvents: "none" }}>Kč</span>
+                    </div>
+
                     <button
                         className="submit-bid-btn"
                         disabled={product.status !== Status.Pending || isLoading}

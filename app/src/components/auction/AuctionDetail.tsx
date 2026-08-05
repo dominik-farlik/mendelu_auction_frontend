@@ -67,10 +67,10 @@ export default function AuctionDetail() {
                     <div>{product.description}</div>
                 </div>
                 <div>
-                    <div>Historie příhozů</div>
+                    <div>Historie příhozů ({bidsData?.length || 0})</div>
                     <div>
                         {bidsData.map((bid, index) => (
-                            <div key={index}>{bid.bidder.first_name} {bid.bidder.last_name} {bid.amount} Kč</div>
+                            <div key={index}>{bid.bidder.first_name} {bid.bidder.last_name}, {bid.bid_time} {bid.amount} Kč</div>
                         ))}
                     </div>
                 </div>

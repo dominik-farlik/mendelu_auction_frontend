@@ -24,6 +24,7 @@ export interface ProductResponse {
     status: Status;
     is_followed?: boolean;
     images: Array<ProductImageResponse>;
+    bids: Array<ProductBids>;
 }
 
 export interface ProductCreate {
@@ -80,7 +81,7 @@ export const productService = {
      * Vrátí všechny aktivní nabídky
      */
     async getActiveAuctions(): Promise<Array<ProductResponse>> {
-        const response = await api.post<Array<ProductResponse>>('/products/');
+        const response = await api.get<Array<ProductResponse>>('/products/');
         return response.data;
     },
 

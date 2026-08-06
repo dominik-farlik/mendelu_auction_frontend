@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type ProductBids, type ProductResponse } from "../../api/productService.ts";
+import { type ProductResponse } from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
 import { userService } from "../../api/userService.ts";
 import TimerBadge from "../TimerBadge.tsx";
@@ -7,7 +7,7 @@ import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import BidButton from "../buttons/BidButton.tsx";
 
-export default function BidWindow({ product, bidsData }: { product: ProductResponse, bidsData: ProductBids[] }) {
+export default function BidWindow({ product }: { product: ProductResponse }) {
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>('auction');
 
     const [isBidding, setIsBidding] = useState<boolean>(false);
@@ -16,8 +16,8 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
     const [isFollowed, setIsFollowed] = useState<boolean>(product.is_followed || false);
     const [processingFollow, setProcessingFollow] = useState<boolean>(false);
 
-    const currentPrice = bidsData && bidsData.length > 0
-        ? Math.max(...bidsData.map(b => b.amount))
+    const currentPrice = product.bids && product.bids.length > 0
+        ? Math.max(...product.bids.map(b => b.amount))
         : product.starting_price;
 
     const minNextBid = currentPrice + (product.min_bid || 0);
@@ -154,7 +154,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
-                                {bidsData?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
+                                {product.bids?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
                             </span>
                             <TimerBadge endTime={product.ends_at}/>
                         </div>
@@ -189,7 +189,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                                     Kč
                                 </span>
                             </div>
-                            <BidButton handleBidSubmit={handleBidSubmit} disabled={product.status !== Status.Pending || isBidding} isBidding={isBidding}/>
+                            <BidButton handleBidSubmit={handleBidSubmit} disabled={product.status !== Status.Approved || isBidding} isBidding={isBidding}/>
                         </div>
                     </div>
                 </div>

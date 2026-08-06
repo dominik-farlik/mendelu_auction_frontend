@@ -28,18 +28,15 @@ export default function AuctionDetail() {
         group: {
             name: "",
             organization: "",
-        }
+        },
+        bids: []
     });
-    const [bidsData, setBidsData] = useState<ProductBids[]>([]);
 
     useEffect(() => {
         productService.getProductDetail(Number(productId))
             .then((data) => {
                 setProduct(data);
             });
-
-        productService.getProductBids(Number(productId))
-            .then((bids) => setBidsData(bids));
     }, [productId]);
 
     useEffect(() => {
@@ -58,9 +55,13 @@ export default function AuctionDetail() {
             if (data.type === 'NEW_BID') {
                 const newBid: ProductBids = data.payload;
 
-                setBidsData((prevBids) => {
-                    const updatedBids = [newBid, ...prevBids];
-                    return updatedBids.sort((a, b) => b.amount - a.amount);
+                setProduct((prevProduct) => {
+                    const updatedBids = [newBid, ...(prevProduct.bids || [])];
+                    updatedBids.sort((a, b) => b.amount - a.amount);
+                    return {
+                        ...prevProduct,
+                        bids: updatedBids
+                    };
                 });
             }
         };
@@ -127,7 +128,7 @@ export default function AuctionDetail() {
                             </div>
                         </div>
 
-                        <BidWindow product={product} bidsData={bidsData}/>
+                        <BidWindow product={product} />
                     </div>
                     <ImageGallery coverImage={product.cover_image} otherImages={product.images}/>
                 </div>
@@ -167,17 +168,17 @@ export default function AuctionDetail() {
                         <div className="flex items-end justify-between border-b border-gray-100 pb-4 mb-4">
                             <h3 className="text-xl font-black text-slate-900 uppercase m-0 tracking-tight">Historie příhozů</h3>
                             <div className="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                                {bidsData?.length || 0}
+                                {product.bids?.length || 0}
                             </div>
                         </div>
 
                         <div className="flex flex-col gap-2 max-h-100 overflow-y-auto pr-2 custom-scrollbar">
-                            {bidsData.length === 0 ? (
+                            {product.bids.length === 0 ? (
                                 <div className="text-center text-gray-400 py-8 font-medium">
                                     Zatím nebyly učiněny žádné příhozy.
                                 </div>
                             ) : (
-                                bidsData.map((bid, index) => (
+                                product.bids.map((bid, index) => (
                                     <div key={index} className="flex justify-between items-center py-3 px-3 hover:bg-gray-50 rounded-xl transition-colors">
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                                             <span className="font-bold text-slate-900">{bid.bidder.first_name}</span>

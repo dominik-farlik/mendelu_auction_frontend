@@ -1,5 +1,5 @@
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
-import HomePage from "./components/homePage/HomePage.tsx";
+import HomePage from "./components/home/HomePage.tsx";
 import AuthForm from "./components/auth/AuthForm.tsx";
 import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
 import CreateAuction from "./components/auction/CreateAuction.tsx";

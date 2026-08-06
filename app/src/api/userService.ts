@@ -1,6 +1,6 @@
 import api from './axios';
-import type {Role} from "../types/user.ts";
-import type {ProductResponse} from "./productService.ts";
+import type { Role } from "../types/user.ts";
+import type { ProductResponse } from "./productService.ts";
 
 export interface RoleResponse {
     name: Role;
@@ -13,19 +13,6 @@ export interface UserResponse {
     first_name?: string | null;
     last_name?: string | null;
     role: RoleResponse;
-}
-
-export interface UserCreate {
-    email: string;
-    first_name: string;
-    last_name: string;
-    username?: string | null;
-    password: string;
-}
-
-export interface UserLogin {
-    username: string;
-    password: string;
 }
 
 export interface UserUpdate {
@@ -42,36 +29,63 @@ export interface ManagerResponse {
 }
 
 export const userService = {
+    /**
+     * Získá profil aktuálně přihlášeného uživatele.
+     *
+     * @returns {Promise<UserResponse>} Data přihlášeného uživatele.
+     */
     async getCurrentUser(): Promise<UserResponse> {
         const response = await api.get<UserResponse>("/users/me");
         return response.data;
     },
 
+    /**
+     * Aktualizuje údaje aktuálně přihlášeného uživatele.
+     *
+     * @param {UserUpdate} userData - Nové údaje uživatele (jméno, email, atd.).
+     * @returns {Promise<UserResponse>} Aktualizovaná data uživatele.
+     */
     async updateCurrentUser(userData: UserUpdate): Promise<UserResponse> {
         const response = await api.put<UserResponse>("/users/me", userData);
         return response.data;
     },
 
-    async createUser(userData: UserCreate): Promise<UserResponse> {
-        const response = await api.post<UserResponse>("/auth/register", userData);
+    /**
+     * Přihodí danou částku na specifikovanou aukci (produkt).
+     *
+     * @param {number} productId - ID produktu (aukce), na který se přihazuje.
+     * @param {number} amount - Částka příhozu.
+     * @returns {Promise<{product: ProductResponse, amount: number}>} Aktualizovaný produkt a potvrzená částka.
+     */
+    async bid(productId: number, amount: number): Promise<{ product: ProductResponse, amount: number }> {
+        const response = await api.post<{ product: ProductResponse, amount: number }>(`/users/bid/${productId}`, { "amount": amount });
         return response.data;
     },
 
-    async login(credentials: UserLogin): Promise<{message: string}> {
-        const formData = new URLSearchParams();
-        formData.append('username', credentials.username);
-        formData.append('password', credentials.password);
-
-        const response = await api.post("/auth/login", formData, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        });
+    /**
+     * Přidá produkt (aukci) do seznamu sledovaných položek uživatele (Watchlist).
+     *
+     * @param {number} productId - ID produktu, který chce uživatel sledovat.
+     * @returns {Promise<{message: string}>} Potvrzovací zpráva o začátku sledování.
+     */
+    async followProduct(productId: number): Promise<{ message: string }> {
+        const response = await api.post<{ message: string }>(`users/follow/${productId}`);
         return response.data;
     },
 
-    async bid(productId: number, amount: number): Promise<{product: ProductResponse, amount: number}> {
-        const response = await api.post<{product: ProductResponse, amount: number}>(`users/bid/${productId}`, {"amount": amount});
+    /**
+     * Odebere produkt ze seznamu sledovaných.
+     */
+    async unfollowProduct(productId: number): Promise<{ message: string }> {
+        const response = await api.delete<{ message: string }>(`users/follow/${productId}`);
+        return response.data;
+    },
+
+    /**
+     * Získá všechny produkty, které aktuálně přihlášený uživatel sleduje.
+     */
+    async getFollowedProducts(): Promise<ProductResponse[]> {
+        const response = await api.get<ProductResponse[]>("users/followed-products");
         return response.data;
     }
 };

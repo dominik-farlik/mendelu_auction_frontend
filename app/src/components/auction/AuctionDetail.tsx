@@ -6,6 +6,7 @@ import { SaleType, Status } from "../../types/product.ts";
 import { formatDate, parseTimeDistance } from "../../utils/formatDate.ts";
 import Hero from "../Hero.tsx";
 import ImageGallery from "./ImageGallery.tsx";
+import Page from "../Page.tsx";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
@@ -100,7 +101,7 @@ export default function AuctionDetail() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 font-sans">
+        <Page>
             <Hero navbarTextColor="light">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16 flex flex-col-reverse lg:flex-row gap-12 lg:gap-8 items-center lg:items-start">
                     <div className="flex-1 flex flex-col gap-8 w-full z-20">
@@ -194,6 +195,6 @@ export default function AuctionDetail() {
                     </div>
                 </div>
             </div>
-        </div>
+        </Page>
     );
 }

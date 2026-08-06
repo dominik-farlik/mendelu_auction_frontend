@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import './AuthForm.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from "../navbar/Navbar.tsx";
-import { type UserCreate, userService } from "../../api/userService.ts";
+import {authService, type UserCreate} from "../../api/authService.ts";
 
 interface AuthFormProps {
     defaultIsLogin?: boolean;
@@ -55,7 +55,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
 
         try {
             if (isLogin) {
-                await userService.login({
+                await authService.login({
                     username: user.email,
                     password: user.password,
                 });
@@ -69,7 +69,7 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
                     password: user.password,
                 };
 
-                await userService.createUser(payload);
+                await authService.createUser(payload);
 
                 setSuccessMessage("Účet byl úspěšně vytvořen. Nyní se můžete přihlásit.");
                 setIsLogin(true);

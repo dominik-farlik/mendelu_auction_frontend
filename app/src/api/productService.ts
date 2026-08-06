@@ -22,6 +22,7 @@ export interface ProductResponse {
     group: {name: string, organization: string};
     created_at: string;
     status: Status;
+    is_followed?: boolean;
     images: Array<ProductImageResponse>;
 }
 

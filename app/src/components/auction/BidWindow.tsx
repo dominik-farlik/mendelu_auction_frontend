@@ -9,8 +9,12 @@ import BidButton from "../buttons/BidButton.tsx";
 
 export default function BidWindow({ product, bidsData }: { product: ProductResponse, bidsData: ProductBids[] }) {
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>('auction');
+
     const [isBidding, setIsBidding] = useState<boolean>(false);
     const [isBuying, setIsBuying] = useState<boolean>(false);
+
+    const [isFollowed, setIsFollowed] = useState<boolean>(product.is_followed || false);
+    const [processingFollow, setProcessingFollow] = useState<boolean>(false);
 
     const currentPrice = bidsData && bidsData.length > 0
         ? Math.max(...bidsData.map(b => b.amount))
@@ -63,6 +67,30 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
         });
     };
 
+    const handleFollowToggle = async () => {
+        setProcessingFollow(true);
+
+        const requestPromise = isFollowed
+            ? userService.unfollowProduct(product.id)
+            : userService.followProduct(product.id);
+
+        const successMessage = isFollowed
+            ? "Sledování aukce bylo zrušeno."
+            : "Aukce byla přidána do sledovaných!";
+
+        await toast.promise(requestPromise, {
+            loading: "Zpracování požadavku...",
+            success: () => {
+                setIsFollowed(!isFollowed);
+                return successMessage;
+            },
+            error: (err) => {
+                const axiosError = err as AxiosError<{ detail?: string }>;
+                return axiosError.response?.data?.detail || "Akci se nepodařilo dokončit.";
+            }
+        }).finally(() => setProcessingFollow(false));
+    };
+
     const formattedCurrentPrice = currentPrice?.toLocaleString('cs-CZ');
     const formattedBuyNowPrice = product.buy_now_price?.toLocaleString('cs-CZ');
 
@@ -102,12 +130,22 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                     )}
                 </div>
 
-                <button className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-colors ${btnOutline}`}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <button
+                    onClick={handleFollowToggle}
+                    disabled={processingFollow} // Zrušeno disable podle isWatching
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-colors disabled:opacity-70 disabled:cursor-wait
+                        ${isFollowed
+                        ? (isBuyNow ? 'bg-black/10 border-transparent text-slate-900 hover:bg-black/20' : 'bg-gray-100 border-transparent text-slate-900 hover:bg-gray-200')
+                        : btnOutline
+                    }
+                    `}
+                    title={isFollowed ? "Zrušit sledování" : "Sledovat aukci"}
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill={isFollowed ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                         <circle cx="12" cy="12" r="3" />
                     </svg>
-                    Sledovat aukci
+                    {isFollowed ? "Sledováno" : "Sledovat aukci"}
                 </button>
             </div>
 
@@ -115,7 +153,7 @@ export default function BidWindow({ product, bidsData }: { product: ProductRespo
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-gray-500 uppercase tracking-wide"> {/* Tmavší šedá textu */}
+                            <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
                                 {bidsData?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
                             </span>
                             <TimerBadge endTime={product.ends_at}/>

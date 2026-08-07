@@ -97,7 +97,7 @@ export default function AuctionDetail() {
         } else if (minutes > 0) {
             return `před ${minutes} minutou`;
         } else {
-            return "před několika sekundami";
+            return "před pár sekundami";
         }
     };
 

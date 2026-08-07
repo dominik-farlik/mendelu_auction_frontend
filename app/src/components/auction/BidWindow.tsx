@@ -6,15 +6,13 @@ import TimerBadge from "../TimerBadge.tsx";
 import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import BidButton from "../buttons/BidButton.tsx";
+import FollowButton from "../buttons/FollowButton.tsx";
 
 export default function BidWindow({ product }: { product: ProductResponse }) {
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>('auction');
 
     const [isBidding, setIsBidding] = useState<boolean>(false);
     const [isBuying, setIsBuying] = useState<boolean>(false);
-
-    const [isFollowed, setIsFollowed] = useState<boolean>(product.is_followed || false);
-    const [processingFollow, setProcessingFollow] = useState<boolean>(false);
 
     const currentPrice = product.bids && product.bids.length > 0
         ? Math.max(...product.bids.map(b => b.amount))
@@ -67,37 +65,12 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
         });
     };
 
-    const handleFollowToggle = async () => {
-        setProcessingFollow(true);
-
-        const requestPromise = isFollowed
-            ? userService.unfollowProduct(product.id)
-            : userService.followProduct(product.id);
-
-        const successMessage = isFollowed
-            ? "Sledování aukce bylo zrušeno."
-            : "Aukce byla přidána do sledovaných!";
-
-        await toast.promise(requestPromise, {
-            loading: "Zpracování požadavku...",
-            success: () => {
-                setIsFollowed(!isFollowed);
-                return successMessage;
-            },
-            error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                return axiosError.response?.data?.detail || "Akci se nepodařilo dokončit.";
-            }
-        }).finally(() => setProcessingFollow(false));
-    };
-
     const formattedCurrentPrice = currentPrice?.toLocaleString('cs-CZ');
     const formattedBuyNowPrice = product.buy_now_price?.toLocaleString('cs-CZ');
 
     const isBuyNow = activeTab === 'buy_now';
     const cardBg = isBuyNow ? 'bg-[#4ade80] text-slate-900' : 'bg-white text-slate-900 shadow-xl border border-gray-100';
     const tabContainerBg = isBuyNow ? 'bg-black/10' : 'bg-gray-100';
-    const btnOutline = isBuyNow ? 'border-slate-900/20 text-slate-900 hover:bg-black/5' : 'border-gray-200 text-slate-700 hover:bg-gray-50';
 
     return (
         <div className={`w-full max-w-xl rounded-3xl p-6 md:p-8 transition-colors duration-300 ${cardBg} z-20`}>
@@ -129,24 +102,7 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
                         </button>
                     )}
                 </div>
-
-                <button
-                    onClick={handleFollowToggle}
-                    disabled={processingFollow} // Zrušeno disable podle isWatching
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-colors disabled:opacity-70 disabled:cursor-wait
-                        ${isFollowed
-                        ? (isBuyNow ? 'bg-black/10 border-transparent text-slate-900 hover:bg-black/20' : 'bg-gray-100 border-transparent text-slate-900 hover:bg-gray-200')
-                        : btnOutline
-                    }
-                    `}
-                    title={isFollowed ? "Zrušit sledování" : "Sledovat aukci"}
-                >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill={isFollowed ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                        <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    {isFollowed ? "Sledováno" : "Sledovat aukci"}
-                </button>
+                <FollowButton productId={product.id} productIsFollowed={product.is_followed} btnFill={isBuyNow}/>
             </div>
 
             {!isBuyNow ? (

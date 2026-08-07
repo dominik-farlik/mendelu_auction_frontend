@@ -1,27 +1,16 @@
 import { useState, useEffect } from "react";
-import { type ProductResponse, productService } from "../../../api/productService.ts";
-import LinkButton from "../../buttons/LinkButton.tsx";
+import { type ProductResponse } from "../../api/productService.ts";
+import LinkButton from "../buttons/LinkButton.tsx";
 
-export default function MainAuctions() {
-    const [auctions, setAuctions] = useState<ProductResponse[]>([]);
+export default function MainAuctions({ auctions }: { auctions: ProductResponse[]}) {
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    useEffect(() => {
-        productService.getActiveAuctions()
-            .then((data) => {
-                const bigPreviews = data.filter((auction) => auction.big_preview);
-                setAuctions(bigPreviews);
-                console.log("Aukce:", bigPreviews);
-            })
-            .catch((error) => console.error("Chyba při načítání aukcí:", error));
-    }, []);
 
     useEffect(() => {
         if (auctions.length <= 1) return;
 
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % auctions.length);
-        }, 10000);
+        }, 7000);
 
         return () => clearInterval(interval);
     }, [auctions.length]);

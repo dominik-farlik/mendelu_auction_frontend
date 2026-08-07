@@ -57,7 +57,6 @@ export default function UserDetail() {
         const { name, value, type, checked } = e.target;
         setUser((prev) => ({
             ...prev,
-            // Pokud je to checkbox, použijeme vlastnost 'checked', jinak 'value'
             [name]: type === "checkbox" ? checked : value
         }));
     };

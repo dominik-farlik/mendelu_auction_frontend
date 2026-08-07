@@ -5,17 +5,16 @@ type ActionButtonProps = {
     size?: 'large' | 'medium';
     disabled?: boolean;
     onClick?: () => void;
+    cursor?: string;
 }
 
-export default function ActionButton({ title, size = 'large', disabled = false, onClick }: ActionButtonProps) {
+export default function ActionButton({ title, size = 'large', disabled = false, cursor = "pointer", onClick }: ActionButtonProps) {
     const isLarge = size === 'large';
 
-    // Konfigurace velikostí
     const btnPadding = isLarge ? 'py-1.5 pl-1.5 pr-6' : 'py-1 pl-1 pr-4';
     const textSize = isLarge ? 'text-base' : 'text-sm';
     const gap = isLarge ? 'gap-3' : 'gap-2';
 
-    // Konfigurace obalu ikony
     const iconWrapperSize = isLarge ? 'w-10 h-10' : 'w-8 h-8';
     const iconSize = isLarge ? 'h-5' : 'h-4';
 
@@ -28,7 +27,7 @@ export default function ActionButton({ title, size = 'large', disabled = false, 
                 inline-flex items-center ${gap} ${btnPadding} ${textSize}
                 bg-[#4ade80] text-slate-900 font-bold rounded-full 
                 shadow-sm transition-all duration-300 
-                hover:shadow-lg hover:bg-[#3bcf71] active:scale-95
+                hover:shadow-lg hover:bg-[#3bcf71] active:scale-95 cursor-${cursor}
                 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#4ade80] disabled:hover:shadow-sm
             `}
         >

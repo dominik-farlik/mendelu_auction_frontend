@@ -1,42 +1,39 @@
-import {useCallback, useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import LinkButton from "../../buttons/LinkButton.tsx";
 import GroupList from "./GroupList.tsx";
-import {userService} from "../../../api/userService.ts";
-import {Role} from "../../../types/user.ts";
+import { userService } from "../../../api/userService.ts";
+import { Role } from "../../../types/user.ts";
 
 export default function UserGroups() {
     const [userRole, setUserRole] = useState<Role | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const toastId = toast.loading("Načítání uživatelských dat...");
+
         userService.getCurrentUser()
             .then((data) => {
                 setUserRole(data.role.name);
+                toast.dismiss(toastId);
             })
             .catch((err) => {
                 console.error("Chyba při načítání uživatele:", err);
-                setError("Nepodařilo se načíst uživatelská data.");
+                toast.error("Nepodařilo se načíst uživatelská data.", { id: toastId });
             })
             .finally(() => {
                 setLoading(false);
             });
     }, []);
 
-    const handleSetError = useCallback((err: string | null) => {
-        setError(err);
-    }, []);
-
-    const handleSetLoading = useCallback((load: boolean) => {
-        setLoading(load);
-    }, []);
-
     return (
-        <>
-            <div className="user-page-title-container">
-                <div className="user-page-title">Moje skupiny</div>
-                {userRole === Role.Manager && (
-                    <div style={ { display: "flex", justifyContent: "end" }}>
+        <div className="flex flex-col h-full">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                    Moje skupiny
+                </h2>
+                {!loading && userRole === Role.Manager && (
+                    <div className="flex">
                         <LinkButton
                             title="Vytvořit skupinu"
                             link="/profil/vytvorit-skupinu"
@@ -45,17 +42,10 @@ export default function UserGroups() {
                     </div>
                 )}
             </div>
-            <div className="user-page-content-container">
-                {loading ? (
-                    <div className="alert-info">Načítání skupin...</div>
-                ) : error ? (
-                    <div className="alert-error">{error}</div>
-                ) : (
-                    <div className="user-page-items">
-                        <GroupList setError={handleSetError} setLoading={handleSetLoading} />
-                    </div>
-                )}
+
+            <div className="flex flex-col gap-6 grow">
+                {!loading && <GroupList />}
             </div>
-        </>
+        </div>
     );
 }

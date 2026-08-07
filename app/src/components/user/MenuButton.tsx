@@ -9,7 +9,8 @@ export default function MenuButton({ title, windowName, active, handleTabChange 
     return (
         <button
             className={`
-                group w-full text-left px-5 py-3.5 rounded-2xl font-bold transition-all duration-300 flex items-center justify-between
+                group w-full text-left px-5 py-3.5 rounded-2xl font-bold transition-all 
+                duration-300 flex items-center justify-between cursor-pointer
                 ${active
                 ? "bg-slate-900 text-white shadow-md"
                 : "text-slate-600 bg-transparent hover:bg-slate-100 hover:text-slate-900"

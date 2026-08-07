@@ -8,10 +8,10 @@ export interface RoleResponse {
 
 export interface UserResponse {
     id: number;
-    username: string;
+    username?: string;
     email: string;
-    first_name?: string | null;
-    last_name?: string | null;
+    first_name: string;
+    last_name: string;
     role: RoleResponse;
     public_last_name: boolean;
 }

@@ -7,11 +7,9 @@ export const SaleType = {
 export type SaleType = typeof SaleType[keyof typeof SaleType];
 
 export const Status = {
-    Active: "active",
     Pending: "pending",
     Approved: "approved",
     Canceled: "cancelled",
-    Ended: "ended",
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];

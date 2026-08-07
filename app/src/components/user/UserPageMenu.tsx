@@ -1,8 +1,8 @@
 import MenuButton from "./MenuButton.tsx";
-import {Role} from "../../types/user.ts";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {fetchUserRole} from "../../utils/role.ts";
+import { Role } from "../../types/user.ts";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchUserRole } from "../../utils/role.ts";
 
 export default function UserPageMenu({ currentWindow }: { currentWindow: string }) {
     const [userRole, setUserRole] = useState<Role>(Role.Viewer);
@@ -17,7 +17,7 @@ export default function UserPageMenu({ currentWindow }: { currentWindow: string 
     };
 
     return (
-        <div className="user-page-menu">
+        <div className="w-full md:w-72 shrink-0 flex flex-col gap-2">
             <MenuButton
                 title="Osobní údaje"
                 windowName="osobni-udaje"

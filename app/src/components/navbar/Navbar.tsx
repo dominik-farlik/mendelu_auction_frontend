@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import mendelu_logo_white from '../../assets/Mendelova_univerzita_logo_white.png';
-import mendelu_logo_dark from '../../assets/Mendelu_PEF_logo_black.jpg';
+import mendelu_logo_dark from '../../assets/Mendelova univerzita_logo_black.jpg';
 import LinkButton from "../buttons/LinkButton.tsx";
 import { Link, useLocation } from "react-router-dom";
 import api from '../../api/axios.ts';

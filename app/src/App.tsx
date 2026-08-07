@@ -3,8 +3,8 @@ import HomePage from "./components/home/HomePage.tsx";
 import AuthForm from "./components/auth/AuthForm.tsx";
 import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
 import CreateAuction from "./components/auction/CreateAuction.tsx";
-import UserPage from "./components/userPage/UserPage.tsx";
-import GroupDetail from "./components/userPage/groups/GroupDetail.tsx";
+import UserPage from "./components/user/UserPage.tsx";
+import GroupDetail from "./components/user/groups/GroupDetail.tsx";
 import AuctionDetail from "./components/auction/AuctionDetail.tsx";
 import {Toaster} from "react-hot-toast";
 

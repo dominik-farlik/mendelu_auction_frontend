@@ -13,6 +13,7 @@ export interface UserResponse {
     first_name?: string | null;
     last_name?: string | null;
     role: RoleResponse;
+    public_last_name: boolean;
 }
 
 export interface UserUpdate {
@@ -20,6 +21,7 @@ export interface UserUpdate {
     first_name: string;
     last_name: string;
     username?: string | null;
+    public_last_name: boolean;
 }
 
 export interface ManagerResponse {

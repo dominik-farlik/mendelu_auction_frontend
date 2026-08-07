@@ -25,6 +25,7 @@ export default function AuctionDetail() {
         status: Status.Pending,
         title: "",
         description: "",
+        is_followed: false,
         group: {
             name: "",
             organization: "",
@@ -134,8 +135,11 @@ export default function AuctionDetail() {
                 </div>
             </Hero>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col lg:flex-row gap-12 lg:gap-16">
-                <div className="flex-2 flex flex-col gap-6">
+            {/* ZDE JE ZMĚNA: Používáme Grid s 12 sloupci pro lepší kontrolu nad šířkou */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+
+                {/* Popis zabírá 7 sloupců ze 12 */}
+                <div className="lg:col-span-7 flex flex-col gap-6">
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-4 border-b border-gray-200 pb-4">
                         <h3 className="text-2xl font-black text-[#4ade80] uppercase tracking-tight m-0">Popis aukce</h3>
                         <h3 className="text-2xl font-black text-gray-300 hover:text-gray-400 cursor-pointer uppercase tracking-tight m-0 transition-colors">Časté otázky</h3>
@@ -163,7 +167,8 @@ export default function AuctionDetail() {
                     </div>
                 </div>
 
-                <div className="flex-1 flex flex-col">
+                {/* Historie příhozů zabírá 5 sloupců ze 12 (je širší než dříve) */}
+                <div className="lg:col-span-5 flex flex-col">
                     <div className="bg-white p-6 rounded-4xl shadow-sm border border-gray-100">
                         <div className="flex items-end justify-between border-b border-gray-100 pb-4 mb-4">
                             <h3 className="text-xl font-black text-slate-900 uppercase m-0 tracking-tight">Historie příhozů</h3>
@@ -179,16 +184,24 @@ export default function AuctionDetail() {
                                 </div>
                             ) : (
                                 product.bids.map((bid, index) => (
-                                    <div key={index} className="flex justify-between items-center py-3 px-3 hover:bg-gray-50 rounded-xl transition-colors">
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                            <span className="font-bold text-slate-900">{bid.bidder.first_name}</span>
-                                            <span className="text-gray-400 text-sm">
+                                    <div key={index} className="flex justify-between items-center py-3 px-3 hover:bg-gray-50 rounded-xl transition-colors gap-4">
+
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                                            <span
+                                                className="font-bold text-slate-900 truncate"
+                                                title={`${bid.bidder.first_name} ${bid.bidder.public_last_name ? bid.bidder.last_name : ''}`}
+                                            >
+                                                {bid.bidder.first_name} {bid.bidder.public_last_name && bid.bidder.last_name}
+                                            </span>
+                                            <span className="text-gray-400 text-sm whitespace-nowrap shrink-0">
                                                 <span className="hidden sm:inline">•</span> {calculateTimeLeft(bid.bid_time)}
                                             </span>
                                         </div>
+
                                         <div className="font-black text-lg text-slate-900 shrink-0">
                                             {bid.amount.toLocaleString('cs-CZ')} Kč
                                         </div>
+
                                     </div>
                                 ))
                             )}

@@ -127,5 +127,9 @@ export const productService = {
             console.error(`Chyba při načítání příhozů produktu ${productId}:`, error);
             throw error;
         }
+    },
+
+    updateProductStatus: async (id: number, status: string): Promise<void> => {
+        await api.patch(`/products/${id}/status`, { status });
     }
 };

@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
 import { type ProductBids, type ProductResponse, productService } from "../../api/productService.ts";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import BidWindow from "./BidWindow.tsx";
 import { SaleType, Status } from "../../types/product.ts";
 import { formatDate, parseTimeDistance } from "../../utils/formatDate.ts";
 import Hero from "../Hero.tsx";
 import ImageGallery from "./ImageGallery.tsx";
 import Page from "../Page.tsx";
+import {Role} from "../../types/user.ts";
+import {useAuth} from "../../context/useAuth.ts";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
+    const { user } = useAuth()
+    const navigate = useNavigate();
     const [product, setProduct] = useState<ProductResponse>({
         id: Number(productId),
         big_preview: false,
@@ -41,7 +46,7 @@ export default function AuctionDetail() {
     }, [productId]);
 
     useEffect(() => {
-        if (!productId) return;
+        if (!productId || product.status === Status.Pending) return;
 
         const wsUrl = `${import.meta.env.VITE_WS_URL}/auctions/${productId}`;
         const ws = new WebSocket(wsUrl);
@@ -72,9 +77,11 @@ export default function AuctionDetail() {
         };
 
         return () => {
-            ws.close();
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.close();
+            }
         };
-    }, [productId]);
+    }, [productId, product.status]);
 
     const calculateTimeLeft = (bid_time: string) => {
         if (!product.ends_at) return;
@@ -85,22 +92,41 @@ export default function AuctionDetail() {
 
         const { days, hours, minutes } = parseTimeDistance(distance);
 
-        if (days > 1) {
-            return `před ${days} dny`;
-        } else if (days > 0) {
-            return `před ${days} dnem`;
-        } else if (hours > 1) {
-            return `před ${hours} hodinami`;
-        } else if (hours > 0) {
-            return `před ${hours} hodinou`;
-        } else if (minutes > 1) {
-            return `před ${minutes} minutami`;
-        } else if (minutes > 0) {
-            return `před ${minutes} minutou`;
-        } else {
-            return "před pár sekundami";
+        if (days > 1) return `před ${days} dny`;
+        if (days > 0) return `před ${days} dnem`;
+        if (hours > 1) return `před ${hours} hodinami`;
+        if (hours > 0) return `před ${hours} hodinou`;
+        if (minutes > 1) return `před ${minutes} minutami`;
+        if (minutes > 0) return `před ${minutes} minutou`;
+        return "před pár sekundami";
+    };
+
+    const handleApprove = async () => {
+        const toastId = toast.loading("Schvaluji aukci...");
+        try {
+            await productService.updateProductStatus(product.id, 'approved');
+            toast.success("Aukce byla úspěšně schválena", { id: toastId });
+            setProduct(prev => ({ ...prev, status: Status.Approved }));
+        } catch {
+            toast.error("Nepodařilo se schválit aukci", { id: toastId });
         }
     };
+
+    const handleReject = async () => {
+        if (!window.confirm("Opravdu chcete tuto aukci zamítnout?")) return;
+
+        const toastId = toast.loading("Zamítám aukci...");
+        try {
+            await productService.updateProductStatus(product.id, 'cancelled');
+            toast.success("Aukce byla zamítnuta", { id: toastId });
+            navigate(-1);
+        } catch {
+            toast.error("Nepodařilo se zamítnout aukci", { id: toastId });
+        }
+    };
+
+    const canAssess = product.status === Status.Pending &&
+        user && user.role.name === Role.Manager;
 
     return (
         <Page>
@@ -108,6 +134,30 @@ export default function AuctionDetail() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16 flex flex-col-reverse lg:flex-row gap-12 lg:gap-8 items-center lg:items-start">
                     <div className="flex-1 flex flex-col gap-8 w-full z-20">
                         <div>
+                            {/* Manažerský schvalovací banner */}
+                            {canAssess && (
+                                <div className="mb-6 bg-amber-500/20 backdrop-blur-md border border-amber-400/50 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <div>
+                                        <h3 className="text-white font-black text-lg uppercase tracking-tight m-0">Aukce čeká na schválení</h3>
+                                        <p className="text-amber-100/90 text-sm m-0 mt-1">Zkontrolujte údaje a rozhodněte o spuštění aukce.</p>
+                                    </div>
+                                    <div className="flex gap-3 w-full sm:w-auto">
+                                        <button
+                                            onClick={handleReject}
+                                            className="flex-1 sm:flex-none px-4 py-2 bg-red-500/10 text-red-300 font-bold rounded-xl border border-red-500/30 hover:bg-red-500/20 transition-colors cursor-pointer"
+                                        >
+                                            Zamítnout
+                                        </button>
+                                        <button
+                                            onClick={handleApprove}
+                                            className="flex-1 sm:flex-none px-4 py-2 bg-[#4ade80] text-slate-900 font-bold rounded-xl hover:bg-[#22c55e] transition-colors cursor-pointer"
+                                        >
+                                            Schválit aukci
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
                             <h1
                                 className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight mb-6 line-clamp-2"
                                 title={product.title}
@@ -129,16 +179,15 @@ export default function AuctionDetail() {
                             </div>
                         </div>
 
+                        {/* BidWindow se může schovat nebo ukázat alternativní obsah, pokud je aukce Pending */}
                         <BidWindow product={product} />
                     </div>
                     <ImageGallery coverImage={product.cover_image} otherImages={product.images}/>
                 </div>
             </Hero>
 
-            {/* ZDE JE ZMĚNA: Používáme Grid s 12 sloupci pro lepší kontrolu nad šířkou */}
+            {/* Zbytek stránky (Popis a Historie příhozů) zůstává nezměněn */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-
-                {/* Popis zabírá 7 sloupců ze 12 */}
                 <div className="lg:col-span-7 flex flex-col gap-6">
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-4 border-b border-gray-200 pb-4">
                         <h3 className="text-2xl font-black text-[#4ade80] uppercase tracking-tight m-0">Popis aukce</h3>
@@ -167,7 +216,6 @@ export default function AuctionDetail() {
                     </div>
                 </div>
 
-                {/* Historie příhozů zabírá 5 sloupců ze 12 (je širší než dříve) */}
                 <div className="lg:col-span-5 flex flex-col">
                     <div className="bg-white p-6 rounded-4xl shadow-sm border border-gray-100">
                         <div className="flex items-end justify-between border-b border-gray-100 pb-4 mb-4">
@@ -185,7 +233,6 @@ export default function AuctionDetail() {
                             ) : (
                                 product.bids.map((bid, index) => (
                                     <div key={index} className="flex justify-between items-center py-3 px-3 hover:bg-gray-50 rounded-xl transition-colors gap-4">
-
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
                                             <span
                                                 className="font-bold text-slate-900 truncate"
@@ -201,7 +248,6 @@ export default function AuctionDetail() {
                                         <div className="font-black text-lg text-slate-900 shrink-0">
                                             {bid.amount.toLocaleString('cs-CZ')} Kč
                                         </div>
-
                                     </div>
                                 ))
                             )}

@@ -1,20 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Role } from "../../types/user.ts";
-import { fetchUserRole } from "../../utils/role.ts";
 import {useAuth} from "../../context/useAuth.ts";
 
 export default function UserMenu() {
     const { user, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
-    const [userRole, setUserRole] = useState<Role>(Role.Viewer);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchUserRole().then((role) => setUserRole(role));
-
         function handleClickOutside(event: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -70,7 +66,7 @@ export default function UserMenu() {
                         >
                             Účet
                         </Link>
-                        {(userRole === Role.Editor || userRole === Role.Manager) && (
+                        {(user?.role.name === Role.Editor || user?.role.name === Role.Manager) && (
                             <Link
                                 to="/profil/skupiny"
                                 onClick={() => setIsOpen(false)}

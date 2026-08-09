@@ -1,16 +1,11 @@
 import MenuButton from "./MenuButton.tsx";
 import { Role } from "../../types/user.ts";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchUserRole } from "../../utils/role.ts";
+import {useAuth} from "../../context/useAuth.ts";
 
 export default function UserPageMenu({ currentWindow }: { currentWindow: string }) {
-    const [userRole, setUserRole] = useState<Role>(Role.Viewer);
+    const { user } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        fetchUserRole().then((role) => setUserRole(role));
-    }, []);
 
     const handleTabChange = (windowName: string) => {
         navigate(`/profil/${windowName}`);
@@ -24,7 +19,7 @@ export default function UserPageMenu({ currentWindow }: { currentWindow: string 
                 active={currentWindow === "osobni-udaje"}
                 handleTabChange={handleTabChange}
             />
-            {(userRole === Role.Editor || userRole === Role.Manager) &&
+            {(user?.role.name === Role.Editor || user?.role.name === Role.Manager) &&
                 <MenuButton
                     title="Moje skupiny"
                     windowName="skupiny"

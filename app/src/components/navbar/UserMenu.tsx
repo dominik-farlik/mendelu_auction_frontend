@@ -1,15 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../../api/axios.ts';
 import { Role } from "../../types/user.ts";
 import { fetchUserRole } from "../../utils/role.ts";
+import {useAuth} from "../../context/useAuth.ts";
 
-type UserMenuProps = {
-    username: string | null;
-    onLogout?: () => void;
-};
-
-export default function UserMenu({ username, onLogout }: UserMenuProps) {
+export default function UserMenu() {
+    const { user, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
     const [userRole, setUserRole] = useState<Role>(Role.Viewer);
@@ -29,21 +25,12 @@ export default function UserMenu({ username, onLogout }: UserMenuProps) {
     }, []);
 
     const handleLogout = async () => {
-        try {
-            await api.post('/auth/logout');
-            if (onLogout) {
-                onLogout();
-            }
-        } catch (error) {
-            console.error('Chyba při odhlašování:', error);
-        } finally {
-            navigate("/");
-        }
+        await logout();
+        navigate("/");
     };
 
     return (
         <div className="relative inline-block text-left" ref={menuRef}>
-            {/* Tlačítko (Avatar) */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="bg-white text-slate-900 rounded-full p-2 hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all focus:outline-none focus:ring-4 focus:ring-white/20 flex items-center justify-center shadow-sm"
@@ -66,18 +53,15 @@ export default function UserMenu({ username, onLogout }: UserMenuProps) {
                 </svg>
             </button>
 
-            {/* Rozbalovací menu */}
             {isOpen && (
                 <div className="absolute right-0 md:right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-1000 origin-top-right animate-in fade-in zoom-in-95 duration-200">
 
-                    {/* Hlavička */}
                     <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                         <strong className="block text-sm font-bold text-slate-900 truncate">
-                            {username || 'Uživatel'}
+                            {`${user?.first_name} ${user?.last_name}`}
                         </strong>
                     </div>
 
-                    {/* Linky */}
                     <div className="flex flex-col py-2">
                         <Link
                             to="/profil/osobni-udaje"
@@ -111,7 +95,6 @@ export default function UserMenu({ username, onLogout }: UserMenuProps) {
                         </Link>
                     </div>
 
-                    {/* Patička - Odhlášení */}
                     <div className="p-3 border-t border-gray-100 bg-gray-50">
                         <button
                             onClick={() => {

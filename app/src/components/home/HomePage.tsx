@@ -16,7 +16,6 @@ export default function HomePage() {
 
                 const bigPreviews = data.filter((auction) => auction.big_preview);
                 setMainAuctions(bigPreviews);
-                console.log("Aukce:", bigPreviews);
             })
             .catch((error) => console.error("Chyba při načítání aukcí:", error));
     }, []);

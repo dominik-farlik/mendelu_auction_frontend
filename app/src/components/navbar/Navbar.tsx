@@ -1,35 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import mendelu_logo_white from '../../assets/Mendelova_univerzita_logo_white.png';
 import mendelu_logo_dark from '../../assets/Mendelova univerzita_logo_black.jpg';
 import LinkButton from "../buttons/LinkButton.tsx";
-import { Link, useLocation } from "react-router-dom";
-import api from '../../api/axios.ts';
+import {Link, useLocation} from "react-router-dom";
 import UserMenu from "./UserMenu.tsx";
+import {useAuth} from "../../context/useAuth.ts";
 
 type NavbarProps = {
     textColor?: 'dark' | 'light';
 }
 
 export default function Navbar({ textColor = 'dark' }: NavbarProps) {
-    const [username, setUsername] = useState<string | null>(null);
+    const { isAuthenticated } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
     const location = useLocation();
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
-    useEffect(() => {
-        api.get('/auth/me')
-            .then((response) => {
-                setIsLoggedIn(true);
-                setUsername(response.data.username);
-            })
-            .catch(() => {
-                setIsLoggedIn(false);
-            });
-    }, []);
-
-    // OPRAVA: Třídy musí být definované celé, aby je Tailwind dokázal najít
     const navTextClass = textColor === 'light' ? 'text-white' : 'text-slate-900';
     const desktopTextClass = textColor === 'light' ? 'md:text-white' : 'md:text-slate-900';
     const toggleBtnClass = textColor === 'light' ? 'text-white hover:text-gray-300' : 'text-slate-900 hover:text-slate-600';
@@ -70,9 +57,9 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
                             Jak to funguje
                         </a>
 
-                        {isLoggedIn ? (
+                        {isAuthenticated ? (
                             <div className="pt-2 md:pt-0 border-t border-white/10 md:border-none">
-                                <UserMenu username={username} onLogout={() => setIsLoggedIn(false)} />
+                                <UserMenu />
                             </div>
                         ) : (
                             <div className="flex flex-col md:flex-row gap-4 md:items-center pt-2 md:pt-0 border-t border-white/10 md:border-none">

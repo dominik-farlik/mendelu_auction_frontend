@@ -7,8 +7,11 @@ import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import BidButton from "../buttons/BidButton.tsx";
 import FollowButton from "../buttons/FollowButton.tsx";
+import { useAuth } from "../../context/useAuth.ts";
 
 export default function BidWindow({ product }: { product: ProductResponse }) {
+    const { isAuthenticated } = useAuth();
+
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>('auction');
 
     const [isBidding, setIsBidding] = useState<boolean>(false);
@@ -31,6 +34,11 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
     }
 
     const handleBidSubmit = async () => {
+        if (!isAuthenticated) {
+            toast.error("Pro přihození se musíte přihlásit.");
+            return;
+        }
+
         if (!bidAmount || bidAmount < minNextBid) {
             toast.error(`Příhoz musí být alespoň ${minNextBid} Kč`);
             return;
@@ -51,6 +59,11 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
     };
 
     const handleBuyNowSubmit = async () => {
+        if (!isAuthenticated) {
+            toast.error("Pro zakoupení se musíte přihlásit.");
+            return;
+        }
+
         setIsBuying(true);
         const buyPromise = new Promise((resolve) => setTimeout(resolve, 1000))
             .finally(() => setIsBuying(false));
@@ -159,7 +172,7 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
 
                     <button
                         className="bg-white text-slate-900 px-10 py-4 rounded-full font-bold text-xl flex items-center gap-3 shadow-lg hover:shadow-xl active:scale-95 disabled:opacity-50 transition-all"
-                        disabled={product.status !== Status.Pending || isBuying}
+                        disabled={product.status !== Status.Approved || isBuying}
                         onClick={handleBuyNowSubmit}
                     >
                         {isBuying ? "Zpracovávám..." : (

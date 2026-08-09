@@ -34,7 +34,7 @@ export default function UserDetail() {
 
     useEffect(() => {
         userService.getCurrentUser()
-            .then((data: any) => { // Použito any/úprava pro přijetí nového parametru z DB
+            .then((data) => {
                 const formData = {
                     email: data.email,
                     username: data.username || "",
@@ -79,18 +79,19 @@ export default function UserDetail() {
             public_last_name: user.public_last_name,
         };
 
-        const updatePromise = userService.updateCurrentUser(payload).then((updatedData: any) => {
-            const formData = {
-                email: updatedData.email,
-                username: updatedData.username || "",
-                first_name: updatedData.first_name || "",
-                last_name: updatedData.last_name || "",
-                public_last_name: updatedData.public_last_name || false,
-            };
-            setUser(formData);
-            setInitialUser(formData);
-            return "Změny byly úspěšně uloženy.";
-        });
+        const updatePromise = userService.updateCurrentUser(payload)
+            .then((updatedData) => {
+                const formData = {
+                    email: updatedData.email,
+                    username: updatedData.username || "",
+                    first_name: updatedData.first_name || "",
+                    last_name: updatedData.last_name || "",
+                    public_last_name: updatedData.public_last_name || false,
+                };
+                setUser(formData);
+                setInitialUser(formData);
+                return "Změny byly úspěšně uloženy.";
+            });
 
         await toast.promise(updatePromise, {
             loading: "Ukládám změny...",

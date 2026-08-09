@@ -9,8 +9,6 @@ import UserPageMenu from "../UserPageMenu.tsx";
 import AddMember from "./AddMember.tsx";
 import ActionButton from "../../buttons/ActionButton.tsx";
 import type { UserResponse } from "../../../api/userService.ts";
-
-// Import vaší pomocné funkce
 import { parseTimeDistance } from "../../../utils/formatDate.ts";
 
 export default function GroupDetail() {
@@ -48,17 +46,15 @@ export default function GroupDetail() {
                 return { className: "bg-amber-100 text-amber-700", label: "Čekající" };
             case "cancelled":
             case "canceled":
-                return { className: "bg-red-100 text-red-700", label: "Zrušeno" };
+                return { className: "bg-red-100 text-red-700", label: "Zamítnuto" };
             default:
                 return { className: "bg-slate-100 text-slate-700", label: status };
         }
     };
 
-    // Nová funkce pro výpočet a formátování času
     const getTimeUntilStart = (startsAt: string) => {
         const distance = new Date(startsAt).getTime() - new Date().getTime();
 
-        // Pokud už čas vypršel
         if (distance <= 0) {
             return "Již začalo";
         }
@@ -84,32 +80,10 @@ export default function GroupDetail() {
                     {!loading && group && (
                         <div className="flex flex-col gap-10">
 
-                            {/* Hlavička */}
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100">
                                 <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
                                     {group.name}
                                 </h2>
-                                <div className="flex flex-col sm:flex-row gap-3 relative">
-                                    <LinkButton
-                                        title="Vytvořit aukci"
-                                        link={`/vytvorit-aukci/${groupId}`}
-                                        size="medium"
-                                    />
-                                    <ActionButton
-                                        title="Přidat člena"
-                                        size="medium"
-                                        cursor="pointer"
-                                        onClick={() => setShowAddMember(!showAddMember)}
-                                    />
-
-                                    {showAddMember && (
-                                        <div className="absolute right-0 top-full mt-3 z-10 w-full sm:w-auto min-w-70">
-                                            <AddMember
-                                                groupId={Number(groupId)}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
                             </div>
 
                             {/* Info o skupině */}
@@ -130,7 +104,23 @@ export default function GroupDetail() {
 
                             {/* Členové skupiny */}
                             <div className="flex flex-col gap-4">
-                                <h3 className="text-lg font-bold text-slate-800">Členové skupiny</h3>
+                                <div className="flex justify-between items-center mb-4 relative">
+                                    <h3 className="text-lg font-bold text-slate-800">Členové skupiny</h3>
+                                    <ActionButton
+                                        title="Přidat člena"
+                                        size="medium"
+                                        cursor="pointer"
+                                        onClick={() => setShowAddMember(!showAddMember)}
+                                    />
+
+                                    {showAddMember && (
+                                        <div className="absolute right-0 top-full mt-3 z-10 w-full sm:w-auto min-w-70">
+                                            <AddMember
+                                                groupId={Number(groupId)}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
 
                                 {!group.members || group.members.length === 0 ? (
                                     <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center">
@@ -154,7 +144,14 @@ export default function GroupDetail() {
 
                             {/* Vytvořené nabídky */}
                             <div className="flex flex-col gap-4">
-                                <h3 className="text-lg font-bold text-slate-800">Vytvořené nabídky</h3>
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-lg font-bold text-slate-800">Vytvořené nabídky</h3>
+                                    <LinkButton
+                                        title="Vytvořit aukci"
+                                        link={`/vytvorit-aukci/${groupId}`}
+                                        size="medium"
+                                    />
+                                </div>
 
                                 {products.length === 0 ? (
                                     <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center">
@@ -172,7 +169,6 @@ export default function GroupDetail() {
 
                                         {products.map(product => {
                                             const statusInfo = getStatusInfo(product.status);
-                                            // Pro jistotu kontrolujeme, jestli backend vůbec poslal starts_at
                                             const timeUntil = product.starts_at ? getTimeUntilStart(product.starts_at) : "Není určen";
 
                                             return (

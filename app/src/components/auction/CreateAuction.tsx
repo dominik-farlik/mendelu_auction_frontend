@@ -208,6 +208,7 @@ export default function CreateAuction() {
                                 value={formData.buy_now_price}
                                 onChange={handleChange}
                                 className="auction-input"
+                                min={1}
                             />
                         </div>
                     </div>

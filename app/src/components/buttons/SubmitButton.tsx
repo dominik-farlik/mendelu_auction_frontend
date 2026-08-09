@@ -4,9 +4,10 @@ type SubmitButtonProps = {
     title: string;
     size?: 'large' | 'medium';
     disabled?: boolean;
+    cursor?: string;
 }
 
-export default function SubmitButton({ title, size = 'large', disabled = false }: SubmitButtonProps) {
+export default function SubmitButton({ title, size = 'large', disabled = false, cursor = "pointer" }: SubmitButtonProps) {
     const isLarge = size === 'large';
 
     // Konfigurace velikostí (stejná jako u LinkButton)
@@ -29,6 +30,7 @@ export default function SubmitButton({ title, size = 'large', disabled = false }
                 hover:shadow-lg hover:bg-[#3bcf71] active:scale-95
                 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#4ade80] disabled:active:scale-100 disabled:hover:shadow-sm
             `}
+            style={{ cursor: cursor }}
         >
             <div className={`bg-slate-900 rounded-full flex items-center justify-center shrink-0 ${iconWrapperSize}`}>
                 <img

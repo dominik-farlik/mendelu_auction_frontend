@@ -23,11 +23,17 @@ export default function ActiveAuctions({ auctions }: { auctions: ProductResponse
                             className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all duration-300"
                         >
                             <div className="relative h-64 overflow-hidden bg-slate-100 shrink-0">
-                                <img
-                                    src={`${import.meta.env.VITE_IMAGES_URL}/${auction.cover_image}`}
-                                    alt={auction.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
+                                {auction.cover_image ? (
+                                    <img
+                                        src={`${import.meta.env.VITE_IMAGES_URL}/${auction.cover_image}`}
+                                        alt={auction.title}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                ) : (
+                                    <div className="w-full flex items-center justify-center text-slate/30 h-64 bg-slate-100">
+                                        Načítání obrázku...
+                                    </div>
+                                    )}
 
                                 <div className="absolute top-4 right-4 z-10">
                                     <TimerBadge endTime={auction.ends_at} />

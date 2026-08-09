@@ -12,17 +12,10 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-        if (error.response && error.response.status === 401) {
-            const currentPath = window.location.pathname;
-            const isIgnoredRoute =
-                currentPath.includes('/login') ||
-                currentPath.includes('/register') ||
-                currentPath === '/' ||
-                error.config?.url?.includes('/auth/logout');
+        const isAuthRoute = error.config?.url?.includes('/login') || error.config?.url?.includes('/logout');
 
-            if (!isIgnoredRoute) {
-                window.location.href = '/login?expired=true';
-            }
+        if (error.response && error.response.status === 401 && !isAuthRoute) {
+            window.dispatchEvent(new CustomEvent('auth:unauthorized'));
         }
         return Promise.reject(error);
     }

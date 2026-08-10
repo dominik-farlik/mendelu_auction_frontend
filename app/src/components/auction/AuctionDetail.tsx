@@ -3,7 +3,7 @@ import { type ProductBids, type ProductResponse, productService } from "../../ap
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import BidWindow from "./BidWindow.tsx";
-import { SaleType, Status } from "../../types/product.ts";
+import {Category, SaleType, Status} from "../../types/product.ts";
 import { formatDate, parseTimeDistance } from "../../utils/formatDate.ts";
 import Hero from "../Hero.tsx";
 import ImageGallery from "./ImageGallery.tsx";
@@ -30,8 +30,10 @@ export default function AuctionDetail() {
         status: Status.Pending,
         title: "",
         description: "",
+        category: Category.Other,
         is_followed: false,
         group: {
+            id: 0,
             name: "",
             organization: "",
         },
@@ -179,14 +181,12 @@ export default function AuctionDetail() {
                             </div>
                         </div>
 
-                        {/* BidWindow se může schovat nebo ukázat alternativní obsah, pokud je aukce Pending */}
                         <BidWindow product={product} />
                     </div>
                     <ImageGallery coverImage={product.cover_image} otherImages={product.images}/>
                 </div>
             </Hero>
 
-            {/* Zbytek stránky (Popis a Historie příhozů) zůstává nezměněn */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
                 <div className="lg:col-span-7 flex flex-col gap-6">
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-4 border-b border-gray-200 pb-4">

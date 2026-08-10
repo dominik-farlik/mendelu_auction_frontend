@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { type GroupCreate, groupService } from "../../api/groupService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
-import UserPage from "../user/UserPage.tsx";
+import UserPage from "../profile/UserPage.tsx";
 
 export default function CreateGroup() {
     const [group, setGroup] = useState<GroupCreate>({

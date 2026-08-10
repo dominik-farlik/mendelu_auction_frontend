@@ -29,14 +29,12 @@ export default function GroupList() {
             });
     }, []);
 
-    // Během načítání nebo při prázdném poli neukazujeme nic, vše řeší toast
     if (loading || groups.length === 0) {
         return null;
     }
 
     return (
         <div className="flex flex-col gap-4">
-            {/* Desktopová hlavička */}
             <div className="hidden md:grid grid-cols-5 gap-4 px-6 py-3 bg-slate-100 rounded-xl text-sm font-bold text-slate-600 md:justify-items-center">
                 <div>Název</div>
                 <div>Organizace</div>
@@ -45,7 +43,6 @@ export default function GroupList() {
                 <div>Počet členů</div>
             </div>
 
-            {/* Výpis skupin */}
             <div className="flex flex-col gap-3">
                 {groups.map((group) => (
                     <Link
@@ -55,7 +52,6 @@ export default function GroupList() {
                     >
                         <div className="bg-white border border-slate-200 rounded-2xl p-4 md:px-6 md:py-4 transition-all hover:border-[#4ade80] hover:shadow-md grid grid-cols-2 md:grid-cols-5 gap-4 md:items-center md:justify-items-center">
 
-                            {/* Název */}
                             <div className="flex flex-col md:block">
                                 <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Název</span>
                                 <strong className="text-slate-900 font-bold group-hover:text-[#4ade80] transition-colors">
@@ -63,7 +59,6 @@ export default function GroupList() {
                                 </strong>
                             </div>
 
-                            {/* Organizace */}
                             <div className="flex flex-col md:block">
                                 <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Organizace</span>
                                 {group.organization ? (
@@ -73,13 +68,11 @@ export default function GroupList() {
                                 )}
                             </div>
 
-                            {/* Datum vytvoření */}
                             <div className="flex flex-col md:block">
                                 <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Datum vytvoření</span>
                                 <span className="text-slate-700 font-medium">{formatDate(group.created_at)}</span>
                             </div>
 
-                            {/* Správce */}
                             <div className="flex flex-col md:block">
                                 <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Správce</span>
                                 <span className="text-slate-700 font-medium">
@@ -87,7 +80,6 @@ export default function GroupList() {
                                 </span>
                             </div>
 
-                            {/* Členové */}
                             <div className="flex flex-col md:block">
                                 <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Počet členů</span>
                                 <span className="text-slate-700 font-medium">

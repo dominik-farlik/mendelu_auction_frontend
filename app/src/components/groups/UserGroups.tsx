@@ -1,7 +1,7 @@
 import LinkButton from "../buttons/LinkButton.tsx";
 import GroupList from "./GroupList.tsx";
 import { Role } from "../../types/user.ts";
-import UserPage from "../user/UserPage.tsx";
+import UserPage from "../profile/UserPage.tsx";
 import {useAuth} from "../../context/useAuth.ts";
 
 export default function UserGroups() {

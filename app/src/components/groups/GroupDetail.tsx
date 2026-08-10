@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import { type ProductResponse, productService } from "../../api/productService.ts";
-import UserPageMenu from "../user/UserPageMenu.tsx";
+import UserPageMenu from "../profile/UserPageMenu.tsx";
 import AddMember from "./AddMember.tsx";
 import ActionButton from "../buttons/ActionButton.tsx";
-import type { UserResponse } from "../../api/userService.ts";
 import CreatedAuctions from "../auction/CreatedAuctions.tsx";
 import LinkButton from "../buttons/LinkButton.tsx";
+import UserList from "../users/UserList.tsx";
 
 export default function GroupDetail() {
     const { groupId } = useParams<{ groupId: string }>();
@@ -89,24 +89,7 @@ export default function GroupDetail() {
                                     )}
                                 </div>
 
-                                {!group.members || group.members.length === 0 ? (
-                                    <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center">
-                                        <span className="text-slate-500 font-medium">V této skupině zatím nejsou žádní další členové.</span>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        {group.members.map((member: UserResponse, index) => (
-                                            <div key={index} className="bg-white border border-slate-200 rounded-xl px-5 py-4 flex items-center gap-4 transition-all hover:border-slate-300">
-                                                <div className="w-10 h-10 shrink-0 rounded-full bg-[#4ade80]/20 text-[#16a34a] flex items-center justify-center font-bold text-sm">
-                                                    {member.first_name[0]}{member.last_name[0]}
-                                                </div>
-                                                <strong className="text-slate-700 truncate">
-                                                    {member.first_name} {member.last_name}
-                                                </strong>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                <UserList users={group.members} />
                             </div>
 
                             <div className="flex flex-col gap-4">

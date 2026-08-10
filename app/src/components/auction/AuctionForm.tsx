@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { SaleType } from "../../types/product.ts";
 import type { GroupResponse } from "../../api/groupService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
-import type {ProductCreate} from "../../api/productService.ts";
+import type { ProductCreate } from "../../api/productService.ts";
+import toast from "react-hot-toast";
 
 export interface AuctionFormData {
     title: string;
@@ -52,10 +53,25 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Sdílená logika pro parsování dat před odesláním na API
+        if (formData.starts_at && formData.ends_at) {
+            const startDate = new Date(formData.starts_at);
+            const endDate = new Date(formData.ends_at);
+            const now = new Date();
+
+            if (!isEditMode && startDate < now) {
+                toast.error("Začátek aukce nesmí být v minulosti.");
+                return;
+            }
+
+            if (startDate >= endDate) {
+                toast.error("Konec aukce musí být nastaven až po jejím začátku.");
+                return;
+            }
+        }
+
         const productPayload = {
             title: formData.title,
             description: formData.description || null,
@@ -69,8 +85,14 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
             group_id: Number(formData.group_id),
         };
 
-        // Předání dat rodiči
         await onSubmit(productPayload, coverImage, additionalImages);
+    };
+
+    // Pomocná funkce pro získání aktuálního data/času ve formátu pro <input type="datetime-local">
+    const getCurrentDateTimeLocal = () => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        return now.toISOString().slice(0, 16);
     };
 
     const inputClasses = "w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-[#4ade80]/20 focus:border-[#4ade80] transition-all text-slate-900 font-medium placeholder:text-slate-400";
@@ -186,6 +208,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         name="starts_at"
                         value={formData.starts_at}
                         onChange={handleChange}
+                        min={!isEditMode ? getCurrentDateTimeLocal() : undefined}
                         className={inputClasses}
                     />
                 </div>
@@ -196,6 +219,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         name="ends_at"
                         value={formData.ends_at}
                         onChange={handleChange}
+                        min={formData.starts_at || getCurrentDateTimeLocal()}
                         className={inputClasses}
                     />
                 </div>

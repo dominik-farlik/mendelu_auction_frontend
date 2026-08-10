@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import mendelu_logo_white from '../../assets/Mendelova_univerzita_logo_white.png';
-import mendelu_logo_dark from '../../assets/Mendelova univerzita_logo_black.jpg';
+import mendelu_logo_dark from '../../assets/Mendelova_univerzita_logo_black.png';
 import LinkButton from "../buttons/LinkButton.tsx";
 import {Link, useLocation} from "react-router-dom";
 import UserMenu from "./UserMenu.tsx";

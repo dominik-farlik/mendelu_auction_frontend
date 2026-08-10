@@ -89,5 +89,13 @@ export const userService = {
     async getFollowedProducts(): Promise<ProductResponse[]> {
         const response = await api.get<ProductResponse[]>("users/followed-products");
         return response.data;
+    },
+
+    /**
+     * Získá všechny produkty, na které aktuálně přihlášený uživatel přihodil.
+     */
+    async getBiddedProducts(): Promise<ProductResponse[]> {
+        const response = await api.get<ProductResponse[]>("users/bidded-products");
+        return response.data;
     }
 };

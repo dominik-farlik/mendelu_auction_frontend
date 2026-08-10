@@ -19,7 +19,7 @@ export interface ProductResponse {
     starts_at: string;
     ends_at: string;
     created_by_id: number;
-    group: {name: string, organization: string};
+    group: {id: number, name: string, organization: string};
     created_at: string;
     status: Status;
     is_followed: boolean;
@@ -69,6 +69,37 @@ export const productService = {
         }
 
         const response = await api.post<ProductResponse>('/products/', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return response.data;
+    },
+
+    /**
+     * Upraví nabídku
+     */
+    async updateAuction(
+        productId: number,
+        productData: ProductCreate,
+        coverImage: File | null,
+        additionalImages: FileList | null
+    ): Promise<ProductResponse> {
+        const data = new FormData();
+        data.append('product_data', JSON.stringify(productData));
+
+        if (coverImage) {
+            data.append('cover_image', coverImage);
+        }
+
+        if (additionalImages) {
+            for (let i = 0; i < additionalImages.length; i++) {
+                data.append('additional_images', additionalImages[i]);
+            }
+        }
+
+        const response = await api.patch<ProductResponse>(`/products/${productId}`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

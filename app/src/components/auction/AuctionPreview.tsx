@@ -16,7 +16,7 @@ export default function AuctionPreview({ auction, hasBids, currentPrice }: {auct
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (
-                    <div className="w-full flex items-center justify-center text-slate/30 h-64 bg-slate-100">
+                    <div className="w-full flex items-center justify-center text-white h-64 bg-black/10 animate-pulse">
                         Načítání obrázku...
                     </div>
                 )}
@@ -25,13 +25,15 @@ export default function AuctionPreview({ auction, hasBids, currentPrice }: {auct
                     <TimerBadge endTime={auction.ends_at} />
                 </div>
 
-                { isAuthenticated && <div className="absolute top-4 left-4 z-10">
-                    <FollowButton
-                        productId={auction.id}
-                        productIsFollowed={auction.is_followed}
-                        variant="preview"
-                    />
-                </div>}
+                { isAuthenticated &&
+                    <div className="absolute top-4 left-4 z-10">
+                        <FollowButton
+                            productId={auction.id}
+                            productIsFollowed={auction.is_followed}
+                            variant="preview"
+                        />
+                    </div>
+                }
             </div>
 
             <div className="flex flex-col grow p-6">
@@ -52,12 +54,12 @@ export default function AuctionPreview({ auction, hasBids, currentPrice }: {auct
 
                 <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between gap-4">
                     <div className="flex flex-col">
-                                        <span className="text-xs text-slate-500 font-medium">
-                                            {hasBids ? "Aktuální cena" : "Vyvolávací cena"}
-                                        </span>
+                        <span className="text-xs text-slate-500 font-medium">
+                            {hasBids ? "Aktuální cena" : "Vyvolávací cena"}
+                        </span>
                         <span className="text-xl font-black text-slate-900">
-                                            {currentPrice.toLocaleString('cs-CZ')} Kč
-                                        </span>
+                            {currentPrice.toLocaleString('cs-CZ')} Kč
+                        </span>
                     </div>
 
                     <LinkButton

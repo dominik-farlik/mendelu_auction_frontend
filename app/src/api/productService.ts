@@ -1,5 +1,5 @@
 import api from './axios';
-import type { SaleType, Status } from "../types/product.ts";
+import type {Category, SaleType, Status} from "../types/product.ts";
 import type {UserResponse} from "./userService.ts";
 
 export interface ProductImageResponse {
@@ -10,6 +10,7 @@ export interface ProductResponse {
     id: number;
     title: string;
     description?: string;
+    category: Category;
     starting_price: number;
     buy_now_price?: number;
     min_bid?: number;
@@ -30,6 +31,7 @@ export interface ProductResponse {
 export interface ProductCreate {
     title: string;
     description?: string | null;
+    category: Category;
     starting_price: number;
     buy_now_price?: number | null;
     min_bid?: number | null;

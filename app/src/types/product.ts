@@ -13,3 +13,21 @@ export const Status = {
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];
+
+export const Category = {
+    AutoMoto: "Auto-moto",
+    TravelAndAccommodation: "Cestování a pobyty",
+    Electronics: "Elektronika",
+    MusicAndMovie: "Hudba a film",
+    Food: "Jídlo",
+    Merch: "Merch",
+    Fashion: "Móda",
+    Services: "SluŽby",
+    Sport: "Sport",
+    Art: "Umění",
+    Fun: "Zábava",
+    Experience: "Zážitky",
+    Other: "Jiné"
+}
+
+export type Category = typeof Category[keyof typeof Category];

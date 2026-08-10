@@ -9,6 +9,7 @@ import AuctionDetail from "./components/auction/AuctionDetail.tsx";
 import {Toaster} from "react-hot-toast";
 import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
 import AuthProvider from "./context/AuthProvider.tsx";
+import UpdateAuction from "./components/auction/UpdateAuction.tsx";
 
 function RootLayout() {
     return (
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
                 children: [
                     {path: "/vytvorit-aukci", element: <CreateAuction/>},
                     {path: "/vytvorit-aukci/:groupId", element: <CreateAuction/>},
+                    {path: "/upravit-aukci/:productId", element: <UpdateAuction />},
                     {path: "/profil", element: <Navigate to="/profile/osobni-udaje" replace/>},
                     {path: "/profil/:activeWindow", element: <UserPage/>},
                     {path: "/skupina/:groupId", element: <GroupDetail/>}

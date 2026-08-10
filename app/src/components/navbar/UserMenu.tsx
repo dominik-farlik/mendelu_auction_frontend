@@ -89,6 +89,15 @@ export default function UserMenu() {
                         >
                             Výhry
                         </Link>
+                        {user?.role.name === Role.Manager &&
+                            <Link
+                                to="/profil/sprava-uzivatelu"
+                                onClick={() => setIsOpen(false)}
+                                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-slate-900 transition-colors"
+                            >
+                                Správa uživatelů
+                            </Link>
+                        }
                     </div>
 
                     <div className="p-3 border-t border-gray-100 bg-gray-50">

@@ -13,7 +13,7 @@ export default function ImageGallery({coverImage, otherImages}: {coverImage: str
 
     return (
         <div className="flex-1 w-full relative z-10 flex flex-col items-center lg:items-end">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-[110%] aspect-square rounded-full border-[5px] border-[#4ade80]/80 pointer-events-none hidden lg:block z-0"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-[110%] aspect-square rounded-full border-[5px] border-[#4ade80]/80 shadow-[5px_5px_50px_rgba(74,222,128,0.2)] pointer-events-none hidden lg:block z-0"></div>
 
             <div className="relative z-10 w-full max-w-150 shadow-2xl rounded-4xl overflow-hidden bg-black/20 ring-1 ring-white/10">
                 {currentImage ? (

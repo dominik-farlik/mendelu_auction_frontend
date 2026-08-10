@@ -9,11 +9,12 @@ import {Toaster} from "react-hot-toast";
 import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
 import AuthProvider from "./context/AuthProvider.tsx";
 import UpdateAuction from "./components/auction/UpdateAuction.tsx";
-import Users from "./components/user/users/Users.tsx";
-import UserDetail from "./components/user/UserDetail.tsx";
+import Users from "./components/users/Users.tsx";
+import UserDetail from "./components/profile/UserDetail.tsx";
 import UserGroups from "./components/groups/UserGroups.tsx";
-import BidFollowAuctions from "./components/user/bidOrFollow/BidFollowAuctions.tsx";
+import BidFollowAuctions from "./components/profile/bidOrFollow/BidFollowAuctions.tsx";
 import CreateGroup from "./components/groups/CreateGroup.tsx";
+import {Role} from "./types/user.ts";
 
 function RootLayout() {
     return (
@@ -43,19 +44,29 @@ const router = createBrowserRouter([
             {
                 element: <ProtectedRoute />,
                 children: [
-                    {path: "/vytvorit-aukci", element: <CreateAuction/>},
-                    {path: "/vytvorit-aukci/:groupId", element: <CreateAuction/>},
-                    {path: "/upravit-aukci/:productId", element: <UpdateAuction />},
-
                     {path: "/profil", element: <Navigate to="/profile/osobni-udaje" replace/>},
                     {path: "/profil/osobni-udaje", element: <UserDetail />},
                     {path: "/profil/moje-prihozy", element: <BidFollowAuctions />},
+                ]
+            },
 
+            {
+                element: <ProtectedRoute allowedRoles={[Role.Editor, Role.Manager]} />,
+                children: [
                     {path: "/profil/skupiny", element: <UserGroups />},
-                    {path: "/vytvorit-skupinu", element: <CreateGroup />},
                     {path: "/skupina/:groupId", element: <GroupDetail/>},
-                    
-                    {path: "/uzivatele", element: <Users />}
+
+                    {path: "/vytvorit-aukci", element: <CreateAuction/>},
+                    {path: "/vytvorit-aukci/:groupId", element: <CreateAuction/>},
+                    {path: "/upravit-aukci/:productId", element: <UpdateAuction />},
+                ]
+            },
+
+            {
+                element: <ProtectedRoute allowedRoles={[Role.Manager]} />,
+                children: [
+                    {path: "/vytvorit-skupinu", element: <CreateGroup />},
+                    {path: "profil/sprava-uzivatelu", element: <Users />}
                 ]
             }
         ]

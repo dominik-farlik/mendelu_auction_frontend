@@ -1,16 +1,14 @@
-import { useParams } from "react-router-dom";
-import UserDetail from "./users/UserDetail.tsx";
-import UserGroups from "./groups/UserGroups.tsx";
-import BidFollowAuctions from "./bidOrFollow/BidFollowAuctions.tsx";
 import Navbar from "../navbar/Navbar.tsx";
-import CreateGroup from "./groups/CreateGroup.tsx";
 import UserPageMenu from "./UserPageMenu.tsx";
 import Page from "../Page.tsx";
+import React from "react";
 
-export default function UserPage() {
-    const { activeWindow } = useParams<{ activeWindow: string }>();
-    const currentWindow = activeWindow || "osobni-udaje";
+type UserPageProps = {
+    children: React.ReactNode;
+    currentWindow?: "osobni-udaje" | "skupiny" | "vytvorit-skupinu" | "moje-prihozy";
+}
 
+export default function UserPage({children, currentWindow = "osobni-udaje"}: UserPageProps) {
     return (
         <Page>
             <Navbar />
@@ -18,10 +16,9 @@ export default function UserPage() {
                 <UserPageMenu currentWindow={currentWindow} />
 
                 <div className="flex-1 bg-white rounded-3xl p-6 md:p-8 lg:p-10 shadow-sm border border-slate-200">
-                    {currentWindow === "osobni-udaje" && <UserDetail />}
-                    {currentWindow === "skupiny" && <UserGroups />}
-                    {currentWindow === "vytvorit-skupinu" && <CreateGroup />}
-                    {currentWindow === "moje-prihozy" && <BidFollowAuctions />}
+                    <div className="flex flex-col h-full">
+                        {children}
+                    </div>
                 </div>
             </div>
         </Page>

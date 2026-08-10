@@ -19,18 +19,27 @@ export default function UserPageMenu({ currentWindow }: { currentWindow: string 
                 active={currentWindow === "osobni-udaje"}
                 handleTabChange={handleTabChange}
             />
+
             {(user?.role.name === Role.Editor || user?.role.name === Role.Manager) &&
                 <MenuButton
                     title="Moje skupiny"
                     windowName="skupiny"
-                    active={currentWindow === "skupiny" || currentWindow === "vytvorit-skupinu"}
+                    active={currentWindow === "skupiny"}
                     handleTabChange={handleTabChange}
                 />
             }
+
             <MenuButton
                 title="Přihazuji a sleduji"
                 windowName="moje-prihozy"
                 active={currentWindow === "moje-prihozy"}
+                handleTabChange={handleTabChange}
+            />
+
+            <MenuButton
+                title="Správa uživatelů"
+                windowName="sprava-uzivatelu"
+                active={currentWindow === "sprava-uzivatelu"}
                 handleTabChange={handleTabChange}
             />
         </div>

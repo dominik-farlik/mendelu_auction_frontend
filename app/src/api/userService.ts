@@ -42,6 +42,16 @@ export const userService = {
     },
 
     /**
+     * Získá všechny uživatelů systému.
+     *
+     * @returns {Promise<UserResponse[]>}
+     */
+    async getAllUsers(): Promise<UserResponse[]> {
+        const response = await api.get<UserResponse[]>("/users");
+        return response.data;
+    },
+
+    /**
      * Aktualizuje údaje aktuálně přihlášeného uživatele.
      *
      * @param {UserUpdate} userData - Nové údaje uživatele (jméno, email, atd.).

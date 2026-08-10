@@ -34,7 +34,6 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
 
             {!isAuthPage && (
                 <>
-                    {/* Mobilní přepínač */}
                     <button
                         className={`md:hidden z-50 relative p-2 -mr-2 focus:outline-none transition-colors ${toggleBtnClass}`}
                         onClick={() => setIsOpen(!isOpen)}
@@ -47,7 +46,6 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
                         )}
                     </button>
 
-                    {/* Desktop i mobilní linky */}
                     <div className={`
                         absolute top-full left-0 w-full bg-slate-900/95 backdrop-blur-lg border-t border-white/10 p-6 flex flex-col gap-6 shadow-2xl transition-all duration-300 origin-top text-white
                         md:static md:w-auto md:bg-transparent md:border-none md:p-0 md:flex-row md:gap-8 md:items-center md:shadow-none md:translate-y-0 md:opacity-100 md:scale-100 ${desktopTextClass}

@@ -2,9 +2,10 @@ import LinkButton from "../buttons/LinkButton.tsx";
 import TimerBadge from "../TimerBadge.tsx";
 import FollowButton from "../buttons/FollowButton.tsx";
 import type {ProductResponse} from "../../api/productService.ts";
+import {useAuth} from "../../context/useAuth.ts";
 
 export default function AuctionPreview({ auction, hasBids, currentPrice }: {auction: ProductResponse, hasBids: boolean, currentPrice: number}) {
-
+    const { isAuthenticated } = useAuth();
     return (
         <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all duration-300">
             <div className="relative h-64 overflow-hidden bg-slate-100 shrink-0">
@@ -24,13 +25,13 @@ export default function AuctionPreview({ auction, hasBids, currentPrice }: {auct
                     <TimerBadge endTime={auction.ends_at} />
                 </div>
 
-                <div className="absolute top-4 left-4 z-10">
+                { isAuthenticated && <div className="absolute top-4 left-4 z-10">
                     <FollowButton
                         productId={auction.id}
                         productIsFollowed={auction.is_followed}
                         variant="preview"
                     />
-                </div>
+                </div>}
             </div>
 
             <div className="flex flex-col grow p-6">

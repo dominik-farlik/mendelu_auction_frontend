@@ -101,7 +101,7 @@ export const productService = {
             }
         }
 
-        const response = await api.patch<ProductResponse>(`/products/${productId}`, data, {
+        const response = await api.put<ProductResponse>(`/products/${productId}`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

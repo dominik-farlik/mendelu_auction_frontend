@@ -42,6 +42,16 @@ export const userService = {
     },
 
     /**
+     * Získá profil uživatele podle ID.
+     *
+     * @returns {Promise<UserResponse>} Data přihlášeného uživatele.
+     */
+    async getUser(userId: number): Promise<UserResponse> {
+        const response = await api.get<UserResponse>(`/users/${userId}`);
+        return response.data;
+    },
+
+    /**
      * Získá všechny uživatelů systému.
      *
      * @returns {Promise<UserResponse[]>}

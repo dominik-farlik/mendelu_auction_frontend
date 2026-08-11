@@ -15,6 +15,7 @@ import UserGroups from "./components/groups/UserGroups.tsx";
 import BidFollowAuctions from "./components/profile/bidOrFollow/BidFollowAuctions.tsx";
 import CreateGroup from "./components/groups/CreateGroup.tsx";
 import {Role} from "./types/user.ts";
+import User from "./components/users/User.tsx";
 
 function RootLayout() {
     return (
@@ -29,17 +30,10 @@ const router = createBrowserRouter([
         element: <RootLayout/>,
         children: [
             {path: "/", element: <HomePage/>},
-            {
-                path: "/login",
-                element: <AuthForm defaultIsLogin={true}/>,
-                loader: checkIfLoggedInLoader,
-            },
-            {
-                path: "/register",
-                element: <AuthForm defaultIsLogin={false}/>,
-                loader: checkIfLoggedInLoader,
-            },
+            {path: "/login", element: <AuthForm defaultIsLogin={true}/>, loader: checkIfLoggedInLoader},
+            {path: "/register", element: <AuthForm defaultIsLogin={false}/>, loader: checkIfLoggedInLoader},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
+            {path: "/uzivatel/:userId", element: <User />},
 
             {
                 element: <ProtectedRoute />,

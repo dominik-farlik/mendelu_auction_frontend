@@ -68,20 +68,19 @@ export default function MainAuctions({ auctions }: { auctions: ProductResponse[]
                     <LinkButton link={`/aukce/detail/${currentAuction.id}`} title="Zobrazit nabídku" size="large" />
                 </div>
 
-                {/* Pravá část - Obrázek s grafickým prvkem */}
                 <div className="flex-1 relative w-full h-100 flex items-center justify-center z-10 mt-8 md:mt-0">
-                    {/* Zářící kruh na pozadí (inspirováno obrázkem) */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-87.5 h-87.5 md:w-112.5 md:h-112.5 rounded-full border-[6px] border-green-400/80 shadow-[0_0_50px_rgba(74,222,128,0.2)] z-0 pointer-events-none"></div>
 
-                    <img
-                        src={currentAuction.cover_image ? `${import.meta.env.VITE_IMAGES_URL}/${currentAuction.cover_image}` : "/placeholder-image.jpg"}
+                    {currentAuction.cover_image ? (<img
+                        src={`${import.meta.env.VITE_IMAGES_URL}/${currentAuction.cover_image}`}
                         alt={currentAuction.title}
                         className="w-full max-w-lg h-auto object-cover rounded-3xl z-10 relative shadow-2xl transform transition-transform hover:scale-[1.02] duration-500"
-                    />
+                    />) : (
+                        <div className="w-full max-w-lg h-74 object-cover rounded-3xl z-10 relative shadow-2xl bg-slate-800 animate-pulse"></div>
+                    )}
                 </div>
             </div>
 
-            {/* Navigace / Tečky (pokud je aukcí více) */}
             {auctions.length > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-8">
                     {auctions.map((_, index) => (

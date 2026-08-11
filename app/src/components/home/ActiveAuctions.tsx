@@ -61,7 +61,7 @@ export default function ActiveAuctions({ auctions }: { auctions: ProductResponse
 
             {filteredAuctions.length === 0 && (
                 <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-200 dashed">
-                    <p className="text-slate-500 font-medium">Momentálně neprobíhají žádné aukce pro vybrané kategorie.</p>
+                    <p className="text-slate-500 font-medium">Momentálně neprobíhají žádné aukce.</p>
                 </div>
             )}
         </div>

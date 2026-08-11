@@ -73,6 +73,16 @@ export const userService = {
     },
 
     /**
+     * Změní roli uživatele.
+     * @param userId
+     * @param role Název nové role.
+     */
+    async updateUserRole(userId: number, role: Role): Promise<UserResponse> {
+        const response = await api.put<UserResponse>(`/users/${userId}/role`, {name: role});
+        return response.data;
+    },
+
+    /**
      * Přihodí danou částku na specifikovanou aukci (produkt).
      *
      * @param {number} productId - ID produktu (aukce), na který se přihazuje.

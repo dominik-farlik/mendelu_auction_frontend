@@ -47,15 +47,15 @@ export default function MainAuctions({ auctions }: { auctions: ProductResponse[]
                     </h1>
 
                     <div className="flex items-center gap-12 mb-8">
-                        <div>
+                        {currentAuction.bids.length > 0 && <div className="flex flex-col items-center">
                             <p className="text-slate-400 text-xs uppercase tracking-wider mb-1 flex items-center gap-1">
-                                <span className="bg-slate-700/50 p-1 rounded-full text-[10px]">▲</span> Příhozů
+                                <span className="bg-slate-700/50 px-2 py-1.5 rounded-full text-[10px]">▲</span> Příhozů
                             </p>
-                            <p className="text-3xl font-bold text-white">{currentAuction.bids.length || 0}</p>
-                        </div>
-                        <div>
+                            <p className="text-3xl font-bold text-white">{currentAuction.bids.length}</p>
+                        </div>}
+                        <div className="flex flex-col items-center">
                             <p className="text-slate-400 text-xs uppercase tracking-wider mb-1 flex items-center gap-1">
-                                <span className="bg-slate-700/50 p-1 rounded-full text-[10px]">◎</span> Vyvolávací cena
+                                <span className="bg-slate-700/50 px-2 py-1.5 rounded-full text-[10px]">◎</span> Vyvolávací cena
                             </p>
                             <p className="text-3xl font-bold text-white">
                                 {formatPrice(currentAuction.bids && currentAuction.bids.length > 0

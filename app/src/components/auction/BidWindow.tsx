@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { type ProductResponse } from "../../api/productService.ts";
+import {type ProductResponse, productService} from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
-import { userService } from "../../api/userService.ts";
 import TimerBadge from "../TimerBadge.tsx";
 import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
@@ -45,7 +44,7 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
         }
 
         setIsBidding(true);
-        const bidPromise = userService.bid(product.id, Number(bidAmount))
+        const bidPromise = productService.bid(product.id, Number(bidAmount))
             .finally(() => setIsBidding(false));
 
         await toast.promise(bidPromise, {

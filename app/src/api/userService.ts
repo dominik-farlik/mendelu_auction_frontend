@@ -83,41 +83,10 @@ export const userService = {
     },
 
     /**
-     * Přihodí danou částku na specifikovanou aukci (produkt).
-     *
-     * @param {number} productId - ID produktu (aukce), na který se přihazuje.
-     * @param {number} amount - Částka příhozu.
-     * @returns {Promise<{product: ProductResponse, amount: number}>} Aktualizovaný produkt a potvrzená částka.
-     */
-    async bid(productId: number, amount: number): Promise<{ product: ProductResponse, amount: number }> {
-        const response = await api.post<{ product: ProductResponse, amount: number }>(`/users/bid/${productId}`, { "amount": amount });
-        return response.data;
-    },
-
-    /**
-     * Přidá produkt (aukci) do seznamu sledovaných položek uživatele (Watchlist).
-     *
-     * @param {number} productId - ID produktu, který chce uživatel sledovat.
-     * @returns {Promise<{message: string}>} Potvrzovací zpráva o začátku sledování.
-     */
-    async followProduct(productId: number): Promise<{ message: string }> {
-        const response = await api.post<{ message: string }>(`users/follow/${productId}`);
-        return response.data;
-    },
-
-    /**
-     * Odebere produkt ze seznamu sledovaných.
-     */
-    async unfollowProduct(productId: number): Promise<{ message: string }> {
-        const response = await api.delete<{ message: string }>(`users/follow/${productId}`);
-        return response.data;
-    },
-
-    /**
      * Získá všechny produkty, které aktuálně přihlášený uživatel sleduje.
      */
     async getFollowedProducts(): Promise<ProductResponse[]> {
-        const response = await api.get<ProductResponse[]>("users/followed-products");
+        const response = await api.get<ProductResponse[]>("users/me/followed-products");
         return response.data;
     },
 
@@ -125,7 +94,7 @@ export const userService = {
      * Získá všechny produkty, na které aktuálně přihlášený uživatel přihodil.
      */
     async getBiddedProducts(): Promise<ProductResponse[]> {
-        const response = await api.get<ProductResponse[]>("users/bidded-products");
+        const response = await api.get<ProductResponse[]>("users/me/bidded-products");
         return response.data;
     }
 };

@@ -1,7 +1,7 @@
-import { userService } from "../../api/userService.ts";
 import toast from "react-hot-toast";
 import type { AxiosError } from "axios";
 import { useState, useEffect } from "react";
+import {productService} from "../../api/productService.ts";
 
 type FollowButtonProps = {
     productId: number;
@@ -26,8 +26,8 @@ export default function FollowButton({productId, productIsFollowed, btnFill = fa
         setProcessingFollow(true);
 
         const requestPromise = isFollowed
-            ? userService.unfollowProduct(productId)
-            : userService.followProduct(productId);
+            ? productService.unfollowProduct(productId)
+            : productService.followProduct(productId);
 
         const successMessage = isFollowed
             ? "Sledování aukce bylo zrušeno."

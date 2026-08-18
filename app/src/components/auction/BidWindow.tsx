@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import { type ProductResponse, productService } from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
 import TimerBadge from "../TimerBadge.tsx";
@@ -10,8 +10,7 @@ import { useAuth } from "../../context/useAuth.ts";
 
 export default function BidWindow({ product }: { product: ProductResponse }) {
     const { isAuthenticated } = useAuth();
-
-    const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>('auction');
+    const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>(product.starting_price ? 'auction' : 'buy_now');
     const [isBidding, setIsBidding] = useState<boolean>(false);
     const [isBuying, setIsBuying] = useState<boolean>(false);
     const [isTimeUp, setIsTimeUp] = useState<boolean>(false);
@@ -96,17 +95,19 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
             {!isFinished && (
                 <div className="flex justify-between items-center mb-8">
                     <div className={`flex p-1 rounded-full ${tabContainerBg}`}>
-                        <button
-                            className={`px-5 py-2 rounded-full text-sm font-bold flex items-center transition-colors ${
-                                !isBuyNow
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-700 hover:text-slate-900'
-                            }`}
-                            onClick={() => setActiveTab('auction')}
-                        >
-                            Aukce
-                        </button>
-                        {product.buy_now_price && product.buy_now_price > 0 && (
+                        {product.starting_price && product.starting_price > 0 &&
+                            <button
+                                className={`px-5 py-2 rounded-full text-sm font-bold flex items-center transition-colors ${
+                                    !isBuyNow
+                                        ? 'bg-white text-slate-900 shadow-sm'
+                                        : 'text-slate-700 hover:text-slate-900'
+                                }`}
+                                onClick={() => setActiveTab('auction')}
+                            >
+                                Aukce
+                            </button>
+                        }
+                        {product.buy_now_price && product.buy_now_price > 0 &&
                             <button
                                 className={`px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${
                                     isBuyNow
@@ -120,7 +121,7 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
                                     {formattedBuyNowPrice} Kč
                                 </span>
                             </button>
-                        )}
+                        }
                     </div>
                     <FollowButton productId={product.id} productIsFollowed={product.is_followed} btnFill={isBuyNow}/>
                 </div>

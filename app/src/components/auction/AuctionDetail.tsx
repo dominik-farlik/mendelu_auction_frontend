@@ -15,6 +15,7 @@ export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
     const { user } = useAuth()
     const navigate = useNavigate();
+    const [loading, setLoading] = useState<boolean>(true);
     const [product, setProduct] = useState<ProductResponse>({
         id: Number(productId),
         big_preview: false,
@@ -43,6 +44,7 @@ export default function AuctionDetail() {
         productService.getProductDetail(Number(productId))
             .then((data) => {
                 setProduct(data);
+                setLoading(false);
             });
     }, [productId]);
 
@@ -205,7 +207,7 @@ export default function AuctionDetail() {
                             </div>
                         </div>
 
-                        <BidWindow product={product} />
+                        {!loading && <BidWindow product={product}/>}
                     </div>
                     <ImageGallery coverImage={product.cover_image} otherImages={product.images}/>
                 </div>

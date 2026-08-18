@@ -72,6 +72,11 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
             }
         }
 
+        if (!formData.starting_price && !formData.buy_now_price) {
+            alert("Musíte zadat buď počáteční cenu pro aukci, nebo cenu Kup teď.");
+            return;
+        }
+
         const productPayload = {
             title: formData.title,
             description: formData.description || null,
@@ -169,7 +174,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         type="number"
                         step="1"
                         name="starting_price"
-                        required
+                        required={!formData.buy_now_price}
                         value={formData.starting_price}
                         onChange={handleChange}
                         className={inputClasses}
@@ -182,7 +187,6 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         type="number"
                         step="1"
                         name="min_bid"
-                        required
                         value={formData.min_bid}
                         onChange={handleChange}
                         className={inputClasses}
@@ -191,7 +195,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                     />
                 </div>
                 <div>
-                    <label className={labelClasses}>Cena Kup teď (nepovinné)</label>
+                    <label className={labelClasses}>Cena Kup teď (Kč)</label>
                     <input
                         type="number"
                         step="1"
@@ -201,6 +205,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         className={inputClasses}
                         min={1}
                         placeholder="0"
+                        required={!formData.starting_price}
                     />
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {type ProductResponse, productService} from "../../api/productService.ts";
+import { type ProductResponse, productService } from "../../api/productService.ts";
 import { Status } from "../../types/product.ts";
 import TimerBadge from "../TimerBadge.tsx";
 import type { AxiosError } from "axios";
@@ -12,9 +12,11 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
     const { isAuthenticated } = useAuth();
 
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>('auction');
-
     const [isBidding, setIsBidding] = useState<boolean>(false);
     const [isBuying, setIsBuying] = useState<boolean>(false);
+    const [isTimeUp, setIsTimeUp] = useState<boolean>(false);
+
+    const isFinished = product.status === Status.Finished || isTimeUp;
 
     const currentPrice = product.bids && product.bids.length > 0
         ? Math.max(...product.bids.map(b => b.amount))
@@ -81,50 +83,79 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
     const formattedBuyNowPrice = product.buy_now_price?.toLocaleString('cs-CZ');
 
     const isBuyNow = activeTab === 'buy_now';
-    const cardBg = isBuyNow ? 'bg-[#4ade80] text-slate-900' : 'bg-white text-slate-900 shadow-xl border border-gray-100';
+    const cardBg = isFinished
+        ? 'bg-gray-100 text-slate-900 border border-gray-200'
+        : isBuyNow
+            ? 'bg-[#4ade80] text-slate-900'
+            : 'bg-white text-slate-900 shadow-xl border border-gray-100';
+
     const tabContainerBg = isBuyNow ? 'bg-black/10' : 'bg-gray-100';
 
     return (
         <div className={`w-full max-w-xl rounded-3xl p-6 md:p-8 transition-colors duration-300 ${cardBg} z-20`}>
-            <div className="flex justify-between items-center mb-8">
-                <div className={`flex p-1 rounded-full ${tabContainerBg}`}>
-                    <button
-                        className={`px-5 py-2 rounded-full text-sm font-bold flex items-center transition-colors ${
-                            !isBuyNow
-                                ? 'bg-white text-slate-900 shadow-sm'
-                                : 'text-slate-700 hover:text-slate-900'
-                        }`}
-                        onClick={() => setActiveTab('auction')}
-                    >
-                        Aukce
-                    </button>
-                    {product.buy_now_price && product.buy_now_price > 0 && (
+            {!isFinished && (
+                <div className="flex justify-between items-center mb-8">
+                    <div className={`flex p-1 rounded-full ${tabContainerBg}`}>
                         <button
-                            className={`px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${
-                                isBuyNow
+                            className={`px-5 py-2 rounded-full text-sm font-bold flex items-center transition-colors ${
+                                !isBuyNow
                                     ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-gray-500 hover:text-slate-900'
+                                    : 'text-slate-700 hover:text-slate-900'
                             }`}
-                            onClick={() => setActiveTab('buy_now')}
+                            onClick={() => setActiveTab('auction')}
                         >
-                            Kup teď
-                            <span className={isBuyNow ? 'text-slate-500' : 'text-gray-400'}>
-                                {formattedBuyNowPrice} Kč
-                            </span>
+                            Aukce
                         </button>
+                        {product.buy_now_price && product.buy_now_price > 0 && (
+                            <button
+                                className={`px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${
+                                    isBuyNow
+                                        ? 'bg-white text-slate-900 shadow-sm'
+                                        : 'text-gray-500 hover:text-slate-900'
+                                }`}
+                                onClick={() => setActiveTab('buy_now')}
+                            >
+                                Kup teď
+                                <span className={isBuyNow ? 'text-slate-500' : 'text-gray-400'}>
+                                    {formattedBuyNowPrice} Kč
+                                </span>
+                            </button>
+                        )}
+                    </div>
+                    <FollowButton productId={product.id} productIsFollowed={product.is_followed} btnFill={isBuyNow}/>
+                </div>
+            )}
+
+            {isFinished ? (
+                <div className="flex flex-col items-center py-6 animate-in fade-in zoom-in-95 duration-300 text-center">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4 text-gray-500">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-900 uppercase">Aukce skončila</h2>
+
+                    {product.bids && product.bids.length > 0 ? (
+                        <>
+                            <p className="text-gray-500 font-medium mb-1">Vítězná částka</p>
+                            <div className="text-5xl font-black text-slate-900">{formattedCurrentPrice} Kč</div>
+                        </>
+                    ) : (
+                        <p className="text-gray-500 font-medium mt-4">Aukce skončila bez vítěze.</p>
                     )}
                 </div>
-                <FollowButton productId={product.id} productIsFollowed={product.is_followed} btnFill={isBuyNow}/>
-            </div>
-
-            {!isBuyNow ? (
+            ) : !isBuyNow ? (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
                                 {product.bids?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
                             </span>
-                            <TimerBadge endTime={product.ends_at}/>
+                            <TimerBadge
+                                endTime={product.ends_at}
+                                onTimeUp={() => setIsTimeUp(true)}
+                            />
                         </div>
                         <h2 className="text-5xl font-bold tracking-tight text-slate-900">{formattedCurrentPrice} Kč</h2>
                     </div>
@@ -152,12 +183,13 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
                                     min={minNextBid}
                                     placeholder={`Min. ${minNextBid}`}
                                     className="w-full bg-white border border-gray-300 text-slate-900 rounded-2xl px-5 py-4 text-lg font-bold outline-none focus:ring-4 focus:ring-[#4ade80]/10 transition-all pr-14 shadow-sm"
+                                    disabled={product.status !== Status.Approved || isBidding}
                                 />
                                 <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg pointer-events-none">
                                     Kč
                                 </span>
                             </div>
-                            <BidButton handleBidSubmit={handleBidSubmit} disabled={product.status !== Status.Approved || isBidding} isBidding={isBidding}/>
+                            <BidButton handleBidSubmit={handleBidSubmit} disabled={product.status !== Status.Approved || isBidding || isFinished} isBidding={isBidding}/>
                         </div>
                     </div>
                 </div>

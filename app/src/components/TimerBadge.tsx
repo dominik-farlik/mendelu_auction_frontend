@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { parseTimeDistance } from "../utils/formatDate.ts";
 
-export default function TimerBadge({ endTime }: { endTime: string }) {
+interface TimerBadgeProps {
+    endTime: string;
+    onTimeUp?: () => void;
+}
+
+export default function TimerBadge({ endTime, onTimeUp }: TimerBadgeProps) {
     const [timeRemaining, setTimeRemaining] = useState<string>("");
-    // Místo konkrétní barvy ukládáme rovnou Tailwind třídu
     const [colorClass, setColorClass] = useState<string>("bg-slate-900");
 
     useEffect(() => {
+        let interval: ReturnType<typeof setInterval>;
+        let isFinished = false;
+
         const calculateTimeLeft = () => {
             if (!endTime) return;
 
@@ -16,11 +23,18 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
 
             if (distance < 0) {
                 setTimeRemaining("Aukce skončila");
-                setColorClass("bg-gray-500"); // Pro skončenou aukci se hodí neutrální šedá
+                setColorClass("bg-amber-500");
+
+                if (onTimeUp && !isFinished) {
+                    isFinished = true;
+                    onTimeUp();
+                }
+
+                clearInterval(interval);
                 return;
             }
 
-            const { days, hours, minutes } = parseTimeDistance(distance);
+            const { seconds, days, hours, minutes } = parseTimeDistance(distance);
 
             if (days > 1) {
                 setTimeRemaining(`Aukce končí za ${days} d`);
@@ -31,17 +45,22 @@ export default function TimerBadge({ endTime }: { endTime: string }) {
             } else if (hours > 0) {
                 setTimeRemaining(`Aukce končí za ${hours} h ${minutes} m`);
                 setColorClass("bg-red-500");
+            } else if (minutes > 0) {
+                setTimeRemaining(`Aukce končí za ${minutes} m ${seconds} s`);
+                setColorClass("bg-red-500 animate-pulse");
             } else {
-                setTimeRemaining(`Aukce končí za ${minutes} m`);
-                setColorClass("bg-red-500 animate-pulse"); // U posledních minut můžeme přidat pulzování
+                setTimeRemaining(`Aukce končí za ${seconds} s`);
+                setColorClass("bg-red-500 animate-pulse");
             }
+
+            const nextUpdateInterval = distance < 3600000 ? 1000 : 60000;
+            clearInterval(interval);
+            interval = setInterval(calculateTimeLeft, nextUpdateInterval);
         };
 
         calculateTimeLeft();
-        const interval = setInterval(calculateTimeLeft, 60000);
-
         return () => clearInterval(interval);
-    }, [endTime]);
+    }, [endTime, onTimeUp]);
 
     return (
         <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-white tracking-wide shadow-sm transition-colors duration-300 ${colorClass}`}>

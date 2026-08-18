@@ -21,14 +21,14 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
         ? Math.max(...product.bids.map(b => b.amount))
         : product.starting_price;
 
-    const minNextBid = currentPrice + (product.min_bid || 0);
+    const minNextBid = currentPrice ? (currentPrice + (product.min_bid || 0)) : 0;
 
-    const [bidAmount, setBidAmount] = useState<number | "">(minNextBid);
-    const [prevMinNextBid, setPrevMinNextBid] = useState<number>(minNextBid);
+    const [bidAmount, setBidAmount] = useState<number>(minNextBid || 0);
+    const [prevMinNextBid, setPrevMinNextBid] = useState<number>(minNextBid || 0);
 
     if (minNextBid !== prevMinNextBid) {
         setPrevMinNextBid(minNextBid);
-        if (bidAmount === "" || bidAmount < minNextBid) {
+        if (bidAmount === 0 || bidAmount < minNextBid) {
             setBidAmount(minNextBid);
         }
     }
@@ -180,7 +180,7 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
                                 <input
                                     type="number"
                                     value={bidAmount}
-                                    onChange={(e) => setBidAmount(e.target.value === "" ? "" : Number(e.target.value))}
+                                    onChange={(e) => setBidAmount(e.target.value === "" ? 0 : Number(e.target.value))}
                                     min={minNextBid}
                                     placeholder={`Min. ${minNextBid}`}
                                     className="w-full bg-white border border-gray-300 text-slate-900 rounded-2xl px-5 py-4 text-lg font-bold outline-none focus:ring-4 focus:ring-[#4ade80]/10 transition-all pr-14 shadow-sm"

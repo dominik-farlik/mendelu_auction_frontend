@@ -3,7 +3,7 @@ import { type ProductBids, type ProductResponse, productService } from "../../ap
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import BidWindow from "./BidWindow.tsx";
-import {Category, SaleType, Status} from "../../types/product.ts";
+import {Category, Status} from "../../types/product.ts";
 import { formatDate, parseTimeDistance } from "../../utils/formatDate.ts";
 import Hero from "../Hero.tsx";
 import ImageGallery from "./ImageGallery.tsx";
@@ -24,7 +24,6 @@ export default function AuctionDetail() {
         created_by_id: 0,
         ends_at: "",
         images: [],
-        sale_type: SaleType.Auction,
         starting_price: 0,
         starts_at: "",
         status: Status.Pending,

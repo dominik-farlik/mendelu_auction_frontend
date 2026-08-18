@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { SaleType } from "../../types/product.ts";
 import type { GroupResponse } from "../../api/groupService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import type { ProductCreate } from "../../api/productService.ts";
 import toast from "react-hot-toast";
+import {Category} from "../../types/product.ts";
 
 export interface AuctionFormData {
     title: string;
     description: string;
-    sale_type: SaleType;
+    category: Category;
     big_preview: boolean;
     starting_price: string | number;
     min_bid: string | number;
@@ -75,7 +75,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
         const productPayload = {
             title: formData.title,
             description: formData.description || null,
-            sale_type: formData.sale_type,
+            category: formData.category,
             big_preview: formData.big_preview,
             starting_price: parseFloat(formData.starting_price.toString()),
             min_bid: formData.min_bid ? parseFloat(formData.min_bid.toString()) : null,
@@ -118,16 +118,20 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                 </div>
 
                 <div>
-                    <label className={labelClasses}>Typ prodeje</label>
+                    <label className={labelClasses}>Kategorie</label>
                     <select
-                        name="sale_type"
-                        value={formData.sale_type}
+                        name="category"
+                        required
+                        value={formData.category}
                         onChange={handleChange}
                         className={inputClasses}
                     >
-                        <option value={SaleType.Auction}>Aukce</option>
-                        <option value={SaleType.BuyNow}>Kup teď</option>
-                        <option value={SaleType.Both}>Obojí</option>
+                        <option value="" disabled>Vyberte kategorii</option>
+                        {Object.entries(Category).map(([key, value]) => (
+                            <option key={key} value={value}>
+                                {value}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>

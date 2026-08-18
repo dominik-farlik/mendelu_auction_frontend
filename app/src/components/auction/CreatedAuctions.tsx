@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { ProductResponse } from "../../api/productService.ts";
 import { parseTimeDistance } from "../../utils/formatDate.ts";
+import {Status} from "../../types/product.ts";
 
 export default function CreatedAuctions({ auctions }: { auctions: ProductResponse[] }) {
     const navigate = useNavigate();
@@ -38,9 +39,15 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
         return `Za ${parts.join(" ")}`;
     };
 
+    const sortedAuctions = [...auctions].sort((a, b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return dateB - dateA;
+    });
+
     return (
         <>
-            {auctions.length === 0 ? (
+            {sortedAuctions.length === 0 ? (
                 <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center">
                     <span className="text-slate-500 font-medium">Ve vaší skupině nebyla přidána žádná nabídka.</span>
                 </div>
@@ -54,13 +61,13 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
                         <div>Akce</div>
                     </div>
 
-                    {auctions.map(auction => {
+                    {sortedAuctions.map(auction => {
                         const statusInfo = getStatusInfo(auction.status);
                         const timeUntil = auction.starts_at ? getTimeUntilStart(auction.starts_at) : "Není určen";
 
-                        const isApproved = auction.status.toLowerCase() === "approved";
+                        const isPendingOrCancelled = auction.status === Status.Pending || auction.status === Status.Canceled;
                         const hasStarted = timeUntil === "Již začalo";
-                        const canEdit = !(isApproved && hasStarted);
+                        const canEdit = isPendingOrCancelled || !hasStarted;
 
                         return (
                             <Link

@@ -6,7 +6,6 @@ import AuctionForm, { type AuctionFormData } from "./AuctionForm.tsx";
 import toast from "react-hot-toast";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import {type ProductCreate, productService} from "../../api/productService.ts";
-import { SaleType } from "../../types/product.ts";
 import type { AxiosError } from "axios";
 
 const formatForDatetimeLocal = (dateString: string | null) => {
@@ -37,7 +36,7 @@ export default function UpdateAuction() {
                 setInitialData({
                     title: product.title || '',
                     description: product.description || '',
-                    sale_type: product.sale_type || SaleType.Auction,
+                    category: '',
                     big_preview: product.big_preview || false,
                     starting_price: product.starting_price?.toString() || '',
                     min_bid: product.min_bid?.toString() || '',
@@ -66,7 +65,7 @@ export default function UpdateAuction() {
         try {
             await productService.updateAuction(Number(productId), productPayload, coverImage, additionalImages);
             toast.success("Aukce byla úspěšně upravena!", { id: toastId });
-            navigate(-1);
+            navigate(`/skupina/${productPayload.group_id}`);
         } catch (err) {
             const error = err as AxiosError<{ detail?: string }>;
             const errorMsg = error.response?.data?.detail || "Při úpravě aukce došlo k chybě.";

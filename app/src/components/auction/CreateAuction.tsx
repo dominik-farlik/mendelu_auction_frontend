@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import { type AxiosError } from "axios";
 import {type ProductCreate, productService} from "../../api/productService.ts";
-import { SaleType } from "../../types/product.ts";
 import toast from "react-hot-toast";
 import Page from "../Page.tsx";
 import AuctionForm, { type AuctionFormData } from "./AuctionForm.tsx";
@@ -38,7 +37,7 @@ export default function CreateAuction() {
         try {
             await productService.createAuction(productPayload, coverImage, additionalImages);
             toast.success("Aukce byla úspěšně vytvořena!", { id: toastId });
-            navigate(-1);
+            navigate(`/skupina/${productPayload.group_id}`);
         } catch (err) {
             const error = err as AxiosError<{ detail?: string }>;
             const errorMsg = error.response?.data?.detail || "Při vytváření aukce došlo k chybě.";
@@ -61,7 +60,7 @@ export default function CreateAuction() {
     const defaultInitialData: AuctionFormData = {
         title: '',
         description: '',
-        sale_type: SaleType.Auction,
+        category: '',
         big_preview: false,
         starting_price: '',
         min_bid: '',

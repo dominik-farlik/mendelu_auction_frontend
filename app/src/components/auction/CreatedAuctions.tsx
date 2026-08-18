@@ -11,6 +11,8 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
                 return { className: "bg-[#4ade80]/20 text-[#16a34a]", label: "Schváleno" };
             case "pending":
                 return { className: "bg-amber-100 text-amber-700", label: "Čekající" };
+            case "finished":
+                return { className: "bg-[#1aedd6]/20 text-[#00c4ff]", label: "Ukončeno" };
             case "cancelled":
             case "canceled":
                 return { className: "bg-red-100 text-red-700", label: "Zamítnuto" };

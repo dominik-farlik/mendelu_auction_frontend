@@ -50,6 +50,10 @@ export default function AuctionDetail() {
     useEffect(() => {
         if (!productId || product.status === Status.Pending) return;
 
+        if (product.status === Status.Finished || product.status === 'cancelled') {
+            return;
+        }
+
         const wsUrl = `${import.meta.env.VITE_WS_URL}/auctions/${productId}`;
         const ws = new WebSocket(wsUrl);
 
@@ -72,6 +76,26 @@ export default function AuctionDetail() {
                     };
                 });
             }
+            else if (data.type === 'AUCTION_ENDED') {
+                const payload = data.payload;
+
+                if (payload.final_price) {
+                    toast.success(`Aukce skončila! Vítězná částka: ${payload.final_price.toLocaleString('cs-CZ')} Kč`, {
+                        duration: 6000,
+                        icon: '🎉',
+                    });
+                } else {
+                    toast('Aukce skončila bez příhozů.', {
+                        duration: 5000,
+                        icon: '⏳',
+                    });
+                }
+
+                setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    status: Status.Finished
+                }));
+            }
         };
 
         ws.onclose = () => {
@@ -79,10 +103,11 @@ export default function AuctionDetail() {
         };
 
         return () => {
-            if (ws.readyState === WebSocket.OPEN) {
+            if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
                 ws.close();
             }
         };
+
     }, [productId, product.status]);
 
     const calculateTimeLeft = (bid_time: string) => {

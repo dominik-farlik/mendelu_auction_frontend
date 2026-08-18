@@ -10,6 +10,7 @@ export const Status = {
     Pending: "pending",
     Approved: "approved",
     Canceled: "cancelled",
+    Finished: "finished",
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];

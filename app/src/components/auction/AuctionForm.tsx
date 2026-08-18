@@ -163,7 +163,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                     <label className={labelClasses}>Počáteční cena (Kč)</label>
                     <input
                         type="number"
-                        step="10"
+                        step="1"
                         name="starting_price"
                         required
                         value={formData.starting_price}
@@ -182,6 +182,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         value={formData.min_bid}
                         onChange={handleChange}
                         className={inputClasses}
+                        min={1}
                         placeholder="0"
                     />
                 </div>
@@ -189,7 +190,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                     <label className={labelClasses}>Cena Kup teď (nepovinné)</label>
                     <input
                         type="number"
-                        step="100"
+                        step="1"
                         name="buy_now_price"
                         value={formData.buy_now_price}
                         onChange={handleChange}

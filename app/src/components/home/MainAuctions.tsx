@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { type ProductResponse } from "../../api/productService.ts";
 import LinkButton from "../buttons/LinkButton.tsx";
+import TimerBadge from "../TimerBadge.tsx";
 
 export default function MainAuctions({ auctions }: { auctions: ProductResponse[]}) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,29 +26,29 @@ export default function MainAuctions({ auctions }: { auctions: ProductResponse[]
 
     const currentAuction = auctions[currentIndex];
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(price);
-    };
+    const hasBids = currentAuction.bids && currentAuction.bids.length > 0;
+    const currentAuctionPrice = hasBids
+        ? Math.max(...currentAuction.bids.map((b: any) => b.amount || 0))
+        : currentAuction.starting_price;
+
+    const finalPrice = currentAuctionPrice || currentAuction.buy_now_price!;
+    const saleType = currentAuctionPrice ? (hasBids ? "Aktuální cena" : "Vyvolávací cena") : "Kup teď"
 
     return (
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8 relative z-10">
-            {/* Hlavní karta aukce */}
             <div className="bg-[#121827]/80 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 shadow-2xl relative overflow-hidden">
-
-                {/* Levá část - Texty a akce */}
                 <div className="flex-1 flex flex-col items-start z-10">
-                    {/* Odpočet - Badge */}
                     <div className="px-4 py-1.5 rounded-full border border-orange-500/50 text-orange-400 text-sm font-semibold mb-6 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                        Končí za 19 d {/* Zde napojíš dynamický výpočet času */}
+                        <TimerBadge endTime={currentAuction.ends_at} style={false}/>
                     </div>
 
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-8 uppercase tracking-wide">
-                        {currentAuction.title || "Název aukce"}
+                        {currentAuction.title}
                     </h1>
 
                     <div className="flex items-center gap-12 mb-8">
-                        {currentAuction.bids.length > 0 && <div className="flex flex-col items-center">
+                        {hasBids && <div className="flex flex-col items-center">
                             <p className="text-slate-400 text-xs uppercase tracking-wider mb-1 flex items-center gap-1">
                                 <span className="bg-slate-700/50 px-2 py-1.5 rounded-full text-[10px]">▲</span> Příhozů
                             </p>
@@ -55,12 +56,10 @@ export default function MainAuctions({ auctions }: { auctions: ProductResponse[]
                         </div>}
                         <div className="flex flex-col items-center">
                             <p className="text-slate-400 text-xs uppercase tracking-wider mb-1 flex items-center gap-1">
-                                <span className="bg-slate-700/50 px-2 py-1.5 rounded-full text-[10px]">◎</span> Vyvolávací cena
+                                <span className="bg-slate-700/50 px-2 py-1.5 rounded-full text-[10px]">◎</span> {saleType}
                             </p>
                             <p className="text-3xl font-bold text-white">
-                                {formatPrice(currentAuction.bids && currentAuction.bids.length > 0
-                                    ? Math.max(...currentAuction.bids.map(b => b.amount))
-                                    : currentAuction.starting_price || 9000)}
+                                {finalPrice.toLocaleString('cs-CZ')} Kč
                             </p>
                         </div>
                     </div>

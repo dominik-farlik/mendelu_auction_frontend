@@ -1,7 +1,6 @@
 import {createBrowserRouter, Navigate, Outlet, RouterProvider} from "react-router-dom";
 import HomePage from "./components/home/HomePage.tsx";
 import AuthForm from "./components/auth/AuthForm.tsx";
-import { checkIfLoggedInLoader } from "./components/auth/AuthLoader.tsx";
 import CreateAuction from "./components/auction/CreateAuction.tsx";
 import GroupDetail from "./components/groups/GroupDetail.tsx";
 import AuctionDetail from "./components/auction/AuctionDetail.tsx";
@@ -30,8 +29,8 @@ const router = createBrowserRouter([
         element: <RootLayout/>,
         children: [
             {path: "/", element: <HomePage/>},
-            {path: "/login", element: <AuthForm defaultIsLogin={true}/>, loader: checkIfLoggedInLoader},
-            {path: "/register", element: <AuthForm defaultIsLogin={false}/>, loader: checkIfLoggedInLoader},
+            {path: "/login", element: <AuthForm defaultIsLogin={true}/>},
+            {path: "/register", element: <AuthForm defaultIsLogin={false}/>},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
             {path: "/uzivatel/:userId", element: <User />},
 

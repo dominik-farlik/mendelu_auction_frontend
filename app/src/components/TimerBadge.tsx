@@ -4,9 +4,10 @@ import { parseTimeDistance } from "../utils/formatDate.ts";
 interface TimerBadgeProps {
     endTime: string;
     onTimeUp?: () => void;
+    style?: boolean;
 }
 
-export default function TimerBadge({ endTime, onTimeUp }: TimerBadgeProps) {
+export default function TimerBadge({ endTime, onTimeUp, style = true }: TimerBadgeProps) {
     const [timeRemaining, setTimeRemaining] = useState<string>("");
     const [colorClass, setColorClass] = useState<string>("bg-slate-900");
 
@@ -63,7 +64,7 @@ export default function TimerBadge({ endTime, onTimeUp }: TimerBadgeProps) {
     }, [endTime, onTimeUp]);
 
     return (
-        <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-white tracking-wide shadow-sm transition-colors duration-300 ${colorClass}`}>
+        <div className={style ? (`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-white tracking-wide shadow-sm transition-colors duration-300 ${colorClass}`) : ""}>
             {timeRemaining ? timeRemaining : "Načítání..."}
         </div>
     );

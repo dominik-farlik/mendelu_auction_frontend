@@ -36,12 +36,14 @@ export default function UserPageMenu({ currentWindow }: { currentWindow: string 
                 handleTabChange={handleTabChange}
             />
 
-            <MenuButton
-                title="Správa uživatelů"
-                windowName="sprava-uzivatelu"
-                active={currentWindow === "sprava-uzivatelu"}
-                handleTabChange={handleTabChange}
-            />
+            {user?.role.name === Role.Manager &&
+                <MenuButton
+                    title="Správa uživatelů"
+                    windowName="sprava-uzivatelu"
+                    active={currentWindow === "sprava-uzivatelu"}
+                    handleTabChange={handleTabChange}
+                />
+            }
         </div>
     )
 }

@@ -29,7 +29,11 @@ export default function AuthForm({ defaultIsLogin = true }: AuthFormProps) {
             : null;
     });
     const [loading, setLoading] = useState<boolean>(false);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(() => {
+        return searchParams.get('verified') === 'true'
+            ? 'Váš email byl úspěšně ověřen. Nyní se můžete přihlásit.'
+            : null;
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

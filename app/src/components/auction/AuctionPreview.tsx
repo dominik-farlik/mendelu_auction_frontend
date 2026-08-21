@@ -4,8 +4,17 @@ import FollowButton from "../buttons/FollowButton.tsx";
 import type {ProductResponse} from "../../api/productService.ts";
 import {useAuth} from "../../context/useAuth.ts";
 
-export default function AuctionPreview({ auction, hasBids, currentPrice }: {auction: ProductResponse, hasBids: boolean, currentPrice: number}) {
+export default function AuctionPreview({ auction }: {auction: ProductResponse}) {
     const { isAuthenticated } = useAuth();
+
+    const hasBids = auction.bids && auction.bids.length > 0;
+    const currentAuctionPrice = hasBids
+        ? Math.max(...auction.bids.map((b: any) => b.amount || 0))
+        : auction.starting_price;
+
+    const finalPrice = currentAuctionPrice || auction.buy_now_price!;
+    const saleType = currentAuctionPrice ? (hasBids ? "Aktuální cena" : "Vyvolávací cena") : "Kup teď"
+
     return (
         <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all duration-300">
             <div className="relative h-64 overflow-hidden bg-slate-100 shrink-0">
@@ -55,10 +64,10 @@ export default function AuctionPreview({ auction, hasBids, currentPrice }: {auct
                 <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between gap-4">
                     <div className="flex flex-col">
                         <span className="text-xs text-slate-500 font-medium">
-                            {hasBids ? "Aktuální cena" : "Vyvolávací cena"}
+                            {saleType}
                         </span>
                         <span className="text-xl font-black text-slate-900">
-                            {currentPrice.toLocaleString('cs-CZ')} Kč
+                            {finalPrice.toLocaleString('cs-CZ')} Kč
                         </span>
                     </div>
 

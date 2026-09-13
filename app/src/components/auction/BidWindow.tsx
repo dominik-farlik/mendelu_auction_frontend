@@ -7,8 +7,9 @@ import toast from "react-hot-toast";
 import BidButton from "../buttons/BidButton.tsx";
 import FollowButton from "../buttons/FollowButton.tsx";
 import { useAuth } from "../../context/useAuth.ts";
+import type {UserResponse} from "../../api/userService.ts";
 
-export default function BidWindow({ product }: { product: ProductResponse }) {
+export default function BidWindow({ product, buyNowWinner }: { product: ProductResponse, buyNowWinner?: UserResponse }) {
     const { isAuthenticated } = useAuth();
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>(product.starting_price ? 'auction' : 'buy_now');
     const [isBidding, setIsBidding] = useState<boolean>(false);
@@ -65,10 +66,10 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
         }
 
         setIsBuying(true);
-        const buyPromise = new Promise((resolve) => setTimeout(resolve, 1000))
-            .finally(() => setIsBuying(false));
 
-        await toast.promise(buyPromise, {
+        await toast.promise(
+            productService.buyNow(product.id)
+            .finally(() => { setIsBuying(false) }), {
             loading: "Přesměrování na platební bránu...",
             success: "Položka byla úspěšně zakoupena!",
             error: (err) => {
@@ -137,7 +138,12 @@ export default function BidWindow({ product }: { product: ProductResponse }) {
                     </div>
                     <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-900 uppercase">Aukce skončila</h2>
 
-                    {product.bids && product.bids.length > 0 ? (
+                    { buyNowWinner ? (
+                            <>
+                                <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.public_last_name ? buyNowWinner.last_name : ""} zakoupil/a za `}</p>
+                                <div className="text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
+                            </>
+                        ) : product.bids && product.bids.length > 0 ? (
                         <>
                             <p className="text-gray-500 font-medium mb-1">Vítězná částka</p>
                             <div className="text-5xl font-black text-slate-900">{formattedCurrentPrice} Kč</div>

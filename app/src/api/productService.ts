@@ -13,6 +13,7 @@ export interface ProductResponse {
     category: Category;
     starting_price?: number;
     buy_now_price?: number;
+    buyer_id?: number;
     min_bid?: number;
     cover_image: string;
     big_preview: boolean;
@@ -173,6 +174,17 @@ export const productService = {
      */
     async bid(productId: number, amount: number): Promise<{ product: ProductResponse, amount: number }> {
         const response = await api.post<{ product: ProductResponse, amount: number }>(`/products/bid/${productId}`, { "amount": amount });
+        return response.data;
+    },
+
+    /**
+     * Koupí produkt za stanovenou buy now cenu.
+     *
+     * @param {number} productId - ID produktu (aukce) ke koupi.
+     * @returns {Promise<{product: ProductResponse, amount: number}>} Aktualizovaný produkt.
+     */
+    async buyNow(productId: number): Promise<{ product: ProductResponse }> {
+        const response = await api.post<{ product: ProductResponse }>(`/products/buy_now/${productId}`);
         return response.data;
     },
 

@@ -1,6 +1,5 @@
 import {createBrowserRouter, Navigate, Outlet, RouterProvider} from "react-router-dom";
 import HomePage from "./components/home/HomePage.tsx";
-import AuthForm from "./components/auth/AuthForm.tsx";
 import CreateAuction from "./components/auction/CreateAuction.tsx";
 import GroupDetail from "./components/groups/GroupDetail.tsx";
 import AuctionDetail from "./components/auction/AuctionDetail.tsx";
@@ -15,6 +14,10 @@ import BidFollowAuctions from "./components/profile/bidOrFollow/BidFollowAuction
 import CreateGroup from "./components/groups/CreateGroup.tsx";
 import {Role} from "./types/user.ts";
 import User from "./components/users/User.tsx";
+import Login from "./components/auth/Login.tsx";
+import Register from "./components/auth/Register.tsx";
+import ResetPasswordRequest from "./components/auth/ResetPasswordRequest.tsx";
+import ResetPassword from "./components/auth/ResetPassword.tsx";
 
 function RootLayout() {
     return (
@@ -29,8 +32,10 @@ const router = createBrowserRouter([
         element: <RootLayout/>,
         children: [
             {path: "/", element: <HomePage/>},
-            {path: "/login", element: <AuthForm defaultIsLogin={true}/>},
-            {path: "/register", element: <AuthForm defaultIsLogin={false}/>},
+            {path: "/login", element: <Login/>},
+            {path: "/register", element: <Register/>},
+            {path: "/request-password-reset", element: <ResetPasswordRequest/>},
+            {path: "/obnovit-heslo", element: <ResetPassword/>},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
             {path: "/uzivatel/:userId", element: <User />},
 

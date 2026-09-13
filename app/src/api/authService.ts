@@ -43,5 +43,26 @@ export const authService = {
             },
         });
         return response.data;
-    }
+    },
+
+    /**
+     * Pošle uživateli na email odkaz na obnovu hesla
+     * @param email
+     */
+    async requestPasswordReset(email: string): Promise<{ message: string }> {
+        const response = await api.post("/auth/request-password-reset", {email: email});
+
+        return response.data;
+    },
+
+    /**
+     * Pošle uživateli na email odkaz na obnovu hesla
+     * @param token
+     * @param password
+     */
+    async resetPassword(token: string, password: string): Promise<{ message: string }> {
+        const response = await api.post("/auth/reset-password", {token: token, new_password: password});
+
+        return response.data;
+    },
 };

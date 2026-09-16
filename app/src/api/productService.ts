@@ -115,8 +115,17 @@ export const productService = {
     async getActiveAuctions(): Promise<ProductResponse[]> {
         const response = await api.get<ProductResponse[]>('/products/', {
         params: {
-            approved: true
+            approved: true,
+            finished: 24,
         }});
+        return response.data
+    },
+
+    /**
+     * Vrátí všechny hlavní aktivní nabídky
+     */
+    async getMainActiveAuctions(): Promise<ProductResponse[]> {
+        const response = await api.get<ProductResponse[]>('/products/big_previews');
         return response.data
     },
 

@@ -37,6 +37,10 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
         }
     }
 
+    const highestBid = product.bids && product.bids.length > 0
+        ? product.bids.reduce((max, bid) => (max.amount > bid.amount ? max : bid))
+        : null;
+
     const handleBidClick = () => {
         if (!isAuthenticated) {
             toast.error("Pro přihození se musíte přihlásit.");
@@ -165,9 +169,9 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                             <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.public_last_name ? buyNowWinner.last_name : ""} zakoupil/a za `}</p>
                             <div className="text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
                         </>
-                    ) : product.bids && product.bids.length > 0 ? (
+                    ) : product.bids && product.bids.length > 0 && highestBid ? (
                         <>
-                            <p className="text-gray-500 font-medium mb-1">Vítězná částka</p>
+                            <p className="text-gray-500 font-medium mb-1">{`${highestBid.bidder.first_name} ${highestBid.bidder.public_last_name ? highestBid.bidder.last_name : ""} vyhrál/a s částkou `}</p>
                             <div className="text-5xl font-black text-slate-900">{formattedCurrentPrice} Kč</div>
                         </>
                     ) : (

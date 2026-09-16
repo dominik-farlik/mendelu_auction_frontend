@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
-import { type ProductResponse } from "../../api/productService.ts";
+import {type ProductResponse, productService} from "../../api/productService.ts";
 import LinkButton from "../buttons/LinkButton.tsx";
 import TimerBadge from "../TimerBadge.tsx";
 
-export default function MainAuctions({ auctions }: { auctions: ProductResponse[]}) {
+export default function MainAuctions() {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [auctions, setAuctions] = useState<ProductResponse[]>([]);
+
+    useEffect(() => {
+        productService.getMainActiveAuctions()
+            .then((data) => setAuctions(data))
+            .catch((error) => console.error("Chyba při načítání aukcí:", error));
+    }, []);
 
     useEffect(() => {
         if (auctions.length <= 1) return;

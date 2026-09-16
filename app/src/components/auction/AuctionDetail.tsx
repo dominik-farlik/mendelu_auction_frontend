@@ -11,6 +11,7 @@ import Page from "../Page.tsx";
 import {Role} from "../../types/user.ts";
 import {useAuth} from "../../context/useAuth.ts";
 import {type UserResponse, userService} from "../../api/userService.ts";
+import ActiveAuctions from "../home/ActiveAuctions.tsx";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
@@ -296,6 +297,7 @@ export default function AuctionDetail() {
                     </div>
                 </div>
             </div>
+            <ActiveAuctions/>
         </Page>
     );
 }

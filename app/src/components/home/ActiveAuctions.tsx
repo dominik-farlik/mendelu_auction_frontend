@@ -1,9 +1,16 @@
-import { useState, useMemo } from "react";
-import type { ProductResponse } from "../../api/productService.ts";
+import {useState, useMemo, useEffect} from "react";
+import {type ProductResponse, productService} from "../../api/productService.ts";
 import AuctionContainer from "../auction/AuctionContainer.tsx";
 
-export default function ActiveAuctions({ auctions }: { auctions: ProductResponse[] }) {
+export default function ActiveAuctions() {
+    const [auctions, setAuctions] = useState<ProductResponse[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+    useEffect(() => {
+        productService.getActiveAuctions()
+            .then((data) => setAuctions(data))
+            .catch((error) => console.error("Chyba při načítání aukcí:", error));
+    }, []);
 
     const categoryCounts = useMemo(() => {
         const counts: Record<string, number> = {};

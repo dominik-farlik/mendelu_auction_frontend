@@ -182,6 +182,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                 {product.bids?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
                             </span>
                             <TimerBadge
+                                startTime={product.starts_at}
                                 endTime={product.ends_at}
                                 onTimeUp={() => setIsTimeUp(true)}
                             />
@@ -229,7 +230,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
             ) : (
                 <div className="flex flex-col items-center py-6 animate-in fade-in zoom-in-95 duration-300">
                     <div className="mb-4">
-                        <TimerBadge endTime={product.ends_at}/>
+                        <TimerBadge startTime={product.starts_at} endTime={product.ends_at}/>
                     </div>
 
                     <h2 className="text-6xl font-bold tracking-tight mb-10">{formattedBuyNowPrice} Kč</h2>

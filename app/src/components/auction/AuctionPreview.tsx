@@ -31,7 +31,7 @@ export default function AuctionPreview({ auction }: {auction: ProductResponse}) 
                 )}
 
                 <div className="absolute top-4 right-4 z-10">
-                    <TimerBadge endTime={auction.ends_at} />
+                    <TimerBadge startTime={auction.starts_at} endTime={auction.ends_at} />
                 </div>
 
                 { isAuthenticated &&

@@ -112,9 +112,12 @@ export const productService = {
     /**
      * Vrátí všechny aktivní nabídky
      */
-    async getActiveAuctions(): Promise<Array<ProductResponse>> {
-        const response = await api.get<Array<ProductResponse>>('/products/');
-        return response.data;
+    async getActiveAuctions(): Promise<ProductResponse[]> {
+        const response = await api.get<ProductResponse[]>('/products/', {
+        params: {
+            approved: true
+        }});
+        return response.data
     },
 
     /**

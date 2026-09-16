@@ -40,7 +40,7 @@ export default function MainAuctions({ auctions }: { auctions: ProductResponse[]
                 <div className="flex-1 flex flex-col items-start z-10">
                     <div className="px-4 py-1.5 rounded-full border border-orange-500/50 text-orange-400 text-sm font-semibold mb-6 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                        <TimerBadge endTime={currentAuction.ends_at} style={false}/>
+                        <TimerBadge startTime={currentAuction.starts_at} endTime={currentAuction.ends_at} style={false}/>
                     </div>
 
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-8 uppercase tracking-wide">

@@ -16,6 +16,9 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
     const [isBuying, setIsBuying] = useState<boolean>(false);
     const [isTimeUp, setIsTimeUp] = useState<boolean>(false);
 
+    const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+    const [pendingAction, setPendingAction] = useState<'bid' | 'buy' | null>(null);
+
     const isFinished = product.status === Status.Finished || isTimeUp;
 
     const currentPrice = product.bids && product.bids.length > 0
@@ -34,7 +37,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
         }
     }
 
-    const handleBidSubmit = async () => {
+    const handleBidClick = () => {
         if (!isAuthenticated) {
             toast.error("Pro přihození se musíte přihlásit.");
             return;
@@ -45,38 +48,57 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
             return;
         }
 
-        setIsBidding(true);
-        const bidPromise = productService.bid(product.id, Number(bidAmount))
-            .finally(() => setIsBidding(false));
-
-        await toast.promise(bidPromise, {
-            loading: "Zpracování příhozu...",
-            success: "Příhoz byl úspěšně zaznamenán!",
-            error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                return axiosError.response?.data?.detail || "Došlo k chybě při příhozu.";
-            }
-        });
+        setPendingAction('bid');
+        setShowConfirmModal(true);
     };
 
-    const handleBuyNowSubmit = async () => {
+    const handleBuyNowClick = () => {
         if (!isAuthenticated) {
             toast.error("Pro zakoupení se musíte přihlásit.");
             return;
         }
 
-        setIsBuying(true);
+        setPendingAction('buy');
+        setShowConfirmModal(true);
+    };
 
-        await toast.promise(
-            productService.buyNow(product.id)
-            .finally(() => { setIsBuying(false) }), {
-            loading: "Přesměrování na platební bránu...",
-            success: "Položka byla úspěšně zakoupena!",
-            error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                return axiosError.response?.data?.detail || "Došlo k chybě při nákupu.";
-            }
-        });
+    const executeConfirmedAction = async () => {
+        setShowConfirmModal(false);
+
+        if (pendingAction === 'bid') {
+            setIsBidding(true);
+            const bidPromise = productService.bid(product.id, Number(bidAmount))
+                .finally(() => {
+                    setIsBidding(false);
+                    setPendingAction(null);
+                });
+
+            await toast.promise(bidPromise, {
+                loading: "Zpracování příhozu...",
+                success: "Příhoz byl úspěšně zaznamenán!",
+                error: (err) => {
+                    const axiosError = err as AxiosError<{ detail?: string }>;
+                    return axiosError.response?.data?.detail || "Došlo k chybě při příhozu.";
+                }
+            });
+        } else if (pendingAction === 'buy') {
+            setIsBuying(true);
+
+            const buyPromise = productService.buyNow(product.id)
+                .finally(() => {
+                    setIsBuying(false);
+                    setPendingAction(null);
+                });
+
+            await toast.promise(buyPromise, {
+                loading: "Přesměrování na platební bránu...",
+                success: "Položka byla úspěšně zakoupena!",
+                error: (err) => {
+                    const axiosError = err as AxiosError<{ detail?: string }>;
+                    return axiosError.response?.data?.detail || "Došlo k chybě při nákupu.";
+                }
+            });
+        }
     };
 
     const formattedCurrentPrice = currentPrice?.toLocaleString('cs-CZ');
@@ -92,7 +114,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
     const tabContainerBg = isBuyNow ? 'bg-black/10' : 'bg-gray-100';
 
     return (
-        <div className={`w-full max-w-xl rounded-3xl p-6 md:p-8 transition-colors duration-300 ${cardBg} z-20`}>
+        <div className={`w-full max-w-xl rounded-3xl p-6 md:p-8 transition-colors duration-300 ${cardBg} z-20 relative`}>
             {!isFinished && (
                 <div className="flex justify-between items-center mb-8">
                     <div className={`flex p-1 rounded-full ${tabContainerBg}`}>
@@ -139,11 +161,11 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                     <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-900 uppercase">Aukce skončila</h2>
 
                     { buyNowWinner ? (
-                            <>
-                                <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.public_last_name ? buyNowWinner.last_name : ""} zakoupil/a za `}</p>
-                                <div className="text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
-                            </>
-                        ) : product.bids && product.bids.length > 0 ? (
+                        <>
+                            <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.public_last_name ? buyNowWinner.last_name : ""} zakoupil/a za `}</p>
+                            <div className="text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
+                        </>
+                    ) : product.bids && product.bids.length > 0 ? (
                         <>
                             <p className="text-gray-500 font-medium mb-1">Vítězná částka</p>
                             <div className="text-5xl font-black text-slate-900">{formattedCurrentPrice} Kč</div>
@@ -196,7 +218,11 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                     Kč
                                 </span>
                             </div>
-                            <BidButton handleBidSubmit={handleBidSubmit} disabled={product.status !== Status.Approved || isBidding || isFinished} isBidding={isBidding}/>
+                            <BidButton
+                                handleBidSubmit={handleBidClick}
+                                disabled={product.status !== Status.Approved || isBidding || isFinished}
+                                isBidding={isBidding}
+                            />
                         </div>
                     </div>
                 </div>
@@ -211,7 +237,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                     <button
                         className="bg-white text-slate-900 px-10 py-4 rounded-full font-bold text-xl flex items-center gap-3 shadow-lg hover:shadow-xl active:scale-95 disabled:opacity-50 transition-all"
                         disabled={product.status !== Status.Approved || isBuying}
-                        onClick={handleBuyNowSubmit}
+                        onClick={handleBuyNowClick}
                     >
                         {isBuying ? "Zpracovávám..." : (
                             <>
@@ -230,6 +256,49 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
                         <span>Úhrada pouze platební bránou. Limit na úhradu 5 minut.</span>
+                    </div>
+                </div>
+            )}
+
+            {showConfirmModal && (
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-3xl flex items-center justify-center p-6 z-50 animate-in fade-in duration-200">
+                    <div className="bg-white text-slate-900 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100 flex flex-col">
+                        <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-4">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+
+                        <h3 className="text-xl font-black mb-2 tracking-tight">
+                            {pendingAction === 'bid' ? 'Potvrzení příhozu' : 'Potvrzení nákupu'}
+                        </h3>
+
+                        <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                            Opravdu chcete {pendingAction === 'bid' ? `přihodit částku ${bidAmount.toLocaleString('cs-CZ')} Kč` : `zakoupit položku za ${formattedBuyNowPrice} Kč`}?
+                            <span className="block mt-2 font-semibold text-rose-600">
+                                Tento příhoz / nákup je plně závazný. Při nepřevzetí výhry můžete být trvale vyloučeni z dalších aukcí.
+                            </span>
+                        </p>
+
+                        <div className="flex gap-3 mt-2">
+                            <button
+                                onClick={() => {
+                                    setShowConfirmModal(false);
+                                    setPendingAction(null);
+                                }}
+                                className="flex-1 bg-gray-100 hover:bg-gray-200 text-slate-800 font-bold py-3 px-4 rounded-xl transition-colors text-sm"
+                            >
+                                Zrušit
+                            </button>
+                            <button
+                                onClick={executeConfirmedAction}
+                                className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl transition-colors text-sm shadow-md"
+                            >
+                                Souhlasím a potvrdit
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

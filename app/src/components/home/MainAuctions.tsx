@@ -54,6 +54,19 @@ export default function MainAuctions() {
                         exit={{ opacity: 0, x: -50 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="w-full flex flex-col md:flex-row items-center gap-10"
+
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        dragElastic={0.2}
+                        onDragEnd={(_, { offset }) => {
+                            const swipeThreshold = 50;
+
+                            if (offset.x < -swipeThreshold) {
+                                setCurrentIndex((prev) => (prev + 1) % auctions.length);
+                            } else if (offset.x > swipeThreshold) {
+                                setCurrentIndex((prev) => (prev === 0 ? auctions.length - 1 : prev - 1));
+                            }
+                        }}
                     >
                         <div className="flex-1 flex flex-col items-start z-10">
                             <div className="px-4 py-1.5 rounded-full border border-orange-500/50 text-orange-400 text-sm font-semibold mb-6 flex items-center gap-2">
@@ -91,7 +104,7 @@ export default function MainAuctions() {
                             {currentAuction.cover_image ? (<img
                                 src={`${import.meta.env.VITE_IMAGES_URL}/${currentAuction.cover_image}`}
                                 alt={currentAuction.title}
-                                className="w-full max-w-lg h-auto object-cover rounded-3xl z-10 relative shadow-2xl transform transition-transform hover:scale-[1.02] duration-500"
+                                className="w-full max-h-105 max-w-lg h-auto object-cover rounded-3xl z-10 relative shadow-2xl transform transition-transform hover:scale-[1.02] duration-500"
                             />) : (
                                 <div className="w-full max-w-lg h-74 object-cover rounded-3xl z-10 relative shadow-2xl bg-slate-800 animate-pulse"></div>
                             )}

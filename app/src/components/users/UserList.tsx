@@ -15,11 +15,14 @@ export default function UserList({ users }: { users: UserResponse[] }) {
                         className="w-10 h-10 shrink-0 rounded-full bg-[#4ade80]/20 text-[#16a34a] flex items-center justify-center font-bold text-sm uppercase">
                         {user.first_name[0]}{user.last_name[0]}
                     </div>
-                    <div className="flex flex-col">
-                        <strong className="text-slate-700 truncate">
+                    <div className="flex flex-col truncate">
+                        <strong className="text-slate-700">
                             {user.first_name} {user.last_name}
                         </strong>
-                        <span className="text-slate-700 text-sm">
+                        <span
+                            className="text-slate-700 text-sm"
+                            title={user.email}
+                        >
                             {user.email}
                         </span>
                         <span className="text-slate-500 text-xs italic">

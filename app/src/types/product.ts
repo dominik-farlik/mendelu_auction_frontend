@@ -1,3 +1,5 @@
+import type {ProductResponse} from "../api/productService.ts";
+
 export const Status = {
     Pending: "pending",
     Approved: "approved",
@@ -24,3 +26,12 @@ export const Category = {
 }
 
 export type Category = typeof Category[keyof typeof Category];
+
+
+export interface ProductWinResponse {
+    order_id: number;
+    amount: number;
+    status: 'pending' | 'paid' | 'expired' | 'cancelled';
+    expires_at: string;
+    product: ProductResponse;
+}

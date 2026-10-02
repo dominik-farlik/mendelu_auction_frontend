@@ -145,7 +145,6 @@ export default function UserDetail() {
                         <form onSubmit={handleSubmit} className="flex flex-col gap-5 grow">
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                {/* Jméno */}
                                 <div className="flex flex-col gap-1.5 w-full">
                                     <label htmlFor="first_name" className={labelClasses}>
                                         Jméno*
@@ -161,7 +160,6 @@ export default function UserDetail() {
                                     />
                                 </div>
 
-                                {/* Příjmení a Checkbox */}
                                 <div className="flex flex-col gap-1.5 w-full">
                                     <label htmlFor="last_name" className={labelClasses}>
                                         Příjmení*
@@ -176,7 +174,6 @@ export default function UserDetail() {
                                         className={inputClasses}
                                     />
 
-                                    {/* Nový Checkbox pro veřejné zobrazení příjmení */}
                                     <div className="flex items-center gap-2 mt-1 pl-1">
                                         <input
                                             type="checkbox"

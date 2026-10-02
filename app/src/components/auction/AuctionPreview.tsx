@@ -13,7 +13,7 @@ export default function AuctionPreview({ auction }: {auction: ProductResponse}) 
         : auction.starting_price;
 
     const finalPrice = currentAuctionPrice || auction.buy_now_price!;
-    const saleType = currentAuctionPrice ? (hasBids ? "Aktuální cena" : "Vyvolávací cena") : "Kup teď"
+    const saleType = auction.status === "finished" ? "Konečná cena" : (currentAuctionPrice ? (hasBids ? "Aktuální cena" : "Vyvolávací cena") : "Kup teď")
 
     return (
         <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all duration-300">

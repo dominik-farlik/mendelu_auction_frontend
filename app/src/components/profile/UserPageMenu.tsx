@@ -36,6 +36,13 @@ export default function UserPageMenu({ currentWindow }: { currentWindow: string 
                 handleTabChange={handleTabChange}
             />
 
+            <MenuButton
+                title="Moje výhry"
+                windowName="vyhry"
+                active={currentWindow === "vyhry"}
+                handleTabChange={handleTabChange}
+            />
+
             {user?.role.name === Role.Manager &&
                 <MenuButton
                     title="Správa uživatelů"

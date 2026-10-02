@@ -18,6 +18,8 @@ import Login from "./components/auth/Login.tsx";
 import Register from "./components/auth/Register.tsx";
 import ResetPasswordRequest from "./components/auth/ResetPasswordRequest.tsx";
 import ResetPassword from "./components/auth/ResetPassword.tsx";
+import UserWins from "./components/profile/UserWins.tsx";
+import AuctionPayment from "./components/auction/AuctionPayment.tsx";
 
 function RootLayout() {
     return (
@@ -37,7 +39,6 @@ const router = createBrowserRouter([
             {path: "/request-password-reset", element: <ResetPasswordRequest/>},
             {path: "/obnovit-heslo", element: <ResetPassword/>},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
-            {path: "/uzivatel/:userId", element: <User />},
 
             {
                 element: <ProtectedRoute />,
@@ -45,6 +46,8 @@ const router = createBrowserRouter([
                     {path: "/profil", element: <Navigate to="/profile/osobni-udaje" replace/>},
                     {path: "/profil/osobni-udaje", element: <UserDetail />},
                     {path: "/profil/moje-prihozy", element: <BidFollowAuctions />},
+                    {path: "/profil/vyhry", element: <UserWins />},
+                    {path: "/aukce/platba/:productId", element: <AuctionPayment/>},
                 ]
             },
 
@@ -64,7 +67,8 @@ const router = createBrowserRouter([
                 element: <ProtectedRoute allowedRoles={[Role.Manager]} />,
                 children: [
                     {path: "/vytvorit-skupinu", element: <CreateGroup />},
-                    {path: "profil/sprava-uzivatelu", element: <Users />}
+                    {path: "profil/sprava-uzivatelu", element: <Users />},
+                    {path: "/uzivatel/:userId", element: <User />},
                 ]
             }
         ]

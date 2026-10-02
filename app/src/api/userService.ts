@@ -1,6 +1,7 @@
 import api from './axios';
 import type { Role } from "../types/user.ts";
 import type { ProductResponse } from "./productService.ts";
+import type {ProductWinResponse} from "../types/product.ts";
 
 export interface RoleResponse {
     name: Role;
@@ -96,5 +97,10 @@ export const userService = {
     async getBiddedProducts(): Promise<ProductResponse[]> {
         const response = await api.get<ProductResponse[]>("users/me/bidded-products");
         return response.data;
+    },
+
+    async getWins(): Promise<ProductWinResponse[]> {
+        const response = await api.get<ProductWinResponse[]>("users/me/wins");
+        return response.data
     }
 };

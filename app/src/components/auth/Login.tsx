@@ -39,7 +39,7 @@ export default function Login() {
         setError(null);
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
 
@@ -57,7 +57,8 @@ export default function Login() {
             });
             const response = await api.get('auth/me/');
             login(response.data);
-            navigate('/');
+            const returnUrl = searchParams.get('returnUrl') || '/';
+            navigate(returnUrl, { replace: true });
         } catch (err) {
             const axiosError = err as AxiosError<{ detail?: string }>;
             const errorMsg = axiosError.response?.data?.detail || "Chyba při přihlašování.";

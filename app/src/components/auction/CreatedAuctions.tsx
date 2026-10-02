@@ -54,7 +54,7 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
             ) : (
                 <div className="flex flex-col gap-3">
                     <div className="hidden md:grid grid-cols-5 gap-4 px-6 py-3 bg-slate-100 rounded-xl text-sm font-bold text-slate-600 md:justify-items-center">
-                        <div>Název</div>
+                        <div className="justify-self-start w-full">Název</div>
                         <div>Vyvolávací cena</div>
                         <div>Začátek</div>
                         <div>Stav</div>
@@ -77,9 +77,9 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
                             >
                                 <div className="bg-white border border-slate-200 rounded-2xl p-4 md:px-6 md:py-4 transition-all hover:border-[#4ade80] hover:shadow-md grid grid-cols-1 md:grid-cols-5 gap-4 md:items-center md:justify-items-center">
 
-                                    <div className="flex flex-col md:block max-w-40" title={auction.title}>
+                                    <div className="flex flex-col md:block min-w-0 w-full md:justify-self-start" title={auction.title}>
                                         <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1 truncate">Název</span>
-                                        <strong className="text-slate-900 font-bold group-hover:text-[#4ade80] transition-colors truncate block">
+                                        <strong className="text-slate-900 font-bold group-hover:text-[#4ade80] transition-colors block w-full">
                                             {auction.title}
                                         </strong>
                                     </div>

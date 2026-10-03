@@ -10,6 +10,7 @@ import ActionButton from "../buttons/ActionButton.tsx";
 import CreatedAuctions from "../auction/CreatedAuctions.tsx";
 import LinkButton from "../buttons/LinkButton.tsx";
 import UserList from "../users/UserList.tsx";
+import FinishedAuctions from "../auction/FinishedAuctions.tsx";
 
 export default function GroupDetail() {
     const { groupId } = useParams<{ groupId: string }>();
@@ -102,6 +103,8 @@ export default function GroupDetail() {
                                     />
                                 </div>
                                 <CreatedAuctions auctions={auctions} />
+                                <h3 className="text-lg font-bold text-slate-800">Ukončené nabídky</h3>
+                                <FinishedAuctions groupId={group.id} />
                             </div>
 
                         </div>

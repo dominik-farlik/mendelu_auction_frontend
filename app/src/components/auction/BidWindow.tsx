@@ -8,6 +8,7 @@ import BidButton from "../buttons/BidButton.tsx";
 import FollowButton from "../buttons/FollowButton.tsx";
 import { useAuth } from "../../context/useAuth.ts";
 import type {UserResponse} from "../../api/userService.ts";
+import {useNavigate} from "react-router-dom";
 
 export default function BidWindow({ product, buyNowWinner }: { product: ProductResponse, buyNowWinner?: UserResponse }) {
     const { isAuthenticated } = useAuth();
@@ -18,6 +19,8 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
 
     const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
     const [pendingAction, setPendingAction] = useState<'bid' | 'buy' | null>(null);
+
+    const navigate = useNavigate();
 
     const isFinished = product.status === Status.Finished || isTimeUp;
 
@@ -88,20 +91,16 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
         } else if (pendingAction === 'buy') {
             setIsBuying(true);
 
-            const buyPromise = productService.buyNow(product.id)
-                .finally(() => {
+            productService.buyNow(product.id)
+                .then(() => {
                     setIsBuying(false);
                     setPendingAction(null);
-                });
-
-            await toast.promise(buyPromise, {
-                loading: "Přesměrování na platební bránu...",
-                success: "Položka byla úspěšně zakoupena!",
-                error: (err) => {
+                })
+                .catch((err) => {
                     const axiosError = err as AxiosError<{ detail?: string }>;
                     return axiosError.response?.data?.detail || "Došlo k chybě při nákupu.";
-                }
-            });
+                })
+                .finally(() => navigate(`/aukce/platba/${product.id}`));
         }
     };
 

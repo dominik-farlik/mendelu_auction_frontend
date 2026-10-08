@@ -26,6 +26,8 @@ export default function FinishedAuctions({ groupId }: { groupId: number }) {
                 return { className: "bg-[#4ade80]/20 text-[#16a34a]", label: "Zaplaceno" };
             case "processing":
                 return { className: "bg-sky-100 text-sky-700", label: "Čeká na potvrzení" };
+            case "expired":
+                return { className: "bg-slate-100 text-slate-500", label: "Nezaplaceno v čas" };
             case "cancelled":
             case "canceled":
                 return { className: "bg-red-100 text-red-700", label: "Odmítnuto" };

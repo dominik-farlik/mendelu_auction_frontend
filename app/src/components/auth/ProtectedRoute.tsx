@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import {useAuth} from "../../context/useAuth.ts";
 import type {Role} from "../../types/user.ts";
+import Forbidden from "../Forbidden.tsx";
 
 export default function ProtectedRoute({ allowedRoles }: { allowedRoles?: Role[]}) {
     const { user, isAuthenticated, isLoading } = useAuth();
@@ -19,8 +20,7 @@ export default function ProtectedRoute({ allowedRoles }: { allowedRoles?: Role[]
     }
 
     if (user && allowedRoles && !allowedRoles.includes(user.role.name)) {
-        // Uživatel nemá práva – přesměrujeme ho např. na domovskou stránku (nebo na 403 Forbidden)
-        return <Navigate to="/" replace />;
+        return <Forbidden/>;
     }
 
     return <Outlet />;

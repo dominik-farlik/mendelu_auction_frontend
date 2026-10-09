@@ -11,6 +11,7 @@ export interface UserResponse {
     id: number;
     username?: string;
     email: string;
+    phone_number?: string;
     first_name: string;
     last_name: string;
     role: RoleResponse;
@@ -19,6 +20,7 @@ export interface UserResponse {
 
 export interface UserUpdate {
     email: string;
+    phone_number?: string | null;
     first_name: string;
     last_name: string;
     username?: string | null;

@@ -5,28 +5,40 @@ import toast from "react-hot-toast";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import { userService, type UserUpdate } from "../../api/userService.ts";
 import UserPage from "./UserPage.tsx";
+import {formatPhone, toE164} from "../../utils/formatPhone.ts";
+
+const EMPTY_USER: UserUpdate = {
+    email: "",
+    phone_number: "",
+    username: "",
+    first_name: "",
+    last_name: "",
+    public_last_name: false,
+};
+
+const toFormData = (data: UserUpdate): UserUpdate => ({
+    email: data.email,
+    phone_number: formatPhone(data.phone_number),
+    username: data.username || "",
+    first_name: data.first_name || "",
+    last_name: data.last_name || "",
+    public_last_name: data.public_last_name ?? false,
+});
 
 export default function UserDetail() {
-    const [user, setUser] = useState<UserUpdate>({
-        email: "",
-        username: "",
-        first_name: "",
-        last_name: "",
-        public_last_name: false,
-    });
-
-    const [initialUser, setInitialUser] = useState<UserUpdate>({
-        email: "",
-        username: "",
-        first_name: "",
-        last_name: "",
-        public_last_name: false,
-    });
+    const [user, setUser] = useState<UserUpdate>(EMPTY_USER);
+    const [initialUser, setInitialUser] = useState<UserUpdate>(EMPTY_USER);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [saving, setSaving] = useState<boolean>(false);
 
     const isDirty = JSON.stringify(user) !== JSON.stringify(initialUser);
+
+    const applyServerData = (data: UserUpdate) => {
+        const formData = toFormData(data);
+        setUser(formData);
+        setInitialUser(formData);
+    };
 
     const blocker = useBlocker(
         ({ currentLocation, nextLocation }) =>
@@ -35,24 +47,14 @@ export default function UserDetail() {
 
     useEffect(() => {
         userService.getCurrentUser()
-            .then((data) => {
-                const formData = {
-                    email: data.email,
-                    username: data.username || "",
-                    first_name: data.first_name || "",
-                    last_name: data.last_name || "",
-                    public_last_name: data.public_last_name || false,
-                };
-                setUser(formData);
-                setInitialUser(formData);
-            })
-            .catch(() => {
-                toast.error("Nepodařilo se načíst uživatelská data.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            .then(applyServerData)
+            .catch(() => toast.error("Nepodařilo se načíst uživatelská data."))
+            .finally(() => setLoading(false));
     }, []);
+
+    const handlePhoneBlur = () => {
+        setUser((prev) => ({ ...prev, phone_number: formatPhone(prev.phone_number) }));
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
@@ -70,27 +72,24 @@ export default function UserDetail() {
             return;
         }
 
+        let phone: string | null;
+        try {
+            phone = toE164(user.phone_number);
+        } catch {
+            toast.error("Zadejte platné telefonní číslo.");
+            return;
+        }
+
         setSaving(true);
 
-        const payload: UserUpdate = {
-            email: user.email,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            username: user.username || null,
-            public_last_name: user.public_last_name,
-        };
-
-        const updatePromise = userService.updateCurrentUser(payload)
-            .then((updatedData) => {
-                const formData = {
-                    email: updatedData.email,
-                    username: updatedData.username || "",
-                    first_name: updatedData.first_name || "",
-                    last_name: updatedData.last_name || "",
-                    public_last_name: updatedData.public_last_name || false,
-                };
-                setUser(formData);
-                setInitialUser(formData);
+        const updatePromise = userService
+            .updateCurrentUser({
+                ...user,
+                phone_number: phone,
+                username: user.username || null,
+            })
+            .then((updated) => {
+                applyServerData(updated);
                 return "Změny byly úspěšně uloženy.";
             });
 
@@ -184,7 +183,7 @@ export default function UserDetail() {
                                             className="w-4 h-4 text-[#4ade80] bg-slate-50 border-slate-300 rounded focus:ring-[#4ade80]/20 focus:ring-2 cursor-pointer accent-[#4ade80]"
                                         />
                                         <label
-                                            htmlFor="show_last_name_publicly"
+                                            htmlFor="public_last_name"
                                             className="text-sm font-medium text-slate-500 cursor-pointer select-none"
                                         >
                                             Veřejně zobrazovat příjmení
@@ -194,7 +193,6 @@ export default function UserDetail() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                {/* Uživatelské jméno */}
                                 <div className="flex flex-col gap-1.5 w-full">
                                     <label htmlFor="username" className={labelClasses}>
                                         Uživatelské jméno
@@ -209,7 +207,6 @@ export default function UserDetail() {
                                     />
                                 </div>
 
-                                {/* E-mail */}
                                 <div className="flex flex-col gap-1.5 w-full">
                                     <label htmlFor="email" className={labelClasses}>
                                         E-mail*
@@ -225,8 +222,24 @@ export default function UserDetail() {
                                     />
                                 </div>
                             </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div className="flex flex-col gap-1.5 w-full">
+                                    <label htmlFor="phone_number" className={labelClasses}>Telefon</label>
+                                    <input
+                                        id="phone_number"
+                                        type="tel"
+                                        name="phone_number"
+                                        inputMode="tel"
+                                        autoComplete="tel"
+                                        placeholder="+420 777 123 456"
+                                        value={user.phone_number || ""}
+                                        onChange={handleChange}
+                                        onBlur={handlePhoneBlur}
+                                        className={inputClasses}
+                                    />
+                                </div>
+                            </div>
 
-                            {/* Patička */}
                             <div className="flex justify-end pt-6 mt-auto border-t border-slate-100">
                                 <SubmitButton
                                     title={saving ? "Ukládám..." : "Uložit změny"}

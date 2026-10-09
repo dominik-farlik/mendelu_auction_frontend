@@ -20,6 +20,8 @@ import ResetPasswordRequest from "./components/auth/ResetPasswordRequest.tsx";
 import ResetPassword from "./components/auth/ResetPassword.tsx";
 import UserWins from "./components/profile/UserWins.tsx";
 import AuctionPayment from "./components/auction/AuctionPayment.tsx";
+import UpdateAuctionPrice from "./components/auction/UpdateAuctionPrice.tsx";
+import HowItWorks from "./components/home/HowItWorks.tsx";
 
 function RootLayout() {
     return (
@@ -39,6 +41,7 @@ const router = createBrowserRouter([
             {path: "/request-password-reset", element: <ResetPasswordRequest/>},
             {path: "/obnovit-heslo", element: <ResetPassword/>},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
+            {path: "/jak-to-funguje", element: <HowItWorks/>},
 
             {
                 element: <ProtectedRoute />,
@@ -60,6 +63,7 @@ const router = createBrowserRouter([
                     {path: "/vytvorit-aukci", element: <CreateAuction/>},
                     {path: "/vytvorit-aukci/:groupId", element: <CreateAuction/>},
                     {path: "/upravit-aukci/:productId", element: <UpdateAuction />},
+                    {path: "/upravit-cenu-aukce/:productId", element: <UpdateAuctionPrice />},
                 ]
             },
 

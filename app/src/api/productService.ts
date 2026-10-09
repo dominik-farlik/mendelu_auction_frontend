@@ -109,6 +109,14 @@ export const productService = {
         return response.data;
     },
 
+    async updateAuctionPrice(
+        productId: number,
+        payload: { starting_price: number | null, min_bid: number | null, buy_now_price: number | null }
+    ): Promise<ProductResponse> {
+        const response = await api.patch(`/products/${productId}/price`, payload);
+        return response.data;
+    },
+
     /**
      * Vrátí všechny aktivní nabídky
      */

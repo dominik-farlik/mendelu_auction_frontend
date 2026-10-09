@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { ProductResponse } from "../../api/productService.ts";
-import { parseTimeDistance } from "../../utils/formatDate.ts";
-import {Status} from "../../types/product.ts";
+import { Status } from "../../types/product.ts";
+import TimerBadge from "../TimerBadge.tsx";
+import {useState} from "react";
 
 export default function CreatedAuctions({ auctions }: { auctions: ProductResponse[] }) {
     const navigate = useNavigate();
+    const [currentTime] = useState(() => Date.now());
 
     const getStatusInfo = (status: string) => {
         switch (status.toLowerCase()) {
@@ -20,23 +22,6 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
             default:
                 return { className: "bg-slate-100 text-slate-700", label: status };
         }
-    };
-
-    const getTimeUntilStart = (startsAt: string) => {
-        const distance = new Date(startsAt).getTime() - new Date().getTime();
-
-        if (distance <= 0) {
-            return "Již začalo";
-        }
-
-        const { days, hours, minutes } = parseTimeDistance(distance);
-
-        const parts = [];
-        if (days > 0) parts.push(`${days} d`);
-        if (hours > 0) parts.push(`${hours} h`);
-        if (minutes > 0 && days === 0 || parts.length === 0) parts.push(`${minutes} m`);
-
-        return `Za ${parts.join(" ")}`;
     };
 
     const sortedAuctions = [...auctions].sort((a, b) => {
@@ -56,18 +41,18 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
                     <div className="hidden md:grid grid-cols-5 gap-4 px-6 py-3 bg-slate-100 rounded-xl text-sm font-bold text-slate-600 md:justify-items-center">
                         <div className="justify-self-start w-full">Název</div>
                         <div>Vyvolávací cena</div>
-                        <div>Začátek</div>
+                        <div>Čas</div>
                         <div>Stav</div>
                         <div>Akce</div>
                     </div>
 
                     {sortedAuctions.map(auction => {
                         const statusInfo = getStatusInfo(auction.status);
-                        const timeUntil = auction.starts_at ? getTimeUntilStart(auction.starts_at) : "Není určen";
 
+                        const hasStarted = new Date(auction.starts_at).getTime() <= currentTime;
                         const isPendingOrCancelled = auction.status === Status.Pending || auction.status === Status.Canceled;
-                        const hasStarted = timeUntil === "Již začalo";
                         const canEdit = isPendingOrCancelled || !hasStarted;
+                        const canEditPrice = auction.status === Status.Approved;
 
                         return (
                             <Link
@@ -89,11 +74,13 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
                                         <span className="text-slate-700 font-medium">{auction.starting_price} Kč</span>
                                     </div>
 
-                                    <div className="flex flex-col md:block">
-                                        <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Začátek</span>
-                                        <span className={`font-medium ${hasStarted ? "text-[#16a34a]" : "text-slate-700"}`}>
-                                            {timeUntil}
-                                        </span>
+                                    <div className="flex flex-col md:block items-start md:items-center">
+                                        <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Čas</span>
+                                        <TimerBadge
+                                            startTime={auction.starts_at}
+                                            endTime={auction.ends_at}
+                                            style={true}
+                                        />
                                     </div>
 
                                     <div className="flex flex-col md:block items-start">
@@ -114,7 +101,17 @@ export default function CreatedAuctions({ auctions }: { auctions: ProductRespons
                                                 }}
                                                 className="px-4 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 rounded-lg text-sm font-bold transition-colors cursor-pointer w-full md:w-auto text-center"
                                             >
-                                                Upravit
+                                                Upravit nabídku
+                                            </button>
+                                        ) : canEditPrice ? (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate(`/upravit-cenu-aukce/${auction.id}`);
+                                                }}
+                                                className="px-4 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 rounded-lg text-sm font-bold transition-colors cursor-pointer w-full md:w-auto text-center"
+                                            >
+                                                Upravit cenu
                                             </button>
                                         ) : (
                                             <span className="px-4 py-1.5 bg-slate-50 text-slate-400 rounded-lg text-sm font-medium italic block w-full md:w-auto text-center">

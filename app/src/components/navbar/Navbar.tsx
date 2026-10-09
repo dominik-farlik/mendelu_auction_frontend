@@ -45,9 +45,9 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
                        md:static md:w-auto md:bg-transparent md:border-none md:py-0 md:flex-row md:gap-8 md:items-center md:shadow-none md:translate-y-0 md:opacity-100 md:scale-100 ${desktopTextClass}
                        ${isOpen ? 'translate-y-0 opacity-100 scale-100 visible' : '-translate-y-4 opacity-0 scale-95 invisible md:visible'}
                    `}>
-                <a href="#jak-to-funguje" className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
+                <Link to="/jak-to-funguje" className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
                     Jak to funguje
-                </a>
+                </Link>
                 {isAuthenticated ? (
                     <div className="pt-2 md:pt-0 border-t border-white/10 md:border-none">
                         <UserMenu />

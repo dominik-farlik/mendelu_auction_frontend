@@ -93,7 +93,6 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
         await onSubmit(productPayload, coverImage, additionalImages);
     };
 
-    // Pomocná funkce pro získání aktuálního data/času ve formátu pro <input type="datetime-local">
     const getCurrentDateTimeLocal = () => {
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());

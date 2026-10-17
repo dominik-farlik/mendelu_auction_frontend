@@ -25,9 +25,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
+        working-directory: ./app
         run: npm ci
 
       - name: Run Linting
+        working-directory: ./app
         continue-on-error: true
         run: npm run lint
 

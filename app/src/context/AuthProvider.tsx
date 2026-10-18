@@ -10,7 +10,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const checkSession = async () => {
             try {
-                const response = await api.get('users/me/');
+                const response = await api.get('users/me');
                 setUser(response.data);
             } catch (error) {
                 setUser(null);

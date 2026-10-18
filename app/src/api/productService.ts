@@ -69,7 +69,7 @@ export const productService = {
             }
         }
 
-        const response = await api.post<ProductResponse>('/products/', data, {
+        const response = await api.post<ProductResponse>('/products', data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -121,7 +121,7 @@ export const productService = {
      * Vrátí všechny aktivní nabídky
      */
     async getActiveAuctions(): Promise<ProductResponse[]> {
-        const response = await api.get<ProductResponse[]>('/products/', {
+        const response = await api.get<ProductResponse[]>('/products', {
         params: {
             approved: true,
             finished: 24,
@@ -144,7 +144,7 @@ export const productService = {
      */
     async getGroupProducts(groupId: number): Promise<ProductResponse[]> {
         try {
-            const response = await api.get<ProductResponse[]>(`/products/group/${groupId}/`);
+            const response = await api.get<ProductResponse[]>(`/products/group/${groupId}`);
             return response.data;
         } catch (error) {
             console.error(`Chyba při načítání produktů pro skupinu ${groupId}:`, error);
@@ -159,7 +159,7 @@ export const productService = {
      */
     async getProductDetail(productId: number): Promise<ProductResponse> {
         try {
-            const response = await api.get<ProductResponse>(`/products/${productId}/`);
+            const response = await api.get<ProductResponse>(`/products/${productId}`);
             return response.data;
         } catch (error) {
             console.error(`Chyba při načítání produktu ${productId}:`, error);

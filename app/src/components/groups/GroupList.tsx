@@ -62,7 +62,7 @@ export default function GroupList() {
                             <div className="flex flex-col md:block">
                                 <span className="text-[11px] font-bold text-slate-400 md:hidden uppercase tracking-wider mb-1">Organizace</span>
                                 {group.organization ? (
-                                    <span className="text-slate-700 font-medium">{group.organization}</span>
+                                    <span className="text-slate-700 font-medium">{group.organization.name}</span>
                                 ) : (
                                     <span className="text-slate-400 italic font-medium">nezadáno</span>
                                 )}

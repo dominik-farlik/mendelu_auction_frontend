@@ -48,7 +48,7 @@ export default function AuctionPreview({ auction }: {auction: ProductResponse}) 
             <div className="flex flex-col grow p-6">
                 <div className="mb-3">
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
-                        {auction.group.organization} • {auction.group.name}
+                        {auction.group.organization?.name}
                     </p>
                     <h4 className="text-lg font-bold text-slate-900 line-clamp-2 leading-tight">
                         {auction.title}

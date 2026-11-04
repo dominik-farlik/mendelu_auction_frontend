@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { type ProductBids, type ProductResponse, productService } from "../../api/productService.ts";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import BidWindow from "./BidWindow.tsx";
 import {Category, Status} from "../../types/product.ts";
@@ -39,7 +39,7 @@ export default function AuctionDetail() {
         group: {
             id: 0,
             name: "",
-            organization: "",
+            organization: null,
         },
         bids: []
     });
@@ -212,13 +212,28 @@ export default function AuctionDetail() {
                                 <span className="text-gray-300">Výtěžek aukce obdrží:</span>
                                 <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
                                     <div className="w-6 h-6 bg-pink-200 rounded-full flex items-center justify-center overflow-hidden shrink-0">
-                                        <span className="text-xs font-bold text-pink-700">
-                                            {product.group.organization?.charAt(0) || "O"}
-                                        </span>
+                                        {product.group.organization?.logo ? (
+                                            <img
+                                                src={`${import.meta.env.VITE_IMAGES_URL}/${product.group.organization.logo}`}
+                                                alt={product.group.organization.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <span className="text-xs font-bold text-pink-700">
+                                                {product.group.organization?.name.charAt(0) || "O"}
+                                            </span>
+                                        )}
                                     </div>
-                                    <span className="font-bold underline decoration-2 underline-offset-4 decoration-white/30 hover:decoration-white transition-colors cursor-pointer">
-                                        {product.group.organization}
-                                    </span>
+                                    {product.group.organization ? (
+                                        <Link
+                                            to={`/organizace/${product.group.organization.id}`}
+                                            className="font-bold underline decoration-2 underline-offset-4 decoration-white/30 hover:decoration-white transition-colors"
+                                        >
+                                            {product.group.organization.name}
+                                        </Link>
+                                    ) : (
+                                        <span className="font-bold text-gray-300 italic">nezadáno</span>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -276,12 +291,13 @@ export default function AuctionDetail() {
                                 product.bids.map((bid, index) => (
                                     <div key={index} className="flex justify-between items-center py-3 px-3 hover:bg-gray-50 rounded-xl transition-colors gap-4">
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
-                                            <span
-                                                className="font-bold text-slate-900 truncate"
+                                            <Link
+                                                to={`/profil-uzivatele/${bid.bidder.id}`}
+                                                className="font-bold text-slate-900 truncate hover:underline underline-offset-4 decoration-gray-300"
                                                 title={`${bid.bidder.first_name} ${bid.bidder.public_last_name ? bid.bidder.last_name : ''}`}
                                             >
                                                 {bid.bidder.first_name} {bid.bidder.public_last_name && bid.bidder.last_name}
-                                            </span>
+                                            </Link>
                                             <span className="text-gray-400 text-sm whitespace-nowrap shrink-0">
                                                 <span className="hidden sm:inline">•</span> {calculateTimeLeft(bid.bid_time)}
                                             </span>

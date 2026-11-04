@@ -22,6 +22,9 @@ import UserWins from "./components/profile/UserWins.tsx";
 import AuctionPayment from "./components/auction/AuctionPayment.tsx";
 import UpdateAuctionPrice from "./components/auction/UpdateAuctionPrice.tsx";
 import HowItWorks from "./components/home/HowItWorks.tsx";
+import UserPublicProfile from "./components/public/UserPublicProfile.tsx";
+import OrganizationProfile from "./components/public/OrganizationProfile.tsx";
+import Organizations from "./components/organizations/Organizations.tsx";
 
 function RootLayout() {
     return (
@@ -42,6 +45,8 @@ const router = createBrowserRouter([
             {path: "/obnovit-heslo", element: <ResetPassword/>},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
             {path: "/jak-to-funguje", element: <HowItWorks/>},
+            {path: "/profil-uzivatele/:userId", element: <UserPublicProfile/>},
+            {path: "/organizace/:organizationId", element: <OrganizationProfile/>},
 
             {
                 element: <ProtectedRoute />,
@@ -72,6 +77,7 @@ const router = createBrowserRouter([
                 children: [
                     {path: "/vytvorit-skupinu", element: <CreateGroup />},
                     {path: "profil/sprava-uzivatelu", element: <Users />},
+                    {path: "/profil/organizace", element: <Organizations />},
                     {path: "/uzivatel/:userId", element: <User />},
                 ]
             }

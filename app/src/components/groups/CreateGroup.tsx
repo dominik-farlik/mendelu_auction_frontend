@@ -1,23 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { type GroupCreate, groupService } from "../../api/groupService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import UserPage from "../profile/UserPage.tsx";
+import { type OrganizationResponse, organizationService } from "../../api/organizationService.ts";
 
 export default function CreateGroup() {
     const [group, setGroup] = useState<GroupCreate>({
         name: "",
-        organization: "",
+        organization_id: null,
     });
+    const [organizations, setOrganizations] = useState<OrganizationResponse[]>([]);
     const [creating, setCreating] = useState<boolean>(false);
+
+    useEffect(() => {
+        organizationService.getAll()
+            .then(setOrganizations)
+            .catch(() => toast.error("Nepodařilo se načíst organizace."));
+    }, []);
 
     const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setGroup((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleOrganizationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value;
+        setGroup((prev) => ({ ...prev, organization_id: value ? Number(value) : null }));
     };
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -32,7 +45,7 @@ export default function CreateGroup() {
 
         const createPromise = groupService.createGroup({
             name: group.name,
-            organization: group.organization || null,
+            organization_id: group.organization_id ?? null,
         }).then(() => {
             // Po úspěšném vytvoření přesměrujeme uživatele zpět na výpis skupin
             navigate("/profil/skupiny");
@@ -85,15 +98,20 @@ export default function CreateGroup() {
                                 <label htmlFor="organization" className={labelClasses}>
                                     Organizace
                                 </label>
-                                <input
+                                <select
                                     id="organization"
-                                    type="text"
-                                    name="organization"
-                                    value={group.organization || ""}
-                                    onChange={handleChange}
-                                    placeholder="Volitelné"
-                                    className={inputClasses}
-                                />
+                                    name="organization_id"
+                                    value={group.organization_id ?? ""}
+                                    onChange={handleOrganizationChange}
+                                    className={`${inputClasses} cursor-pointer`}
+                                >
+                                    <option value="">Bez organizace</option>
+                                    {organizations.map((organization) => (
+                                        <option key={organization.id} value={organization.id}>
+                                            {organization.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 

@@ -5,7 +5,7 @@ import React from "react";
 
 type UserPageProps = {
     children: React.ReactNode;
-    currentWindow?: "osobni-udaje" | "skupiny" | "vytvorit-skupinu" | "moje-prihozy" | "sprava-uzivatelu" | "vyhry";
+    currentWindow?: "osobni-udaje" | "skupiny" | "vytvorit-skupinu" | "moje-prihozy" | "sprava-uzivatelu" | "vyhry" | "organizace";
 }
 
 export default function UserPage({children, currentWindow = "osobni-udaje"}: UserPageProps) {

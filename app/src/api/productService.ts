@@ -1,6 +1,7 @@
 import api from './axios';
 import type {Category, Status} from "../types/product.ts";
 import type {UserResponse} from "./userService.ts";
+import type {OrganizationResponse} from "./organizationService.ts";
 
 export interface ProductImageResponse {
     filename: string;
@@ -20,7 +21,7 @@ export interface ProductResponse {
     starts_at: string;
     ends_at: string;
     created_by_id: number;
-    group: {id: number, name: string, organization: string};
+    group: {id: number, name: string, organization_id?: number | null, organization?: OrganizationResponse | null};
     created_at: string;
     status: Status;
     is_followed: boolean;

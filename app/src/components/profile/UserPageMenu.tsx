@@ -45,6 +45,15 @@ export default function UserPageMenu({ currentWindow }: { currentWindow: string 
 
             {user?.role.name === Role.Manager &&
                 <MenuButton
+                    title="Organizace"
+                    windowName="organizace"
+                    active={currentWindow === "organizace"}
+                    handleTabChange={handleTabChange}
+                />
+            }
+
+            {user?.role.name === Role.Manager &&
+                <MenuButton
                     title="Správa uživatelů"
                     windowName="sprava-uzivatelu"
                     active={currentWindow === "sprava-uzivatelu"}

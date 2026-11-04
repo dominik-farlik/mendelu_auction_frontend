@@ -10,7 +10,10 @@ export default function MainAuctions() {
 
     useEffect(() => {
         productService.getMainActiveAuctions()
-            .then((data) => setAuctions(data))
+            .then((data) => {
+                setAuctions(data)
+                console.log(data);
+            })
             .catch((error) => console.error("Chyba při načítání aukcí:", error));
     }, []);
 
@@ -90,7 +93,7 @@ export default function MainAuctions() {
                                         <span className="bg-slate-700/50 px-2 py-1.5 rounded-full text-[10px]">◎</span> {saleType}
                                     </p>
                                     <p className="text-3xl font-bold text-white">
-                                        {finalPrice.toLocaleString('cs-CZ')} Kč
+                                        {finalPrice?.toLocaleString('cs-CZ')} Kč
                                     </p>
                                 </div>
                             </div>
@@ -115,7 +118,7 @@ export default function MainAuctions() {
 
             {auctions.length > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-8">
-                    {auctions.map((_, index) => (
+                    {auctions && auctions.map((_, index) => (
                         <button
                             key={index}
                             onClick={() => setCurrentIndex(index)}

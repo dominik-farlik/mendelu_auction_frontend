@@ -18,6 +18,16 @@ export interface UserResponse {
     public_last_name: boolean;
 }
 
+export interface UserPublicResponse {
+    id: number;
+    first_name: string;
+    last_name: string;
+    username?: string | null;
+    public_last_name: boolean;
+    won_auctions_count: number;
+    total_paid: number;
+}
+
 export interface UserUpdate {
     email: string;
     phone_number?: string | null;
@@ -51,6 +61,22 @@ export const userService = {
      */
     async getUser(userId: number): Promise<UserResponse> {
         const response = await api.get<UserResponse>(`/users/${userId}`);
+        return response.data;
+    },
+
+    /**
+     * Získá veřejný profil uživatele.
+     */
+    async getPublicProfile(userId: number): Promise<UserPublicResponse> {
+        const response = await api.get<UserPublicResponse>(`/users/${userId}/public`);
+        return response.data;
+    },
+
+    /**
+     * Získá aukce, které uživatel vyhrál a zaplatil.
+     */
+    async getPublicWins(userId: number): Promise<ProductResponse[]> {
+        const response = await api.get<ProductResponse[]>(`/users/${userId}/public/wins`);
         return response.data;
     },
 

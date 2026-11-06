@@ -10,7 +10,7 @@ import ImageGallery from "./ImageGallery.tsx";
 import Page from "../Page.tsx";
 import {Role} from "../../types/user.ts";
 import {useAuth} from "../../context/useAuth.ts";
-import {type UserResponse, userService} from "../../api/userService.ts";
+import {type UserPublicResponse, userService} from "../../api/userService.ts";
 import { buildWsUrl } from "../../utils/wsUrl.ts";
 import ActiveAuctions from "../home/ActiveAuctions.tsx";
 
@@ -44,7 +44,7 @@ export default function AuctionDetail() {
         },
         bids: []
     });
-    const [buyNowWinner, setBuyNowWinner] = useState<UserResponse | undefined>(undefined);
+    const [buyNowWinner, setBuyNowWinner] = useState<UserPublicResponse | undefined>(undefined);
 
     useEffect(() => {
         productService.getProductDetail(Number(productId))
@@ -52,7 +52,7 @@ export default function AuctionDetail() {
                 setProduct(data);
 
                 if (data.buyer_id) {
-                    userService.getUser(data.buyer_id).then(setBuyNowWinner);
+                    userService.getPublicProfile(data.buyer_id).then(setBuyNowWinner);
                 }
 
                 setLoading(false);
@@ -92,7 +92,7 @@ export default function AuctionDetail() {
                 const payload = data.payload;
 
                 if (payload.buy_now) {
-                    userService.getUser(payload.winner_id).then(data => setBuyNowWinner(data));
+                    userService.getPublicProfile(payload.winner_id).then(data => setBuyNowWinner(data));
                     toast.success(`Aukce skončila! Produkt byl zakoupen za: ${payload.final_price.toLocaleString('cs-CZ')} Kč`, {
                         duration: 6000,
                         icon: '🎉',

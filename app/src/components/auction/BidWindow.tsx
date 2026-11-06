@@ -7,10 +7,10 @@ import toast from "react-hot-toast";
 import BidButton from "../buttons/BidButton.tsx";
 import FollowButton from "../buttons/FollowButton.tsx";
 import { useAuth } from "../../context/useAuth.ts";
-import type {UserResponse} from "../../api/userService.ts";
+import type {UserPublicResponse} from "../../api/userService.ts";
 import {useNavigate} from "react-router-dom";
 
-export default function BidWindow({ product, buyNowWinner }: { product: ProductResponse, buyNowWinner?: UserResponse }) {
+export default function BidWindow({ product, buyNowWinner }: { product: ProductResponse, buyNowWinner?: UserPublicResponse }) {
     const { isAuthenticated } = useAuth();
     const [activeTab, setActiveTab] = useState<'auction' | 'buy_now'>(product.starting_price ? 'auction' : 'buy_now');
     const [isBidding, setIsBidding] = useState<boolean>(false);
@@ -165,7 +165,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
 
                     { buyNowWinner ? (
                         <>
-                            <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.public_last_name ? buyNowWinner.last_name : ""} zakoupil/a za `}</p>
+                            <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.last_name} zakoupil/a za `}</p>
                             <div className="text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
                         </>
                     ) : product.bids && product.bids.length > 0 && highestBid ? (

@@ -55,9 +55,9 @@ export const userService = {
     },
 
     /**
-     * Získá profil uživatele podle ID.
+     * Získá kompletní údaje uživatele podle ID (pouze manažer).
      *
-     * @returns {Promise<UserResponse>} Data přihlášeného uživatele.
+     * @returns {Promise<UserResponse>} Data uživatele včetně role a kontaktů.
      */
     async getUser(userId: number): Promise<UserResponse> {
         const response = await api.get<UserResponse>(`/users/${userId}`);

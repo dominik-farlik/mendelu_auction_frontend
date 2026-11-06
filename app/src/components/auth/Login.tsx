@@ -18,10 +18,8 @@ export default function Login() {
             ? 'Vaše přihlášení vypršelo. Prosím, přihlaste se znovu.'
             : null;
     });
+    const [unverified, setUnverified] = useState<boolean>(false);
     const successMessage: string | null =
-        (searchParams.get('verified') === 'true'
-            ? 'Váš email byl úspěšně ověřen. Nyní se můžete přihlásit.'
-            : null) ||
         (searchParams.get('registered') === 'true'
             ? 'Registrace proběhla úspěšně! Na váš e-mail jsme zaslali potvrzovací odkaz. Před prvním přihlášením jej prosím potvrďte.'
             : null) ||
@@ -49,6 +47,7 @@ export default function Login() {
         }
 
         setLoading(true);
+        setUnverified(false);
 
         try {
             await authService.login({
@@ -61,6 +60,7 @@ export default function Login() {
             navigate(returnUrl, { replace: true });
         } catch (err) {
             const axiosError = err as AxiosError<{ detail?: string }>;
+            setUnverified(axiosError.response?.status === 403);
             const errorMsg = axiosError.response?.data?.detail || "Chyba při přihlašování.";
             setError(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
         } finally {
@@ -73,6 +73,14 @@ export default function Login() {
             {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium mb-4">
                     {error}
+                    {unverified && (
+                        <>
+                            {" "}
+                            <Link to="/overit-email" className="font-bold underline underline-offset-4">
+                                Poslat nový ověřovací odkaz
+                            </Link>
+                        </>
+                    )}
                 </div>
             )}
 

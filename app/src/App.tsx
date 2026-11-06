@@ -22,6 +22,7 @@ import UserWins from "./components/profile/UserWins.tsx";
 import AuctionPayment from "./components/auction/AuctionPayment.tsx";
 import UpdateAuctionPrice from "./components/auction/UpdateAuctionPrice.tsx";
 import HowItWorks from "./components/home/HowItWorks.tsx";
+import VerifyEmail from "./components/auth/VerifyEmail.tsx";
 import UserPublicProfile from "./components/public/UserPublicProfile.tsx";
 import OrganizationProfile from "./components/public/OrganizationProfile.tsx";
 import Organizations from "./components/organizations/Organizations.tsx";
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
             {path: "/register", element: <Register/>},
             {path: "/request-password-reset", element: <ResetPasswordRequest/>},
             {path: "/obnovit-heslo", element: <ResetPassword/>},
+            {path: "/overit-email", element: <VerifyEmail/>},
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
             {path: "/jak-to-funguje", element: <HowItWorks/>},
             {path: "/profil-uzivatele/:userId", element: <UserPublicProfile/>},

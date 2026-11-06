@@ -57,7 +57,25 @@ export const authService = {
     },
 
     /**
-     * Pošle uživateli na email odkaz na obnovu hesla
+     * Ověří e-mail podle tokenu z ověřovacího odkazu
+     * @param token
+     */
+    async verifyEmail(token: string): Promise<{ message: string; already_verified: boolean }> {
+        const response = await api.post("/auth/verify-email", {token: token});
+        return response.data;
+    },
+
+    /**
+     * Znovu pošle ověřovací e-mail (odpověď neprozrazuje, zda účet existuje).
+     * @param email
+     */
+    async resendVerification(email: string): Promise<{ message: string }> {
+        const response = await api.post("/auth/resend-verification", {email: email});
+        return response.data;
+    },
+
+    /**
+     * Nastaví nové heslo podle tokenu z e-mailu
      * @param token
      * @param password
      */

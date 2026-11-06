@@ -11,6 +11,7 @@ import Page from "../Page.tsx";
 import {Role} from "../../types/user.ts";
 import {useAuth} from "../../context/useAuth.ts";
 import {type UserResponse, userService} from "../../api/userService.ts";
+import { buildWsUrl } from "../../utils/wsUrl.ts";
 import ActiveAuctions from "../home/ActiveAuctions.tsx";
 
 export default function AuctionDetail() {
@@ -65,7 +66,7 @@ export default function AuctionDetail() {
             return;
         }
 
-        const wsUrl = `${import.meta.env.VITE_WS_URL}/auctions/${productId}`;
+        const wsUrl = buildWsUrl(`/auctions/${productId}`);
         const ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {

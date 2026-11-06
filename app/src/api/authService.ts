@@ -7,6 +7,7 @@ export interface UserCreate {
     last_name: string;
     username?: string | null;
     password: string;
+    phone_number?: string | null;
 }
 
 export interface UserLogin {

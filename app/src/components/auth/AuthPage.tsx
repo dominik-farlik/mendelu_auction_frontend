@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from "../navbar/Navbar.tsx";
+import OrganizationsBand from "../OrganizationsBand.tsx";
 
 interface AuthFormProps {
     children: React.ReactNode;
@@ -24,6 +25,8 @@ export default function AuthPage({ children, title }: AuthFormProps) {
                     </>
                 </div>
             </div>
+
+            <OrganizationsBand variant="footer"/>
         </div>
     );
 }

@@ -7,6 +7,7 @@ import ProfileStat from "./ProfileStat.tsx";
 import AuctionContainer from "../auction/AuctionContainer.tsx";
 import { type UserPublicResponse, userService } from "../../api/userService.ts";
 import type { ProductResponse } from "../../api/productService.ts";
+import OrganizationsBand from "../OrganizationsBand.tsx";
 
 export default function UserPublicProfile() {
     const { userId } = useParams<{ userId: string }>();
@@ -95,6 +96,7 @@ export default function UserPublicProfile() {
                     )}
                 </div>
             )}
+            <OrganizationsBand variant="footer"/>
         </Page>
     );
 }

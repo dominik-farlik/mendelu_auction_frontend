@@ -1,5 +1,6 @@
 import Hero from "../Hero.tsx";
 import Page from "../Page.tsx";
+import OrganizationsBand from "../OrganizationsBand.tsx";
 
 const steps = [
     {
@@ -148,6 +149,7 @@ export default function HowItWorks() {
                     </div>
                 </section>
             </div>
+            <OrganizationsBand variant="footer"/>
         </Page>
     );
 }

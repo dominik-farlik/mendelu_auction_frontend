@@ -75,7 +75,7 @@ export default function OrganizationProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
                                 <ProfileStat
-                                    label="Celkem vybráno"
+                                    label="Vybráno aukcemi skupin"
                                     value={organization.total_raised.toLocaleString('cs-CZ')}
                                     unit="Kč"
                                 />
@@ -88,6 +88,11 @@ export default function OrganizationProfile() {
                                     value={organization.active_auctions_count.toLocaleString('cs-CZ')}
                                 />
                             </div>
+
+                            <p className="text-base md:text-lg text-gray-400 leading-relaxed m-0 max-w-4xl">
+                                Informativní přehled za aukce skupin přiřazených k této organizaci. Výtěžek ze všech aukcí
+                                se ve skutečnosti dělí rovným dílem mezi všechny podporované organizace.
+                            </p>
                         </>
                     )}
                 </div>
@@ -96,12 +101,12 @@ export default function OrganizationProfile() {
             {organization && (
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col gap-12">
                     <h3 className="text-2xl font-black text-slate-900 uppercase m-0 tracking-tight border-b border-gray-200 pb-4">
-                        Aukce pro {organization.name}
+                        Probíhající aukce skupin této organizace
                     </h3>
 
                     {auctions.length === 0 ? (
                         <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-200">
-                            <p className="text-slate-500 font-medium m-0">Pro tuto organizaci momentálně neprobíhají žádné aukce.</p>
+                            <p className="text-slate-500 font-medium m-0">Skupiny této organizace momentálně nemají žádné probíhající aukce.</p>
                         </div>
                     ) : (
                         <AuctionContainer auctions={auctions} />

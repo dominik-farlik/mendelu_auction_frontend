@@ -48,7 +48,6 @@ const router = createBrowserRouter([
             {path: "/aukce/detail/:productId", element: <AuctionDetail/>},
             {path: "/jak-to-funguje", element: <HowItWorks/>},
             {path: "/profil-uzivatele/:userId", element: <UserPublicProfile/>},
-            {path: "/organizace/:organizationId", element: <OrganizationProfile/>},
 
             {
                 element: <ProtectedRoute />,
@@ -66,6 +65,7 @@ const router = createBrowserRouter([
                 children: [
                     {path: "/profil/skupiny", element: <UserGroups />},
                     {path: "/skupina/:groupId", element: <GroupDetail/>},
+                    {path: "/organizace/:organizationId", element: <OrganizationProfile/>},
 
                     {path: "/vytvorit-aukci", element: <CreateAuction/>},
                     {path: "/vytvorit-aukci/:groupId", element: <CreateAuction/>},

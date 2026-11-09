@@ -103,7 +103,7 @@ export default function AuctionPayment() {
                     )}
                     <div className="flex flex-col grow">
                         <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                            {order?.product.group.organization?.name}
+                            {order?.product.category}
                         </span>
                         <h3 className="text-xl font-bold text-slate-900 mb-2">{order?.product.title}</h3>
                         <div className="text-2xl font-black text-slate-900">

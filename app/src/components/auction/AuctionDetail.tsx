@@ -13,6 +13,7 @@ import {useAuth} from "../../context/useAuth.ts";
 import {type UserPublicResponse, userService} from "../../api/userService.ts";
 import { buildWsUrl } from "../../utils/wsUrl.ts";
 import ActiveAuctions from "../home/ActiveAuctions.tsx";
+import OrganizationsBand from "../OrganizationsBand.tsx";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
@@ -204,39 +205,11 @@ export default function AuctionDetail() {
                             )}
 
                             <h1
-                                className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight mb-6 line-clamp-2"
+                                className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight line-clamp-2"
                                 title={product.title}
                             >
                                 {product.title}
                             </h1>
-                            <div className="flex flex-wrap items-center gap-3 text-lg font-medium">
-                                <span className="text-gray-300">Výtěžek aukce obdrží:</span>
-                                <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                                    <div className="w-6 h-6 bg-pink-200 rounded-full flex items-center justify-center overflow-hidden shrink-0">
-                                        {product.group.organization?.logo ? (
-                                            <img
-                                                src={`${import.meta.env.VITE_IMAGES_URL}/${product.group.organization.logo}`}
-                                                alt={product.group.organization.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <span className="text-xs font-bold text-pink-700">
-                                                {product.group.organization?.name.charAt(0) || "O"}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {product.group.organization ? (
-                                        <Link
-                                            to={`/organizace/${product.group.organization.id}`}
-                                            className="font-bold underline decoration-2 underline-offset-4 decoration-white/30 hover:decoration-white transition-colors"
-                                        >
-                                            {product.group.organization.name}
-                                        </Link>
-                                    ) : (
-                                        <span className="font-bold text-gray-300 italic">nezadáno</span>
-                                    )}
-                                </div>
-                            </div>
                         </div>
 
                         {!loading && <BidWindow product={product} buyNowWinner={buyNowWinner}/>}
@@ -315,6 +288,7 @@ export default function AuctionDetail() {
                 </div>
             </div>
             <ActiveAuctions/>
+            <OrganizationsBand variant="footer"/>
         </Page>
     );
 }

@@ -17,7 +17,7 @@ export const Category = {
     Food: "Jídlo",
     Merch: "Merch",
     Fashion: "Móda",
-    Services: "SluŽby",
+    Services: "Služby",
     Sport: "Sport",
     Art: "Umění",
     Fun: "Zábava",

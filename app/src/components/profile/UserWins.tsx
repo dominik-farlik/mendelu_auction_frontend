@@ -125,7 +125,7 @@ export default function UserWins() {
                                     <div className="flex flex-col grow p-6">
                                         <div className="mb-3">
                                             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
-                                                {auction.product.group.organization?.name}
+                                                {auction.product.category}
                                             </p>
                                             <h4 className="text-lg font-bold text-slate-900 line-clamp-2 leading-tight">
                                                 {auction.product.title}

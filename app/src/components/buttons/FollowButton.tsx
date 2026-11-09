@@ -58,10 +58,12 @@ export default function FollowButton({productId, productIsFollowed, btnFill = fa
             className={`
                 ${isPreview
                 ? `${previewBase} ${previewState}`
-                : `flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-colors disabled:opacity-70 disabled:cursor-wait ${isFollowed ? detailActive : detailOutline}`
+                : `flex items-center justify-center gap-2 shrink-0 w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 rounded-full border text-sm font-bold transition-colors disabled:opacity-70 disabled:cursor-wait ${isFollowed ? detailActive : detailOutline}`
             }
             `}
             title={isFollowed ? "Zrušit sledování" : "Sledovat aukci"}
+            aria-label={isFollowed ? "Zrušit sledování" : "Sledovat aukci"}
+            aria-pressed={isFollowed}
         >
             <svg
                 width={isPreview ? "18" : "16"}
@@ -77,8 +79,9 @@ export default function FollowButton({productId, productIsFollowed, btnFill = fa
                 <circle cx="12" cy="12" r="3" />
             </svg>
 
+            {/* Na telefonu jen ikona oka (jako u náhledů aukcí), text od šířky sm. */}
             {!isPreview && (
-                <span>{isFollowed ? "Sledováno" : "Sledovat aukci"}</span>
+                <span className="hidden sm:inline whitespace-nowrap">{isFollowed ? "Sledováno" : "Sledovat aukci"}</span>
             )}
         </button>
     );

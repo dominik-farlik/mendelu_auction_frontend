@@ -24,11 +24,15 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
 
     const isFinished = product.status === Status.Finished || isTimeUp;
 
-    const currentPrice = product.bids && product.bids.length > 0
-        ? Math.max(...product.bids.map(b => b.amount))
-        : product.starting_price;
+    const hasBids = !!product.bids && product.bids.length > 0;
+    const highestAmount = hasBids ? Math.max(...product.bids.map(b => b.amount)) : null;
+    const currentPrice = highestAmount ?? product.starting_price;
 
-    const minNextBid = currentPrice ? (currentPrice + (product.min_bid || 0)) : 0;
+    // Stejné pravidlo jako backend: první příhoz může být rovnou vyvolávací cena,
+    // další musí přebít nejvyšší příhoz o minimální příhoz (bez něj aspoň o 1 Kč).
+    const minNextBid = highestAmount !== null
+        ? highestAmount + (product.min_bid || 1)
+        : (product.starting_price || product.min_bid || 1);
 
     const [bidAmount, setBidAmount] = useState<number>(minNextBid || 0);
     const [prevMinNextBid, setPrevMinNextBid] = useState<number>(minNextBid || 0);
@@ -131,13 +135,13 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
     const tabContainerBg = isBuyNow ? 'bg-black/10' : 'bg-gray-100';
 
     return (
-        <div className={`w-full max-w-xl rounded-3xl p-6 md:p-8 transition-colors duration-300 ${cardBg} z-20 relative`}>
+        <div className={`w-full max-w-xl rounded-3xl p-5 sm:p-6 md:p-8 transition-colors duration-300 ${cardBg} z-20 relative`}>
             {!isFinished && (
-                <div className="flex justify-between items-center mb-8">
-                    <div className={`flex p-1 rounded-full ${tabContainerBg}`}>
+                <div className="flex justify-between items-center gap-3 mb-6 sm:mb-8">
+                    <div className={`flex min-w-0 p-1 rounded-full ${tabContainerBg}`}>
                         {product.starting_price && product.starting_price > 0 &&
                             <button
-                                className={`px-5 py-2 rounded-full text-sm font-bold flex items-center transition-colors ${
+                                className={`px-4 sm:px-5 py-2 rounded-full text-sm font-bold flex items-center whitespace-nowrap transition-colors ${
                                     !isBuyNow
                                         ? 'bg-white text-slate-900 shadow-sm'
                                         : 'text-slate-700 hover:text-slate-900'
@@ -149,7 +153,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                         }
                         {hasBuyNowPrice &&
                             <button
-                                className={`px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${
+                                className={`px-4 sm:px-5 py-2 rounded-full text-sm font-bold flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-colors ${
                                     isBuyNow
                                         ? 'bg-white text-slate-900 shadow-sm'
                                         : canBuyNow
@@ -161,7 +165,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                 title={canBuyNow ? undefined : "Příhozy už překročily cenu Kup teď"}
                             >
                                 Kup teď
-                                <span className={isBuyNow ? 'text-slate-500' : canBuyNow ? 'text-gray-400' : 'text-gray-300 line-through'}>
+                                <span className={`text-xs sm:text-sm ${isBuyNow ? 'text-slate-500' : canBuyNow ? 'text-gray-400' : 'text-gray-300 line-through'}`}>
                                     {formattedBuyNowPrice} Kč
                                 </span>
                             </button>
@@ -179,17 +183,17 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
                     </div>
-                    <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-900 uppercase">Aukce skončila</h2>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2 text-slate-900 uppercase">Aukce skončila</h2>
 
                     { buyNowWinner ? (
                         <>
                             <p className="text-gray-500 font-medium mb-1">{`${buyNowWinner.first_name} ${buyNowWinner.last_name} zakoupil/a za `}</p>
-                            <div className="text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
+                            <div className="text-4xl sm:text-5xl font-black text-slate-900">{product.buy_now_price!.toLocaleString('cs-CZ')} Kč</div>
                         </>
                     ) : product.bids && product.bids.length > 0 && highestBid ? (
                         <>
                             <p className="text-gray-500 font-medium mb-1">{`${highestBid.bidder.first_name} ${highestBid.bidder.public_last_name ? highestBid.bidder.last_name : ""} vyhrál/a s částkou `}</p>
-                            <div className="text-5xl font-black text-slate-900">{formattedCurrentPrice} Kč</div>
+                            <div className="text-4xl sm:text-5xl font-black text-slate-900">{formattedCurrentPrice} Kč</div>
                         </>
                     ) : (
                         <p className="text-gray-500 font-medium mt-4">Aukce skončila bez vítěze.</p>
@@ -197,8 +201,8 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                 </div>
             ) : !isBuyNow ? (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="mb-8">
-                        <div className="flex items-center justify-between mb-2">
+                    <div className="mb-6 sm:mb-8">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                             <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">
                                 {product.bids?.length ? "AKTUÁLNÍ CENA" : "STARTOVACÍ CENA"}
                             </span>
@@ -208,7 +212,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                 onTimeUp={() => setIsTimeUp(true)}
                             />
                         </div>
-                        <h2 className="text-5xl font-bold tracking-tight text-slate-900">{formattedCurrentPrice} Kč</h2>
+                        <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 break-words">{formattedCurrentPrice} Kč</h2>
                         {buyNowExceeded && (
                             <p className="mt-3 text-sm font-medium text-slate-500">
                                 Příhozy překročily cenu Kup teď ({formattedBuyNowPrice} Kč), aukce pokračuje jen přihazováním.
@@ -260,10 +264,10 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                         <TimerBadge startTime={product.starts_at} endTime={product.ends_at}/>
                     </div>
 
-                    <h2 className="text-6xl font-bold tracking-tight mb-10">{formattedBuyNowPrice} Kč</h2>
+                    <h2 className="text-4xl sm:text-6xl font-bold tracking-tight mb-8 sm:mb-10 break-words text-center">{formattedBuyNowPrice} Kč</h2>
 
                     <button
-                        className="bg-white text-slate-900 px-10 py-4 rounded-full font-bold text-xl flex items-center gap-3 shadow-lg hover:shadow-xl active:scale-95 disabled:opacity-50 transition-all"
+                        className="w-full sm:w-auto justify-center bg-white text-slate-900 px-8 sm:px-10 py-4 rounded-full font-bold text-lg sm:text-xl flex items-center gap-3 shadow-lg hover:shadow-xl active:scale-95 disabled:opacity-50 transition-all"
                         disabled={product.status !== Status.Approved || isBuying || !canBuyNow}
                         onClick={handleBuyNowClick}
                     >
@@ -278,12 +282,12 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                         )}
                     </button>
 
-                    <div className="flex items-center gap-2 mt-8 text-sm font-medium opacity-80">
+                    <div className="flex items-center gap-2 mt-6 sm:mt-8 text-sm font-medium opacity-80 text-center">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        <span>Úhrada pouze platební bránou. Limit na úhradu 5 minut.</span>
+                        <span>Po koupi máte na zaplacení 6 hodin.</span>
                     </div>
                 </div>
             )}

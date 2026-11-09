@@ -177,9 +177,11 @@ export default function AuctionDetail() {
     return (
         <Page>
             <Hero navbarTextColor="light">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16 flex flex-col-reverse lg:flex-row gap-12 lg:gap-8 items-center lg:items-start">
-                    <div className="flex-1 flex flex-col gap-8 w-full z-20">
-                        <div>
+                {/* Telefon: název, galerie, okno pro příhozy pod sebou. Desktop: vlevo název s oknem, vpravo galerie.
+                    Levý sloupec je na telefonu "contents", takže jeho části se dají seřadit kolem galerie. */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 md:mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
+                    <div className="contents lg:flex lg:flex-col lg:gap-8 lg:w-full lg:z-20">
+                        <div className="order-1 lg:order-none">
                             {/* Manažerský schvalovací banner */}
                             {canAssess && (
                                 <div className="mb-6 bg-amber-500/20 backdrop-blur-md border border-amber-400/50 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -212,17 +214,23 @@ export default function AuctionDetail() {
                             </h1>
                         </div>
 
-                        {!loading && <BidWindow product={product} buyNowWinner={buyNowWinner}/>}
+                        {!loading && (
+                            <div className="order-3 lg:order-none w-full flex justify-center lg:justify-start z-20">
+                                <BidWindow product={product} buyNowWinner={buyNowWinner}/>
+                            </div>
+                        )}
                     </div>
-                    <ImageGallery coverImage={product.cover_image} otherImages={product.images}/>
+                    <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 w-full min-w-0 flex justify-center">
+                        <ImageGallery coverImage={product.cover_image} otherImages={product.images}/>
+                    </div>
                 </div>
             </Hero>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
                 <div className="lg:col-span-7 flex flex-col gap-6">
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-4 border-b border-gray-200 pb-4">
-                        <h3 className="text-2xl font-black text-[#4ade80] uppercase tracking-tight m-0">Popis aukce</h3>
-                        <h3 className="text-2xl font-black text-gray-300 hover:text-gray-400 cursor-pointer uppercase tracking-tight m-0 transition-colors">Časté otázky</h3>
+                        <h3 className="text-xl sm:text-2xl font-black text-[#4ade80] uppercase tracking-tight m-0">Popis aukce</h3>
+                        <h3 className="text-xl sm:text-2xl font-black text-gray-300 hover:text-gray-400 cursor-pointer uppercase tracking-tight m-0 transition-colors">Časté otázky</h3>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-gray-500">

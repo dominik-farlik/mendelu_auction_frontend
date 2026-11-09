@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import Navbar from "../navbar/Navbar.tsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
-import { type AxiosError } from "axios";
 import {type ProductCreate, productService} from "../../api/productService.ts";
 import toast from "react-hot-toast";
 import Page from "../Page.tsx";
 import AuctionForm, { type AuctionFormData } from "./AuctionForm.tsx";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function CreateAuction() {
     const { groupId } = useParams<{ groupId?: string }>();
@@ -39,9 +39,8 @@ export default function CreateAuction() {
             toast.success("Aukce byla úspěšně vytvořena!", { id: toastId });
             navigate(`/skupina/${productPayload.group_id}`);
         } catch (err) {
-            const error = err as AxiosError<{ detail?: string }>;
-            const errorMsg = error.response?.data?.detail || "Při vytváření aukce došlo k chybě.";
-            toast.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg), { id: toastId });
+            const errorMsg = getApiErrorMessage(err, "Při vytváření aukce došlo k chybě.");
+            toast.error(errorMsg, { id: toastId });
             setIsSubmitting(false);
         }
     };

@@ -1,14 +1,14 @@
 import {useState} from "react";
 import { type ProductResponse, productService } from "../../api/productService.ts";
-import { Status } from "../../types/product.ts";
+import { MAX_BID_AMOUNT, Status } from "../../types/product.ts";
 import TimerBadge from "../TimerBadge.tsx";
-import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import BidButton from "../buttons/BidButton.tsx";
 import FollowButton from "../buttons/FollowButton.tsx";
 import { useAuth } from "../../context/useAuth.ts";
 import type {UserPublicResponse} from "../../api/userService.ts";
 import {useNavigate} from "react-router-dom";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function BidWindow({ product, buyNowWinner }: { product: ProductResponse, buyNowWinner?: UserPublicResponse }) {
     const { isAuthenticated } = useAuth();
@@ -60,6 +60,11 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
             return;
         }
 
+        if (bidAmount > MAX_BID_AMOUNT) {
+            toast.error(`Příhoz může být nejvýše ${MAX_BID_AMOUNT.toLocaleString('cs-CZ')} Kč.`);
+            return;
+        }
+
         setPendingAction('bid');
         setShowConfirmModal(true);
     };
@@ -94,8 +99,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                 loading: "Zpracování příhozu...",
                 success: "Příhoz byl úspěšně zaznamenán!",
                 error: (err) => {
-                    const axiosError = err as AxiosError<{ detail?: string }>;
-                    return axiosError.response?.data?.detail || "Došlo k chybě při příhozu.";
+                    return getApiErrorMessage(err, "Došlo k chybě při příhozu.");
                 }
             });
         } else if (pendingAction === 'buy') {
@@ -104,9 +108,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
             productService.buyNow(product.id)
                 .then(() => navigate(`/aukce/platba/${product.id}`))
                 .catch((err) => {
-                    const axiosError = err as AxiosError<{ detail?: string }>;
-                    const detail = axiosError.response?.data?.detail;
-                    toast.error(typeof detail === "string" ? detail : "Došlo k chybě při nákupu.");
+                    toast.error(getApiErrorMessage(err, "Došlo k chybě při nákupu."));
                 })
                 .finally(() => {
                     setIsBuying(false);
@@ -235,6 +237,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                     value={bidAmount}
                                     onChange={(e) => setBidAmount(e.target.value === "" ? 0 : Number(e.target.value))}
                                     min={minNextBid}
+                                    max={MAX_BID_AMOUNT}
                                     placeholder={`Min. ${minNextBid}`}
                                     className="w-full bg-white border border-gray-300 text-slate-900 rounded-2xl px-5 py-4 text-lg font-bold outline-none focus:ring-4 focus:ring-[#4ade80]/10 transition-all pr-14 shadow-sm"
                                     disabled={product.status !== Status.Approved || isBidding}

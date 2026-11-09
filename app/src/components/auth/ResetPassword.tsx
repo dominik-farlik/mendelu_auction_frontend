@@ -1,8 +1,8 @@
 import AuthPage from "./AuthPage.tsx";
 import React, {useState} from "react";
 import {authService} from "../../api/authService.ts";
-import type {AxiosError} from "axios";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function ResetPassword() {
     const [searchParams] = useSearchParams();
@@ -30,9 +30,8 @@ export default function ResetPassword() {
             await authService.resetPassword(searchParams.get('token') as string, password);
             navigate("/login?updated-password=true", { replace: true });
         } catch (err) {
-            const axiosError = err as AxiosError<{ detail?: string }>;
-            const errorMsg = axiosError.response?.data?.detail || "Chyba při obnovení hesla.";
-            setError(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+            const errorMsg = getApiErrorMessage(err, "Chyba při obnovení hesla.");
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

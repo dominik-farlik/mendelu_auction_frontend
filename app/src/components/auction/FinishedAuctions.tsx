@@ -3,6 +3,7 @@ import api from "../../api/axios.ts";
 import type { OrderDetailResponse } from "../../types/order.ts";
 import { parseTimeDistance } from "../../utils/formatDate.ts";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function FinishedAuctions({ groupId }: { groupId: number }) {
     const [orders, setOrders] = useState<OrderDetailResponse[]>([]);
@@ -65,7 +66,7 @@ export default function FinishedAuctions({ groupId }: { groupId: number }) {
 
                 toast.success("Platba byla potvrzena.")
             })
-            .catch((error)=> toast.error(error.response?.data?.detail || "Nepodařilo se potvrdit platbu."))
+            .catch((error)=> toast.error(getApiErrorMessage(error, "Nepodařilo se potvrdit platbu.")))
             .finally(() => setLoadingActionId(null));
     };
 

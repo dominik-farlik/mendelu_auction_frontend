@@ -4,8 +4,8 @@ import Page from "../Page.tsx";
 import Navbar from "../navbar/Navbar.tsx";
 import toast from "react-hot-toast";
 import { productService } from "../../api/productService.ts";
-import type { AxiosError } from "axios";
 import SubmitButton from "../buttons/SubmitButton.tsx";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 interface PriceForm {
     starting_price?: string;
@@ -57,9 +57,8 @@ export default function UpdateAuctionPrice() {
             toast.success("Aukce byla úspěšně upravena!", { id: toastId });
             navigate(groupId ? `/skupina/${groupId}` : -1 as never);
         } catch (err) {
-            const error = err as AxiosError<{ detail?: string }>;
-            const errorMsg = error.response?.data?.detail || "Při úpravě aukce došlo k chybě.";
-            toast.error(typeof errorMsg === "string" ? errorMsg : JSON.stringify(errorMsg), { id: toastId });
+            const errorMsg = getApiErrorMessage(err, "Při úpravě aukce došlo k chybě.");
+            toast.error(errorMsg, { id: toastId });
         } finally {
             setIsSubmitting(false);
         }

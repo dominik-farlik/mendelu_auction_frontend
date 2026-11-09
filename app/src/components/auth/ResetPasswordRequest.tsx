@@ -1,8 +1,8 @@
 import AuthPage from "./AuthPage.tsx";
 import React, {useState} from "react";
 import {authService} from "../../api/authService.ts";
-import type {AxiosError} from "axios";
 import {Link} from "react-router-dom";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function ResetPasswordRequest() {
     const [email, setEmail] = React.useState<string>("");
@@ -31,9 +31,8 @@ export default function ResetPasswordRequest() {
             await authService.requestPasswordReset(email);
             setSucessMessage("Pokud účet s tímto e-mailem existuje, odeslali jsme na něj instrukce k obnově hesla.")
         } catch (err) {
-            const axiosError = err as AxiosError<{ detail?: string }>;
-            const errorMsg = axiosError.response?.data?.detail || "Chyba při obnovení hesla.";
-            setError(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+            const errorMsg = getApiErrorMessage(err, "Chyba při obnovení hesla.");
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

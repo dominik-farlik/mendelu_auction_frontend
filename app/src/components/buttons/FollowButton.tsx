@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
-import type { AxiosError } from "axios";
 import { useState, useEffect } from "react";
 import {productService} from "../../api/productService.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 type FollowButtonProps = {
     productId: number;
@@ -40,8 +40,7 @@ export default function FollowButton({productId, productIsFollowed, btnFill = fa
                 return successMessage;
             },
             error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                return axiosError.response?.data?.detail || "Akci se nepodařilo dokončit.";
+                return getApiErrorMessage(err, "Akci se nepodařilo dokončit.");
             }
         }).finally(() => setProcessingFollow(false));
     };

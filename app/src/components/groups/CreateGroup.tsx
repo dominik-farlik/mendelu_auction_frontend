@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { type GroupCreate, groupService } from "../../api/groupService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import UserPage from "../profile/UserPage.tsx";
 import { type OrganizationResponse, organizationService } from "../../api/organizationService.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function CreateGroup() {
     const [group, setGroup] = useState<GroupCreate>({
@@ -56,9 +56,8 @@ export default function CreateGroup() {
             loading: "Vytvářím skupinu...",
             success: (msg) => msg,
             error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                const errorMsg = axiosError.response?.data?.detail || "Chyba při vytváření skupiny.";
-                return typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
+                const errorMsg = getApiErrorMessage(err, "Chyba při vytváření skupiny.");
+                return errorMsg;
             }
         }).finally(() => {
             setCreating(false);

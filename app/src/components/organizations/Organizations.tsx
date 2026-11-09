@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import type { AxiosError } from "axios";
 import UserPage from "../profile/UserPage.tsx";
 import ActionButton from "../buttons/ActionButton.tsx";
 import OrganizationForm from "./OrganizationForm.tsx";
 import { type OrganizationResponse, organizationService } from "../../api/organizationService.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function Organizations() {
     const [organizations, setOrganizations] = useState<OrganizationResponse[]>([]);
@@ -44,9 +44,8 @@ export default function Organizations() {
             setOrganizations((prev) => prev.filter((o) => o.id !== organization.id));
             toast.success("Organizace byla smazána.", { id: toastId });
         } catch (err) {
-            const axiosError = err as AxiosError<{ detail?: string }>;
-            const errorMsg = axiosError.response?.data?.detail || "Nepodařilo se smazat organizaci.";
-            toast.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg), { id: toastId });
+            const errorMsg = getApiErrorMessage(err, "Nepodařilo se smazat organizaci.");
+            toast.error(errorMsg, { id: toastId });
         }
     };
 

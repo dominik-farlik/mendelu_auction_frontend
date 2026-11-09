@@ -6,7 +6,7 @@ import AuctionForm, { type AuctionFormData } from "./AuctionForm.tsx";
 import toast from "react-hot-toast";
 import { type GroupResponse, groupService } from "../../api/groupService.ts";
 import {type ProductCreate, productService} from "../../api/productService.ts";
-import type { AxiosError } from "axios";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 const formatForDatetimeLocal = (dateString: string | null) => {
     if (!dateString) return '';
@@ -67,9 +67,8 @@ export default function UpdateAuction() {
             toast.success("Aukce byla úspěšně upravena!", { id: toastId });
             navigate(`/skupina/${productPayload.group_id}`);
         } catch (err) {
-            const error = err as AxiosError<{ detail?: string }>;
-            const errorMsg = error.response?.data?.detail || "Při úpravě aukce došlo k chybě.";
-            toast.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg), { id: toastId });
+            const errorMsg = getApiErrorMessage(err, "Při úpravě aukce došlo k chybě.");
+            toast.error(errorMsg, { id: toastId });
             setIsSubmitting(false);
         }
     };

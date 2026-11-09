@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import { groupService } from "../../api/groupService.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 type AddMemberProps = {
     groupId: number;
@@ -33,9 +33,8 @@ export default function AddMember({ groupId }: AddMemberProps) {
             loading: "Přidávám člena...",
             success: (msg) => msg,
             error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                const errorMsg = axiosError.response?.data?.detail || "Chyba při přidávání člena skupiny.";
-                return typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
+                const errorMsg = getApiErrorMessage(err, "Chyba při přidávání člena skupiny.");
+                return errorMsg;
             }
         }).finally(() => {
             setSaving(false);

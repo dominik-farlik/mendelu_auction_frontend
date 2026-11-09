@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthPage from "./AuthPage.tsx";
 import { authService, type UserCreate } from "../../api/authService.ts";
-import type { AxiosError } from "axios";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -45,9 +45,8 @@ export default function Register() {
             setSuccessMessage("Účet byl úspěšně vytvořen. Nyní se můžete přihlásit.");
             navigate("/login?registered=true", { replace: true });
         } catch (err) {
-            const axiosError = err as AxiosError<{ detail?: string }>;
-            const errorMsg = axiosError.response?.data?.detail || "Chyba při registraci.";
-            setError(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+            const errorMsg = getApiErrorMessage(err, "Chyba při registraci.");
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

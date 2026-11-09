@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import {
@@ -7,6 +6,7 @@ import {
     type OrganizationResponse,
     organizationService
 } from "../../api/organizationService.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 type OrganizationFormProps = {
     organization?: OrganizationResponse;
@@ -55,9 +55,8 @@ export default function OrganizationForm({ organization, onSaved, onCancel }: Or
             loading: isEditMode ? "Ukládám organizaci..." : "Vytvářím organizaci...",
             success: (msg) => msg,
             error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                const errorMsg = axiosError.response?.data?.detail || "Chyba při ukládání organizace.";
-                return typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
+                const errorMsg = getApiErrorMessage(err, "Chyba při ukládání organizace.");
+                return errorMsg;
             }
         }).finally(() => {
             setSaving(false);

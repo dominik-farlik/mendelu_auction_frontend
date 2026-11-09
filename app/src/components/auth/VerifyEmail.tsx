@@ -1,15 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import type { AxiosError } from "axios";
 import AuthPage from "./AuthPage.tsx";
 import { authService } from "../../api/authService.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 type VerifyState = "verifying" | "success" | "error";
-
-const getErrorMessage = (err: unknown, fallback: string) => {
-    const detail = (err as AxiosError<{ detail?: unknown }>).response?.data?.detail;
-    return typeof detail === "string" ? detail : fallback;
-};
 
 /**
  * Stránka z ověřovacího odkazu v e-mailu. Token se na backend posílá přes POST,
@@ -43,7 +38,7 @@ export default function VerifyEmail() {
             })
             .catch((err) => {
                 setState("error");
-                setMessage(getErrorMessage(err, "E-mail se nepodařilo ověřit."));
+                setMessage(getApiErrorMessage(err, "E-mail se nepodařilo ověřit."));
             });
     }, [token]);
 
@@ -57,7 +52,7 @@ export default function VerifyEmail() {
             const data = await authService.resendVerification(email);
             setResendMessage(data.message);
         } catch (err) {
-            setResendError(getErrorMessage(err, "Ověřovací e-mail se nepodařilo odeslat."));
+            setResendError(getApiErrorMessage(err, "Ověřovací e-mail se nepodařilo odeslat."));
         } finally {
             setResending(false);
         }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useBlocker } from "react-router-dom";
-import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import { userService, type UserUpdate } from "../../api/userService.ts";
 import UserPage from "./UserPage.tsx";
 import {formatPhone, toE164} from "../../utils/formatPhone.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 const EMPTY_USER: UserUpdate = {
     email: "",
@@ -97,8 +97,7 @@ export default function UserDetail() {
             loading: "Ukládám změny...",
             success: (msg) => msg,
             error: (err) => {
-                const axiosError = err as AxiosError<{ detail?: string }>;
-                return axiosError.response?.data?.detail || "Chyba při ukládání změn.";
+                return getApiErrorMessage(err, "Chyba při ukládání změn.");
             }
         }).finally(() => {
             setSaving(false);

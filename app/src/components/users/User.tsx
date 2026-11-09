@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import type { AxiosError } from "axios";
 import UserPage from "../profile/UserPage.tsx";
 import { type UserResponse, userService } from "../../api/userService.ts";
 import { useAuth } from "../../context/useAuth.ts";
 import { Role } from "../../types/user.ts";
 import { formatPhone } from "../../utils/formatPhone.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 const ROLE_OPTIONS: { value: Role; label: string; description: string }[] = [
     { value: Role.Viewer, label: "Divák", description: "Může přihazovat a sledovat aukce." },
@@ -59,8 +59,7 @@ export default function User() {
             setUser(updatedUser);
             toast.success(`Role byla změněna na „${roleLabel(role)}“.`);
         } catch (err) {
-            const detail = (err as AxiosError<{ detail?: unknown }>).response?.data?.detail;
-            toast.error(typeof detail === "string" ? detail : "Nepodařilo se změnit roli uživatele.");
+            toast.error(getApiErrorMessage(err, "Nepodařilo se změnit roli uživatele."));
         } finally {
             setUpdatingRole(null);
         }

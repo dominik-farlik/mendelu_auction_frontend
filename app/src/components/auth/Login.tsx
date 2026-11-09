@@ -5,6 +5,7 @@ import { authService, type UserLogin } from "../../api/authService.ts";
 import { useAuth } from "../../context/useAuth.ts";
 import type { AxiosError } from "axios";
 import api from "../../api/axios.ts";
+import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 export default function Login() {
     const { login } = useAuth();
@@ -61,8 +62,8 @@ export default function Login() {
         } catch (err) {
             const axiosError = err as AxiosError<{ detail?: string }>;
             setUnverified(axiosError.response?.status === 403);
-            const errorMsg = axiosError.response?.data?.detail || "Chyba při přihlašování.";
-            setError(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+            const errorMsg = getApiErrorMessage(axiosError, "Chyba při přihlašování.");
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }

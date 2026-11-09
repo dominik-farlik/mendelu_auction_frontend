@@ -35,3 +35,5 @@ export interface ProductWinResponse {
     expires_at: string;
     product: ProductResponse;
 }
+/** Nejvyšší povolený příhoz. Musí odpovídat MAX_BID_AMOUNT v backendu (models/bid.py). */
+export const MAX_BID_AMOUNT = 1_000_000;

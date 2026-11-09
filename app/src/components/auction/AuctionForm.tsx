@@ -3,7 +3,7 @@ import type { GroupResponse } from "../../api/groupService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import type { ProductCreate } from "../../api/productService.ts";
 import toast from "react-hot-toast";
-import {Category} from "../../types/product.ts";
+import {Category, MAX_PRICE, priceLimitError} from "../../types/product.ts";
 
 export interface AuctionFormData {
     title: string;
@@ -70,6 +70,12 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                 toast.error("Konec aukce musí být nastaven až po jejím začátku.");
                 return;
             }
+        }
+
+        const limitError = priceLimitError(formData);
+        if (limitError) {
+            toast.error(limitError);
+            return;
         }
 
         if (!formData.starting_price && !formData.buy_now_price) {
@@ -173,6 +179,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         type="number"
                         step="1"
                         name="starting_price"
+                        max={MAX_PRICE}
                         required={!formData.buy_now_price}
                         value={formData.starting_price}
                         onChange={handleChange}
@@ -186,6 +193,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         type="number"
                         step="1"
                         name="min_bid"
+                        max={MAX_PRICE}
                         value={formData.min_bid}
                         onChange={handleChange}
                         className={inputClasses}
@@ -199,6 +207,7 @@ export default function AuctionForm({ initialData, groups, isEditMode, isSubmitt
                         type="number"
                         step="1"
                         name="buy_now_price"
+                        max={MAX_PRICE}
                         value={formData.buy_now_price}
                         onChange={handleChange}
                         className={inputClasses}

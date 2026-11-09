@@ -37,3 +37,18 @@ export interface ProductWinResponse {
 }
 /** Nejvyšší povolený příhoz. Musí odpovídat MAX_BID_AMOUNT v backendu (models/bid.py). */
 export const MAX_BID_AMOUNT = 1_000_000;
+
+/** Nejvyšší povolená cena (počáteční, minimální příhoz, Kup teď). Musí odpovídat MAX_PRICE v backendu (models/product.py). */
+export const MAX_PRICE = 100_000;
+
+/** Vrátí chybovou hlášku, pokud některá z cen přesahuje MAX_PRICE, jinak null. */
+export function priceLimitError(prices: { starting_price?: unknown; min_bid?: unknown; buy_now_price?: unknown }): string | null {
+    const labels = { starting_price: "Počáteční cena", min_bid: "Minimální příhoz", buy_now_price: "Cena Kup teď" } as const;
+    for (const key of Object.keys(labels) as (keyof typeof labels)[]) {
+        const value = Number(prices[key]);
+        if (prices[key] !== "" && prices[key] != null && value > MAX_PRICE) {
+            return `${labels[key]} může být nejvýše ${MAX_PRICE.toLocaleString("cs-CZ")} Kč.`;
+        }
+    }
+    return null;
+}

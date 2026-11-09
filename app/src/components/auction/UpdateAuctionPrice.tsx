@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { productService } from "../../api/productService.ts";
 import SubmitButton from "../buttons/SubmitButton.tsx";
 import { getApiErrorMessage } from "../../utils/apiError.ts";
+import { MAX_PRICE, priceLimitError } from "../../types/product.ts";
 
 interface PriceForm {
     starting_price?: string;
@@ -44,6 +45,12 @@ export default function UpdateAuctionPrice() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!form) return;
+
+        const limitError = priceLimitError(form);
+        if (limitError) {
+            toast.error(limitError);
+            return;
+        }
 
         setIsSubmitting(true);
         const toastId = toast.loading("Ukládám úpravy...");
@@ -108,6 +115,7 @@ export default function UpdateAuctionPrice() {
                                     type="number"
                                     step="1"
                                     name="starting_price"
+                                    max={MAX_PRICE}
                                     required={!form.buy_now_price}
                                     value={form.starting_price}
                                     onChange={handleChange}
@@ -123,6 +131,7 @@ export default function UpdateAuctionPrice() {
                                     type="number"
                                     step="1"
                                     name="min_bid"
+                                    max={MAX_PRICE}
                                     value={form.min_bid}
                                     onChange={handleChange}
                                     className={inputClasses}
@@ -137,6 +146,7 @@ export default function UpdateAuctionPrice() {
                                     type="number"
                                     step="1"
                                     name="buy_now_price"
+                                    max={MAX_PRICE}
                                     required={!form.starting_price}
                                     value={form.buy_now_price}
                                     onChange={handleChange}

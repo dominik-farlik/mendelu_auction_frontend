@@ -44,6 +44,11 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
         ? product.bids.reduce((max, bid) => (max.amount > bid.amount ? max : bid))
         : null;
 
+    // Stejné pravidlo jako backend: jakmile příhozy dosáhnou ceny Kup teď, lze už jen přihazovat.
+    const hasBuyNowPrice = !!product.buy_now_price && product.buy_now_price > 0;
+    const buyNowExceeded = hasBuyNowPrice && !!highestBid && highestBid.amount >= product.buy_now_price!;
+    const canBuyNow = hasBuyNowPrice && !buyNowExceeded;
+
     const handleBidClick = () => {
         if (!isAuthenticated) {
             toast.error("Pro přihození se musíte přihlásit.");
@@ -62,6 +67,11 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
     const handleBuyNowClick = () => {
         if (!isAuthenticated) {
             toast.error("Pro zakoupení se musíte přihlásit.");
+            return;
+        }
+
+        if (!canBuyNow) {
+            toast.error("Příhozy už překročily cenu Kup teď, můžete pouze přihazovat.");
             return;
         }
 
@@ -92,22 +102,24 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
             setIsBuying(true);
 
             productService.buyNow(product.id)
-                .then(() => {
-                    setIsBuying(false);
-                    setPendingAction(null);
-                })
+                .then(() => navigate(`/aukce/platba/${product.id}`))
                 .catch((err) => {
                     const axiosError = err as AxiosError<{ detail?: string }>;
-                    return axiosError.response?.data?.detail || "Došlo k chybě při nákupu.";
+                    const detail = axiosError.response?.data?.detail;
+                    toast.error(typeof detail === "string" ? detail : "Došlo k chybě při nákupu.");
                 })
-                .finally(() => navigate(`/aukce/platba/${product.id}`));
+                .finally(() => {
+                    setIsBuying(false);
+                    setPendingAction(null);
+                });
         }
     };
 
     const formattedCurrentPrice = currentPrice?.toLocaleString('cs-CZ');
     const formattedBuyNowPrice = product.buy_now_price?.toLocaleString('cs-CZ');
 
-    const isBuyNow = activeTab === 'buy_now';
+    // Když příhozy přesáhnou Kup teď (i živě přes websocket), přepneme zpět na aukci.
+    const isBuyNow = activeTab === 'buy_now' && canBuyNow;
     const cardBg = isFinished
         ? 'bg-gray-100 text-slate-900 border border-gray-200'
         : isBuyNow
@@ -133,17 +145,21 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                 Aukce
                             </button>
                         }
-                        {product.buy_now_price && product.buy_now_price > 0 &&
+                        {hasBuyNowPrice &&
                             <button
                                 className={`px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${
                                     isBuyNow
                                         ? 'bg-white text-slate-900 shadow-sm'
-                                        : 'text-gray-500 hover:text-slate-900'
+                                        : canBuyNow
+                                            ? 'text-gray-500 hover:text-slate-900'
+                                            : 'text-gray-400 cursor-not-allowed'
                                 }`}
                                 onClick={() => setActiveTab('buy_now')}
+                                disabled={!canBuyNow}
+                                title={canBuyNow ? undefined : "Příhozy už překročily cenu Kup teď"}
                             >
                                 Kup teď
-                                <span className={isBuyNow ? 'text-slate-500' : 'text-gray-400'}>
+                                <span className={isBuyNow ? 'text-slate-500' : canBuyNow ? 'text-gray-400' : 'text-gray-300 line-through'}>
                                     {formattedBuyNowPrice} Kč
                                 </span>
                             </button>
@@ -191,6 +207,11 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                             />
                         </div>
                         <h2 className="text-5xl font-bold tracking-tight text-slate-900">{formattedCurrentPrice} Kč</h2>
+                        {buyNowExceeded && (
+                            <p className="mt-3 text-sm font-medium text-slate-500">
+                                Příhozy překročily cenu Kup teď ({formattedBuyNowPrice} Kč), aukce pokračuje jen přihazováním.
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -240,7 +261,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
 
                     <button
                         className="bg-white text-slate-900 px-10 py-4 rounded-full font-bold text-xl flex items-center gap-3 shadow-lg hover:shadow-xl active:scale-95 disabled:opacity-50 transition-all"
-                        disabled={product.status !== Status.Approved || isBuying}
+                        disabled={product.status !== Status.Approved || isBuying || !canBuyNow}
                         onClick={handleBuyNowClick}
                     >
                         {isBuying ? "Zpracovávám..." : (

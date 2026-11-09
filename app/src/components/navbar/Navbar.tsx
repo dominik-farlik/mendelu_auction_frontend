@@ -13,6 +13,7 @@ type NavbarProps = {
 export default function Navbar({ textColor = 'dark' }: NavbarProps) {
     const { isAuthenticated } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
+    const closeMenu = () => setIsOpen(false);
 
     const navTextClass = textColor === 'light' ? 'text-white' : 'text-slate-900';
     const desktopTextClass = textColor === 'light' ? 'md:text-white' : 'md:text-slate-900';
@@ -41,31 +42,38 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
                 )}
             </button>
             <div className={`
-                       absolute top-full left-0 w-full rounded-full bg-slate-900/95 backdrop-blur-lg border-t border-white/10 pl-4 flex flex-col gap-6 shadow-2xl transition-all duration-300 origin-top text-white
-                       md:static md:w-auto md:bg-transparent md:border-none md:py-0 md:flex-row md:gap-8 md:items-center md:shadow-none md:translate-y-0 md:opacity-100 md:scale-100 ${desktopTextClass}
+                       absolute top-full inset-x-4 mt-2 rounded-3xl bg-slate-900/95 backdrop-blur-lg border border-white/10 p-6 flex flex-col gap-5 shadow-2xl max-h-[calc(100dvh-6rem)] overflow-y-auto transition-all duration-300 origin-top text-white
+                       md:static md:inset-auto md:mt-0 md:rounded-none md:bg-transparent md:backdrop-blur-none md:border-none md:p-0 md:max-h-none md:overflow-visible md:flex-row md:gap-8 md:items-center md:shadow-none md:translate-y-0 md:opacity-100 md:scale-100 ${desktopTextClass}
                        ${isOpen ? 'translate-y-0 opacity-100 scale-100 visible' : '-translate-y-4 opacity-0 scale-95 invisible md:visible'}
                    `}>
-                <Link to="/jak-to-funguje" className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
+                <Link
+                    to="/jak-to-funguje"
+                    onClick={closeMenu}
+                    className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors"
+                >
                     Jak to funguje
                 </Link>
                 {isAuthenticated ? (
-                    <div className="pt-2 md:pt-0 border-t border-white/10 md:border-none">
-                        <UserMenu />
-                    </div>
+                    <>
+                        <div className="md:hidden pt-5 border-t border-white/10">
+                            <UserMenu variant="inline" onNavigate={closeMenu} />
+                        </div>
+                        <div className="hidden md:block">
+                            <UserMenu />
+                        </div>
+                    </>
                 ) : (
-                    <div className="flex flex-col md:flex-row gap-4 md:items-center pt-2 md:pt-0 border-t border-white/10 md:border-none">
-                        <Link to="/login" className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
+                    <div className="flex flex-col md:flex-row gap-4 md:items-center pt-5 md:pt-0 border-t border-white/10 md:border-none">
+                        <Link to="/login" onClick={closeMenu} className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
                             Přihlásit se
                         </Link>
-                        <Link to="/register" className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
+                        <Link to="/register" onClick={closeMenu} className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors">
                             Registrace
                         </Link>
                     </div>
                 )}
-                <div className="pt-4 md:pt-0 w-full md:w-auto">
-                    <div className="w-full sm:w-auto text-center md:text-left">
-                        <LinkButton title="Vytvořit aukci" link="/vytvorit-aukci" size="large"/>
-                    </div>
+                <div className="pt-5 md:pt-0 border-t border-white/10 md:border-none w-full md:w-auto text-center md:text-left">
+                    <LinkButton title="Vytvořit aukci" link="/vytvorit-aukci" size="large"/>
                 </div>
             </div>
         </nav>

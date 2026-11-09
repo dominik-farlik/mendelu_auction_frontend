@@ -1,4 +1,4 @@
-import {createBrowserRouter, Navigate, Outlet, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoration} from "react-router-dom";
 import HomePage from "./components/home/HomePage.tsx";
 import CreateAuction from "./components/auction/CreateAuction.tsx";
 import GroupDetail from "./components/groups/GroupDetail.tsx";
@@ -31,6 +31,7 @@ function RootLayout() {
     return (
         <AuthProvider>
             <Outlet />
+            <ScrollRestoration />
         </AuthProvider>
     );
 }

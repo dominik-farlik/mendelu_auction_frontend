@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useBlocker } from "react-router-dom";
 import toast from "react-hot-toast";
 import SubmitButton from "../buttons/SubmitButton.tsx";
-import { userService, type UserUpdate } from "../../api/userService.ts";
+import { userService, type UserResponse, type UserUpdate } from "../../api/userService.ts";
 import UserPage from "./UserPage.tsx";
 import {formatPhone, toE164} from "../../utils/formatPhone.ts";
 import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 const EMPTY_USER: UserUpdate = {
-    email: "",
     phone_number: "",
     username: "",
     first_name: "",
@@ -16,8 +15,7 @@ const EMPTY_USER: UserUpdate = {
     public_last_name: false,
 };
 
-const toFormData = (data: UserUpdate): UserUpdate => ({
-    email: data.email,
+const toFormData = (data: UserResponse): UserUpdate => ({
     phone_number: formatPhone(data.phone_number),
     username: data.username || "",
     first_name: data.first_name || "",
@@ -28,13 +26,16 @@ const toFormData = (data: UserUpdate): UserUpdate => ({
 export default function UserDetail() {
     const [user, setUser] = useState<UserUpdate>(EMPTY_USER);
     const [initialUser, setInitialUser] = useState<UserUpdate>(EMPTY_USER);
+    // E-mail jen zobrazujeme, změnit ho nejde.
+    const [email, setEmail] = useState<string>("");
 
     const [loading, setLoading] = useState<boolean>(true);
     const [saving, setSaving] = useState<boolean>(false);
 
     const isDirty = JSON.stringify(user) !== JSON.stringify(initialUser);
 
-    const applyServerData = (data: UserUpdate) => {
+    const applyServerData = (data: UserResponse) => {
+        setEmail(data.email);
         const formData = toFormData(data);
         setUser(formData);
         setInitialUser(formData);
@@ -67,7 +68,7 @@ export default function UserDetail() {
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!user.email || !user.first_name || !user.last_name) {
+        if (!user.first_name || !user.last_name) {
             toast.error("Vyplňte prosím všechna povinná pole.");
             return;
         }
@@ -208,17 +209,21 @@ export default function UserDetail() {
 
                                 <div className="flex flex-col gap-1.5 w-full">
                                     <label htmlFor="email" className={labelClasses}>
-                                        E-mail*
+                                        E-mail
                                     </label>
                                     <input
                                         id="email"
                                         type="email"
                                         name="email"
-                                        value={user.email}
-                                        onChange={handleChange}
-                                        required
-                                        className={inputClasses}
+                                        value={email}
+                                        readOnly
+                                        disabled
+                                        aria-describedby="email_hint"
+                                        className={`${inputClasses} opacity-70 cursor-not-allowed`}
                                     />
+                                    <p id="email_hint" className="text-xs text-slate-400 pl-1 m-0">
+                                        E-mail slouží k přihlášení a po registraci ho nelze změnit.
+                                    </p>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

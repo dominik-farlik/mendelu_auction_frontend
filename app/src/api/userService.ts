@@ -28,8 +28,8 @@ export interface UserPublicResponse {
     total_paid: number;
 }
 
+/** Upravitelné údaje profilu. E-mail se po registraci měnit nedá. */
 export interface UserUpdate {
-    email: string;
     phone_number?: string | null;
     first_name: string;
     last_name: string;
@@ -93,7 +93,7 @@ export const userService = {
     /**
      * Aktualizuje údaje aktuálně přihlášeného uživatele.
      *
-     * @param {UserUpdate} userData - Nové údaje uživatele (jméno, email, atd.).
+     * @param {UserUpdate} userData - Nové údaje uživatele (jméno, telefon, atd., bez e-mailu).
      * @returns {Promise<UserResponse>} Aktualizovaná data uživatele.
      */
     async updateCurrentUser(userData: UserUpdate): Promise<UserResponse> {

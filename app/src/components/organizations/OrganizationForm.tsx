@@ -4,7 +4,8 @@ import SubmitButton from "../buttons/SubmitButton.tsx";
 import {
     type OrganizationCreate,
     type OrganizationResponse,
-    organizationService
+    organizationService,
+    SHORT_DESCRIPTION_MAX
 } from "../../api/organizationService.ts";
 import { getApiErrorMessage } from "../../utils/apiError.ts";
 
@@ -18,6 +19,8 @@ export default function OrganizationForm({ organization, onSaved, onCancel }: Or
     const isEditMode = !!organization;
     const [formData, setFormData] = useState<OrganizationCreate>({
         name: organization?.name ?? "",
+        beneficiary_name: organization?.beneficiary_name ?? "",
+        short_description: organization?.short_description ?? "",
         description: organization?.description ?? "",
     });
     const [logo, setLogo] = useState<File | null>(null);
@@ -39,7 +42,9 @@ export default function OrganizationForm({ organization, onSaved, onCancel }: Or
         setSaving(true);
 
         const payload: OrganizationCreate = {
-            name: formData.name,
+            name: formData.name.trim(),
+            beneficiary_name: formData.beneficiary_name.trim(),
+            short_description: formData.short_description.trim(),
             description: formData.description,
         };
 
@@ -87,17 +92,58 @@ export default function OrganizationForm({ organization, onSaved, onCancel }: Or
             </div>
 
             <div className="flex flex-col gap-1.5 w-full">
+                <label htmlFor={`organization_beneficiary_${organization?.id ?? "new"}`} className={labelClasses}>
+                    Podporovaný subjekt
+                </label>
+                <input
+                    id={`organization_beneficiary_${organization?.id ?? "new"}`}
+                    type="text"
+                    name="beneficiary_name"
+                    value={formData.beneficiary_name}
+                    onChange={handleChange}
+                    maxLength={100}
+                    placeholder="např. Sofie Zálešáková"
+                    className={inputClasses}
+                />
+                <p className="text-xs text-slate-400 mt-1 pl-1 m-0">
+                    Komu konkrétně výtěžek pomůže. Na webu se zobrazí jako hlavní nadpis, název organizace pod ním.
+                    Nechte prázdné, pokud organizace podporuje sama sebe.
+                </p>
+            </div>
+
+            <div className="flex flex-col gap-1.5 w-full">
+                <label htmlFor={`organization_short_description_${organization?.id ?? "new"}`} className={labelClasses}>
+                    Krátký popis
+                </label>
+                <textarea
+                    id={`organization_short_description_${organization?.id ?? "new"}`}
+                    name="short_description"
+                    value={formData.short_description}
+                    onChange={handleChange}
+                    rows={2}
+                    maxLength={SHORT_DESCRIPTION_MAX}
+                    className={`${inputClasses} resize-y`}
+                />
+                <p className="text-xs text-slate-400 mt-1 pl-1 m-0 flex justify-between gap-4">
+                    <span>Jedna až dvě věty pro hlavní stránku a patičku webu.</span>
+                    <span className="tabular-nums shrink-0">{formData.short_description.length} / {SHORT_DESCRIPTION_MAX}</span>
+                </p>
+            </div>
+
+            <div className="flex flex-col gap-1.5 w-full">
                 <label htmlFor={`organization_description_${organization?.id ?? "new"}`} className={labelClasses}>
-                    Popis
+                    Celý popis
                 </label>
                 <textarea
                     id={`organization_description_${organization?.id ?? "new"}`}
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    rows={4}
+                    rows={6}
+                    maxLength={5000}
                     className={`${inputClasses} resize-y`}
                 />
+                <p className="text-xs text-slate-400 mt-1 pl-1 m-0">Zobrazí se na veřejné stránce organizace.</p>
             </div>
 
             <div className="flex flex-col gap-1.5 w-full">

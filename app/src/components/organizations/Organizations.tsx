@@ -6,6 +6,7 @@ import ActionButton from "../buttons/ActionButton.tsx";
 import OrganizationForm from "./OrganizationForm.tsx";
 import { type OrganizationResponse, organizationService } from "../../api/organizationService.ts";
 import { getApiErrorMessage } from "../../utils/apiError.ts";
+import { invalidateOrganizationsCache } from "../OrganizationsBand.tsx";
 
 export default function Organizations() {
     const [organizations, setOrganizations] = useState<OrganizationResponse[]>([]);
@@ -26,11 +27,13 @@ export default function Organizations() {
     }, []);
 
     const handleCreated = (organization: OrganizationResponse) => {
+        invalidateOrganizationsCache();
         setOrganizations((prev) => [...prev, organization]);
         setShowCreate(false);
     };
 
     const handleUpdated = (organization: OrganizationResponse) => {
+        invalidateOrganizationsCache();
         setOrganizations((prev) => prev.map((o) => o.id === organization.id ? organization : o));
         setEditingId(null);
     };
@@ -41,6 +44,7 @@ export default function Organizations() {
         const toastId = toast.loading("Mažu organizaci...");
         try {
             await organizationService.deleteOrganization(organization.id);
+            invalidateOrganizationsCache();
             setOrganizations((prev) => prev.filter((o) => o.id !== organization.id));
             toast.success("Organizace byla smazána.", { id: toastId });
         } catch (err) {
@@ -115,8 +119,13 @@ export default function Organizations() {
                                     >
                                         {organization.name}
                                     </Link>
+                                    {organization.beneficiary_name && (
+                                        <span className="text-sm font-semibold text-slate-700 truncate">
+                                            Podporuje: {organization.beneficiary_name}
+                                        </span>
+                                    )}
                                     <span className="text-sm text-slate-500 line-clamp-2">
-                                        {organization.description || <span className="italic text-slate-400">bez popisu</span>}
+                                        {organization.short_description || <span className="italic text-slate-400">bez krátkého popisu</span>}
                                     </span>
                                 </div>
 

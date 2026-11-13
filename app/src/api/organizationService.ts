@@ -1,27 +1,31 @@
 import api from './axios';
-import type {ProductResponse} from "./productService.ts";
 
 export interface OrganizationResponse {
     id: number;
     name: string;
+    /** Konkrétní podporovaný subjekt (např. dítě), u některých organizací chybí. */
+    beneficiary_name?: string | null;
+    /** Krátký popis pro hlavní stránku a patičku. */
+    short_description?: string | null;
+    /** Celý popis pro stránku organizace. */
     description: string;
     logo?: string | null;
 }
 
 export interface OrganizationCreate {
     name: string;
+    beneficiary_name: string;
+    short_description: string;
     description: string;
 }
 
-export interface OrganizationPublicResponse extends OrganizationResponse {
-    total_raised: number;
-    finished_auctions_count: number;
-    active_auctions_count: number;
-}
+export const SHORT_DESCRIPTION_MAX = 300;
 
 const buildOrganizationFormData = (organizationData: OrganizationCreate, logo: File | null) => {
     const data = new FormData();
     data.append('name', organizationData.name);
+    data.append('beneficiary_name', organizationData.beneficiary_name);
+    data.append('short_description', organizationData.short_description);
     data.append('description', organizationData.description);
 
     if (logo) {
@@ -72,18 +76,10 @@ export const organizationService = {
     },
 
     /**
-     * Vrátí veřejný profil organizace včetně statistik.
+     * Vrátí detail organizace (veřejná stránka organizace).
      */
-    async getPublicProfile(organizationId: number): Promise<OrganizationPublicResponse> {
-        const response = await api.get<OrganizationPublicResponse>(`/organizations/${organizationId}/public`);
-        return response.data;
-    },
-
-    /**
-     * Vrátí právě probíhající schválené aukce, jejichž výtěžek obdrží organizace.
-     */
-    async getOrganizationAuctions(organizationId: number): Promise<ProductResponse[]> {
-        const response = await api.get<ProductResponse[]>(`/organizations/${organizationId}/products`);
+    async getOrganization(organizationId: number): Promise<OrganizationResponse> {
+        const response = await api.get<OrganizationResponse>(`/organizations/${organizationId}`);
         return response.data;
     },
 };

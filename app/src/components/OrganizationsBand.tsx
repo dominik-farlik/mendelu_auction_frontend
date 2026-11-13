@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { type OrganizationResponse, organizationService } from "../api/organizationService.ts";
 
 type OrganizationsBandProps = {
-    /** "band" = výrazný pás na hlavní stránce, "footer" = patička ostatních veřejných stránek. */
+    /** "band" = pás na hlavní stránce, "footer" = patička ostatních veřejných stránek. */
     variant?: "band" | "footer";
 };
 
-const HEADING = "Výtěžek ze všech aukcí bude rovnoměrně rozdělen mezi tyto organizace:";
+const HEADING = "Výtěžek ze všech aukcí bude rovnoměrně rozdělen mezi tyto subjekty a organizace:";
 
 // Seznam organizací se mezi stránkami nemění, stačí ho načíst jednou za návštěvu.
 let organizationsCache: Promise<OrganizationResponse[]> | null = null;
+
+/** Po úpravě organizací v administraci, aby se na webu hned ukázaly nové texty a loga. */
+// eslint-disable-next-line react-refresh/only-export-components
+export function invalidateOrganizationsCache() {
+    organizationsCache = null;
+}
 
 function loadOrganizations(): Promise<OrganizationResponse[]> {
     if (!organizationsCache) {
@@ -21,25 +28,45 @@ function loadOrganizations(): Promise<OrganizationResponse[]> {
     return organizationsCache;
 }
 
-function OrganizationLogo({ organization, compact }: { organization: OrganizationResponse; compact: boolean }) {
-    const tileSize = compact ? "w-20 h-20 sm:w-24 sm:h-24 rounded-2xl" : "w-28 h-28 sm:w-32 sm:h-32 rounded-3xl";
+function OrganizationCard({ organization }: { organization: OrganizationResponse }) {
+    const title = organization.beneficiary_name || organization.name;
     return (
-        <div className={`flex flex-col items-center gap-3 ${compact ? "w-28 sm:w-36" : "w-36 sm:w-44"}`}>
-            <div className={`${tileSize} bg-white flex items-center justify-center overflow-hidden shadow-sm`}>
+        <Link
+            to={`/organizace/${organization.id}`}
+            className="group flex flex-col items-center text-center gap-3 p-4 rounded-3xl hover:bg-white/5 focus-visible:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ade80]/60 transition-colors h-full"
+        >
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-sm transition-transform duration-300 group-hover:scale-105">
                 {organization.logo ? (
                     <img
                         src={`${import.meta.env.VITE_IMAGES_URL}/${organization.logo}`}
                         alt={organization.name}
-                        className={`w-full h-full object-contain ${compact ? "p-3" : "p-4"}`}
+                        className="w-full h-full object-contain p-3"
                     />
                 ) : (
                     <span className="text-3xl font-black text-slate-700">{organization.name.charAt(0)}</span>
                 )}
             </div>
-            <span className="text-sm font-semibold text-center leading-snug text-slate-200">
-                {organization.name}
+
+            <div className="flex flex-col gap-0.5">
+                <span className="text-base font-bold text-white leading-snug">{title}</span>
+                {organization.beneficiary_name && (
+                    <span className="text-xs font-semibold text-slate-400 leading-snug">{organization.name}</span>
+                )}
+            </div>
+
+            {organization.short_description && (
+                <p className="text-sm text-slate-300 leading-relaxed m-0 line-clamp-4">
+                    {organization.short_description}
+                </p>
+            )}
+
+            <span className="mt-auto text-sm font-bold text-[#4ade80] flex items-center gap-1 group-hover:gap-2 transition-all">
+                Více o podpoře
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
             </span>
-        </div>
+        </Link>
     );
 }
 
@@ -60,10 +87,12 @@ export default function OrganizationsBand({ variant = "footer" }: OrganizationsB
         return null;
     }
 
+    // Mřížka karet: na telefonu pod sebou, na tabletu po dvou, na desktopu až čtyři vedle sebe.
+    const columns = organizations.length >= 4 ? "lg:grid-cols-4" : organizations.length === 3 ? "lg:grid-cols-3" : "";
     const logos = (
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-6 sm:gap-x-12">
+        <div className={`w-full grid grid-cols-1 sm:grid-cols-2 ${columns} gap-4 md:gap-6 max-w-6xl`}>
             {organizations.map((organization) => (
-                <OrganizationLogo key={organization.id} organization={organization} compact={variant === "band"} />
+                <OrganizationCard key={organization.id} organization={organization} />
             ))}
         </div>
     );

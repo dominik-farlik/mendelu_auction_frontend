@@ -2,7 +2,7 @@ import { useState } from 'react';
 import mendelu_logo_white from '../../assets/Mendelova_univerzita_logo_white.png';
 import mendelu_logo_dark from '../../assets/Mendelova_univerzita_logo_black.png';
 import LinkButton from "../buttons/LinkButton.tsx";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import UserMenu from "./UserMenu.tsx";
 import {useAuth} from "../../context/useAuth.ts";
 
@@ -19,16 +19,26 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
     const desktopTextClass = textColor === 'light' ? 'md:text-white' : 'md:text-slate-900';
     const toggleBtnClass = textColor === 'light' ? 'text-white hover:text-gray-300' : 'text-slate-900 hover:text-slate-600';
     const currentLogo = textColor === 'light' ? mendelu_logo_white : mendelu_logo_dark;
+    // Aktivní odkaz zvýrazníme zeleně, ať uživatel ví, kde je.
+    const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+        `text-lg md:text-base font-medium transition-colors ${isActive ? 'text-[#4ade80]' : 'hover:text-[#4ade80]'}`;
 
     return (
         <nav className={`relative z-50 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 flex justify-between items-center ${navTextClass}`}>
-            <Link to="/" className="z-50 relative">
-                <img
-                    src={currentLogo}
-                    className="h-12 md:h-16 w-auto object-contain hover:opacity-90 transition-opacity"
-                    alt="MENDELU logo"
-                />
-            </Link>
+            <div className="flex items-center gap-6 lg:gap-8 z-50 relative">
+                <Link to="/" aria-label="Hlavní stránka">
+                    <img
+                        src={currentLogo}
+                        className="h-12 md:h-16 w-auto object-contain hover:opacity-90 transition-opacity"
+                        alt="MENDELU logo"
+                    />
+                </Link>
+                {/* Desktop: odkaz hned vedle loga, na mobilu je v rozbalovacím menu. */}
+                <span className={`hidden md:block h-8 w-px ${textColor === 'light' ? 'bg-white/20' : 'bg-slate-900/15'}`} aria-hidden="true"></span>
+                <NavLink to="/" end className={(state) => `hidden md:inline ${navLinkClass(state)}`}>
+                    Hlavní stránka
+                </NavLink>
+            </div>
 
             <button
                 className={`md:hidden z-50 relative p-2 -mr-2 focus:outline-none transition-colors ${toggleBtnClass}`}
@@ -46,13 +56,12 @@ export default function Navbar({ textColor = 'dark' }: NavbarProps) {
                        md:static md:inset-auto md:mt-0 md:rounded-none md:bg-transparent md:backdrop-blur-none md:border-none md:p-0 md:max-h-none md:overflow-visible md:flex-row md:gap-8 md:items-center md:shadow-none md:translate-y-0 md:opacity-100 md:scale-100 ${desktopTextClass}
                        ${isOpen ? 'translate-y-0 opacity-100 scale-100 visible' : '-translate-y-4 opacity-0 scale-95 invisible md:visible'}
                    `}>
-                <Link
-                    to="/jak-to-funguje"
-                    onClick={closeMenu}
-                    className="text-lg md:text-base font-medium hover:text-[#4ade80] transition-colors"
-                >
+                <NavLink to="/" end onClick={closeMenu} className={(state) => `md:hidden ${navLinkClass(state)}`}>
+                    Hlavní stránka
+                </NavLink>
+                <NavLink to="/jak-to-funguje" onClick={closeMenu} className={navLinkClass}>
                     Jak to funguje
-                </Link>
+                </NavLink>
                 {isAuthenticated ? (
                     <>
                         <div className="md:hidden pt-5 border-t border-white/10">

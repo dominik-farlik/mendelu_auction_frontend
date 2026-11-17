@@ -22,7 +22,7 @@ export default function Login() {
     const [unverified, setUnverified] = useState<boolean>(false);
     const successMessage: string | null =
         (searchParams.get('registered') === 'true'
-            ? 'Registrace proběhla úspěšně! Na váš e-mail jsme zaslali potvrzovací odkaz (pro kontrolujte jistotu i složku spam). Před prvním přihlášením jej prosím potvrďte.'
+            ? 'Registrace proběhla úspěšně! Na váš e-mail jsme zaslali potvrzovací odkaz (pro jistotu zkontrolujte i složku spam). Před prvním přihlášením jej prosím potvrďte.'
             : null) ||
         (searchParams.get('updated-password') === 'true'
             ? 'Váše heslo bylo úspěšně změněno. Nyní se můžete přihlásit.'

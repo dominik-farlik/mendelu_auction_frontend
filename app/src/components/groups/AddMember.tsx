@@ -6,9 +6,11 @@ import { getApiErrorMessage } from "../../utils/apiError.ts";
 
 type AddMemberProps = {
     groupId: number;
+    /** Zavolá se po úspěšném přidání (např. pro obnovení seznamu členů). */
+    onAdded?: () => void;
 }
 
-export default function AddMember({ groupId }: AddMemberProps) {
+export default function AddMember({ groupId, onAdded }: AddMemberProps) {
     const [email, setEmail] = useState<string>("");
     const [saving, setSaving] = useState<boolean>(false);
 
@@ -25,6 +27,7 @@ export default function AddMember({ groupId }: AddMemberProps) {
         const addPromise = groupService.addGroupMember(groupId, { email })
             .then(() => {
                 setEmail("");
+                onAdded?.();
                 // Vrácená zpráva se zobrazí v toast.promise(..., { success: ... })
                 return "Nový člen byl úspěšně přidán.";
             });

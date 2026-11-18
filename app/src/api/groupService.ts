@@ -68,6 +68,13 @@ export const groupService = {
     },
 
     /**
+     * Odebere člena ze skupiny (správce skupiny nebo manažer)
+     */
+    async removeGroupMember(groupId: number, userId: number): Promise<void> {
+        await api.delete(`/groups/${groupId}/members/${userId}`);
+    },
+
+    /**
      * Vrátí detail a členy skupiny podle ID
      */
     async getGroupDetail(groupId: number): Promise<GroupResponse> {

@@ -10,6 +10,7 @@ import ActionButton from "../buttons/ActionButton.tsx";
 import CreatedAuctions from "../auction/CreatedAuctions.tsx";
 import LinkButton from "../buttons/LinkButton.tsx";
 import UserList from "../users/UserList.tsx";
+import type { UserResponse } from "../../api/userService.ts";
 import FinishedAuctions from "../auction/FinishedAuctions.tsx";
 import { type OrganizationResponse, organizationService } from "../../api/organizationService.ts";
 import { useAuth } from "../../context/useAuth.ts";
@@ -111,6 +112,20 @@ export default function GroupDetail() {
             toast.error(getApiErrorMessage(err, "Nepodařilo se změnit název skupiny."), { id: toastId });
         } finally {
             setSavingName(false);
+        }
+    };
+
+    const handleRemoveMember = async (member: UserResponse) => {
+        if (!group) return;
+        if (!window.confirm(`Opravdu chcete odebrat ${member.first_name} ${member.last_name} ze skupiny „${group.name}“?`)) return;
+
+        const toastId = toast.loading("Odebírám člena...");
+        try {
+            await groupService.removeGroupMember(group.id, member.id);
+            setGroup({ ...group, members: group.members.filter((m) => m.id !== member.id) });
+            toast.success("Člen byl odebrán ze skupiny.", { id: toastId });
+        } catch (err) {
+            toast.error(getApiErrorMessage(err, "Nepodařilo se odebrat člena."), { id: toastId });
         }
     };
 
@@ -275,12 +290,18 @@ export default function GroupDetail() {
                                         <div className="absolute right-0 top-full mt-3 z-10 w-full sm:w-auto min-w-70">
                                             <AddMember
                                                 groupId={Number(groupId)}
+                                                onAdded={() => groupService.getGroupDetail(Number(groupId)).then(setGroup).catch(() => {})}
                                             />
                                         </div>
                                     )}
                                 </div>
 
-                                <UserList users={group.members} />
+                                <UserList
+                                    users={group.members}
+                                    onRemove={canAdministerGroup ? handleRemoveMember : undefined}
+                                    canRemove={(member) => member.id !== group.manager.id}
+                                    removeLabel="Odebrat ze skupiny"
+                                />
                             </div>
 
                             <div className="flex flex-col gap-4">

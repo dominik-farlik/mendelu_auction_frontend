@@ -7,6 +7,8 @@ export interface GroupCreate {
     organization_id?: number | null;
 }
 
+export const GROUP_NAME_MAX = 50;
+
 export interface GroupResponse {
     id: number;
     name: string;
@@ -40,6 +42,21 @@ export const groupService = {
     async updateGroupOrganization(groupId: number, organizationId: number | null): Promise<GroupResponse> {
         const response = await api.patch<GroupResponse>(`/groups/${groupId}`, { organization_id: organizationId });
         return response.data;
+    },
+
+    /**
+     * Přejmenuje skupinu (správce skupiny nebo manažer)
+     */
+    async renameGroup(groupId: number, name: string): Promise<GroupResponse> {
+        const response = await api.patch<GroupResponse>(`/groups/${groupId}`, { name });
+        return response.data;
+    },
+
+    /**
+     * Smaže skupinu (správce skupiny nebo manažer). Proběhlé aukce skupiny zůstanou zachované.
+     */
+    async deleteGroup(groupId: number): Promise<void> {
+        await api.delete(`/groups/${groupId}`);
     },
 
     /**

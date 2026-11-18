@@ -14,6 +14,7 @@ import {type UserPublicResponse, userService} from "../../api/userService.ts";
 import { buildWsUrl } from "../../utils/wsUrl.ts";
 import ActiveAuctions from "../home/ActiveAuctions.tsx";
 import OrganizationsBand from "../OrganizationsBand.tsx";
+import LinkifiedText from "../LinkifiedText.tsx";
 
 export default function AuctionDetail() {
     const { productId } = useParams<{ productId: string }>();
@@ -230,7 +231,6 @@ export default function AuctionDetail() {
                 <div className="lg:col-span-7 flex flex-col gap-6">
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-4 border-b border-gray-200 pb-4">
                         <h3 className="text-xl sm:text-2xl font-black text-[#4ade80] uppercase tracking-tight m-0">Popis aukce</h3>
-                        <h3 className="text-xl sm:text-2xl font-black text-gray-300 hover:text-gray-400 cursor-pointer uppercase tracking-tight m-0 transition-colors">Časté otázky</h3>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-gray-500">
@@ -251,7 +251,9 @@ export default function AuctionDetail() {
                     </div>
 
                     <div className="prose prose-slate max-w-none mt-4 text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {product.description || "Tato aukce zatím nemá žádný podrobný popis."}
+                        {product.description
+                            ? <LinkifiedText text={product.description} />
+                            : "Tato aukce zatím nemá žádný podrobný popis."}
                     </div>
                 </div>
 

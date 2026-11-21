@@ -208,7 +208,7 @@ export default function AuctionDetail() {
                             )}
 
                             <h1
-                                className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight line-clamp-2"
+                                className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight line-clamp-3"
                                 title={product.title}
                             >
                                 {product.title}

@@ -308,7 +308,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                         </h3>
 
                         <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                            Opravdu chcete {pendingAction === 'bid' ? `přihodit částku ${bidAmount.toLocaleString('cs-CZ')} Kč` : `zakoupit položku za ${formattedBuyNowPrice} Kč`}?
+                            Opravdu chcete {pendingAction === 'bid' ? `přihodit na částku ${bidAmount.toLocaleString('cs-CZ')} Kč` : `zakoupit položku za ${formattedBuyNowPrice} Kč`}?
                             <span className="block mt-2 font-semibold text-rose-600">
                                 Tento příhoz / nákup je plně závazný. Při nepřevzetí výhry můžete být trvale vyloučeni z dalších aukcí.
                             </span>

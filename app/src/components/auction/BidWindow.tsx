@@ -230,7 +230,7 @@ export default function BidWindow({ product, buyNowWinner }: { product: ProductR
                                     <path d="m9 7 8 8"></path>
                                     <path d="m21 11-8-8"></path>
                                 </svg>
-                                Přihodit teď
+                                Přihoď teď na částku:
                             </button>
                         </div>
 
